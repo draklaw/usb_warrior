@@ -22,6 +22,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 find_package(Eigen3 REQUIRED)
 find_package(SDL2 REQUIRED)
 find_package(SDL2_mixer REQUIRED)
+find_package(SDL2_image REQUIRED)
 
 include_directories(
 	"${EIGEN3_INCLUDE_DIR}"
@@ -30,13 +31,16 @@ include_directories(
 
 add_executable(usb_warrior
 	main.cpp
+	game.cpp
+	game_state.cpp
+	main_state.cpp
 	soundplayer.cpp
 )
 
 message("########### ${SDLMIXER_LIBRARY}")
 target_link_libraries(usb_warrior
-#	GLEW
-#	GL
 	${SDL2_LIBRARY}
+	${SDL2IMAGE_LIBRARY}
 	${SDLMIXER_LIBRARY}
+	${SDL2_LIBRARY}
 )

@@ -3,8 +3,9 @@
 #ifndef USB_WARRIOR_SOUND_H
 #define USB_WARRIOR_SOUND_H
 
-#define SOUNDPLAYER_MAX_SOUNDS    32
-#define SOUNDPLAYER_MAX_CHANNELS  32
+#define SOUNDPLAYER_MAX_SOUNDS      32
+#define SOUNDPLAYER_MAX_CHANNELS    32
+#define SOUNDPLAYER_DEFAULT_VOLUME  (MIX_MAX_VOLUME / 25)
 
 class SoundPlayer {
 public:
@@ -17,11 +18,10 @@ public:
 	void playSound(int id);
 
 private:
-	Mix_Music* music;
-	Mix_Chunk* sounds[SOUNDPLAYER_MAX_SOUNDS];
-	int last_loaded_sound;
+	Mix_Music* _music;
+	Mix_Chunk* _sounds[SOUNDPLAYER_MAX_SOUNDS];
+	int _last_sound;
 
-	void alert(const char* msg);
 	void crash(const char* msg);
 };
 
