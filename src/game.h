@@ -18,9 +18,15 @@
  */
 
 #ifndef _GAME_H_
+#define _GAME_H_
+
+#include <iostream>
 
 #include <SDL2/SDL_video.h>
 #include <SDL2/SDL_render.h>
+
+
+class GameState;
 
 
 class Game {
@@ -28,21 +34,53 @@ public:
 	Game(int argc, char** argv);
 	~Game();
 
-	void init();
+	void initialize();
 	void quit();
 
-	int run();
+	void dispatchPendingEvents();
+
+	void changeState(GameState* nextState);
+
+	int run(GameState* state);
+
+	inline SDL_Renderer* renderer() const { return _renderer; }
+
+	int getRefreshRate() const;
 
 	void sdlCrash(const char* msg);
 	void imgCrash(const char* msg);
 
 	template < typename... Args >
-	void write(Args... args);
+	void error(Args... args) {
+		write("Error: ", args...);
+	}
+
+	template < typename... Args >
+	void warning(Args... args) {
+		write("Warning: ", args...);
+	}
+
+	template < typename... Args >
+	void log(Args... args) {
+		write(args...);
+	}
+
+	template < typename T, typename... Args >
+	inline void write(T first, Args... args) {
+		std::cout << first;
+		write(args...);
+	}
+
+	inline void write() {
+		std::cout << "\n";
+	}
 
 private:
 	SDL_Window*    _window;
 	SDL_Renderer*  _renderer;
 
+	GameState*     _state;
+	GameState*     _nextState;
 };
 
 

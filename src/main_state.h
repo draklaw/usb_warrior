@@ -17,19 +17,37 @@
  *  along with usb_warrior.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-#include <cstdlib>
-#include <iostream>
-
-#include "game.h"
-#include "main_state.h"
+#ifndef _MAIN_STATE_H_
+#define _MAIN_STATE_H_
 
 
-int main(int argc, char** argv) {
-	Game game(argc, argv);
-	game.initialize();
+#include <Eigen/Geometry>
 
-	MainState state(&game);
+#include <SDL2/SDL_render.h>
 
-	return game.run(&state);
-}
+#include "game_state.h"
+
+
+class MainState : public GameState {
+public:
+	MainState(Game* game);
+
+	void update();
+	void frame(double interp);
+
+protected:
+	void initialize();
+	void shutdown();
+
+	void start();
+	void stop();
+
+protected:
+	Eigen::Vector2f _pos;
+	Eigen::Vector2f _prevPos;
+
+	SDL_Texture*    _sprite;
+};
+
+
+#endif

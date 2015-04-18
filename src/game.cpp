@@ -19,6 +19,7 @@
 
 
 #include <cstdlib>
+#include <cassert>
 #include <iostream>
 
 #include <SDL2/SDL.h>
@@ -29,11 +30,16 @@
 
 #include <SDL2/SDL_image.h>
 
+#include "game_state.h"
+
 #include "game.h"
 
 
 Game::Game(int /*argc*/, char** /*argv*/)
-    : _window(nullptr), _renderer(nullptr) {
+    : _window(nullptr),
+      _renderer(nullptr),
+      _state(nullptr),
+      _nextState(nullptr) {
 }
 
 
@@ -42,18 +48,20 @@ Game::~Game() {
 }
 
 
-void Game::init() {
+void Game::initialize() {
 	unsigned initFlags = SDL_INIT_VIDEO
 	                   | SDL_INIT_AUDIO
 	                   | SDL_INIT_EVENTS;
 
+	log("Initialize SDL...");
 	if(SDL_Init(initFlags)) {
 		sdlCrash("Failed to initialize SDL");
 	}
 
+	log("Initialize SDL_image...");
 	int initImgFlags = IMG_INIT_JPG | IMG_INIT_PNG;
 	if(IMG_Init(initImgFlags) != initImgFlags) {
-		imgCrash("Failed to initialize .png and .jpg backend");
+		imgCrash("Failed to initialize SDL_image backend");
 	}
 
 	unsigned windowFlags = 0
@@ -62,6 +70,8 @@ void Game::init() {
 #endif
 //			| SDL_WINDOW_OPENGL
 	        ;
+
+	log("Create window...");
 	_window = SDL_CreateWindow(
 	            "USB Warrior",
 	            SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
@@ -69,6 +79,7 @@ void Game::init() {
 	            windowFlags);
 	if(!_window) { sdlCrash("Failed to create window"); }
 
+	log("Create renderer...");
 	_renderer = SDL_CreateRenderer(_window, -1,
 	        SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE);
 	if(!_renderer) { sdlCrash("Failed to create renderer"); }
@@ -77,50 +88,78 @@ void Game::init() {
 
 void Game::quit() {
 	if(_renderer) {
+		log("Destroy renderer...");
 		SDL_DestroyRenderer(_renderer);
 		_renderer = nullptr;
 	}
 	if(_window) {
+		log("Destroy window...");
 		SDL_DestroyWindow(_window);
 		_window = nullptr;
 	}
 
+	log("Quit SDL_image...");
+	IMG_Quit();
+
+	log("Quit SDL...");
+	SDL_Quit();
 }
 
 
-int Game::run() {
-	SDL_Surface* surf = IMG_Load("./assets/splash.png");
-	if(!surf) imgCrash("Failed to load image");
-	SDL_Texture* testTex = SDL_CreateTextureFromSurface(_renderer, surf);
-	if(!surf) sdlCrash("Failed to create texture");
-	SDL_FreeSurface(surf);
-
-	SDL_RenderCopy(_renderer, testTex, nullptr, nullptr);
-	SDL_RenderPresent(_renderer);
-
+void Game::dispatchPendingEvents() {
 	SDL_Event event;
-	bool running = true;
-	while(running) {
-		SDL_WaitEvent(&event);
-
-		std::cout << "Event: " << event.type << "\n";
-
+	while(SDL_PollEvent(&event)) {
 		switch(event.type) {
-			case SDL_QUIT: running = false; break;
+		case SDL_QUIT:
+			_state->quit();
+			_state = nullptr;
+			break;
 		}
 	}
+}
+
+
+int Game::run(GameState* state) {
+//	SDL_Surface* surf = IMG_Load("./assets/splash.png");
+//	if(!surf) imgCrash("Failed to load image");
+//	SDL_Texture* testTex = SDL_CreateTextureFromSurface(_renderer, surf);
+//	if(!surf) sdlCrash("Failed to create texture");
+//	SDL_FreeSurface(surf);
+
+//	SDL_RenderCopy(_renderer, testTex, nullptr, nullptr);
+//	SDL_RenderPresent(_renderer);
+
+//	SDL_Event event;
+//	bool running = true;
+//	while(running) {
+//		SDL_WaitEvent(&event);
+
+//		std::cout << "Event: " << event.type << "\n";
+
+//		switch(event.type) {
+//			case SDL_QUIT: running = false; break;
+//		}
+//	}
+	assert(state);
+	_state = state;
+	_state->run();
 
 	return EXIT_SUCCESS;
 }
 
 
+int Game::getRefreshRate() const{
+	return 60;
+}
+
+
 void Game::sdlCrash(const char* msg) {
-	std::cerr << msg << ": " << SDL_GetError() << "\n";
+	error(msg, ": ", SDL_GetError());
 	std::exit(EXIT_FAILURE);
 }
 
 
 void Game::imgCrash(const char* msg) {
-	std::cerr << msg << ": " << IMG_GetError() << "\n";
+	error(msg, ": ", IMG_GetError());
 	std::exit(EXIT_FAILURE);
 }
