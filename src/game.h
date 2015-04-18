@@ -17,24 +17,33 @@
  *  along with usb_warrior.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#ifndef _GAME_H_
 
-#include <cstdlib>
-#include <iostream>
-
-#include <SDL2/SDL.h>
 #include <SDL2/SDL_video.h>
-#include <SDL2/SDL_events.h>
-#include <SDL2/SDL_surface.h>
 #include <SDL2/SDL_render.h>
 
-#include <SDL2/SDL_image.h>
 
-#include "game.h"
+class Game {
+public:
+	Game(int argc, char** argv);
+	~Game();
+
+	void init();
+	void quit();
+
+	int run();
+
+	void sdlCrash(const char* msg);
+	void imgCrash(const char* msg);
+
+	template < typename... Args >
+	void write(Args... args);
+
+private:
+	SDL_Window*    _window;
+	SDL_Renderer*  _renderer;
+
+};
 
 
-int main(int argc, char** argv) {
-	Game game(argc, argv);
-	game.init();
-
-	return game.run();
-}
+#endif

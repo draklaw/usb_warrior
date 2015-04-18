@@ -28,11 +28,11 @@ include_directories(
 )
 
 add_executable(usb_warrior
+	game.cpp
 	main.cpp
 )
 
 target_link_libraries(usb_warrior
-	GLEW
-	GL
 	${SDL2_LIBRARY}
+	SDL2_image-2.0
 )
