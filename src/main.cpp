@@ -5,6 +5,8 @@
 #include <SDL2/SDL_video.h>
 #include <SDL2/SDL_events.h>
 
+#include "soundplayer.h"
+
 
 void sdlCrash(const char* msg) {
 	std::cerr << msg << ": " << SDL_GetError() << "\n";
@@ -14,7 +16,6 @@ void sdlCrash(const char* msg) {
 
 int main(int argc, char** argv) {
 	unsigned initFlags = SDL_INIT_VIDEO
-	                   | SDL_INIT_AUDIO
 	                   | SDL_INIT_EVENTS;
 	if(SDL_Init(initFlags)) {
 		sdlCrash("Failed to initialize SDL");
@@ -29,6 +30,9 @@ int main(int argc, char** argv) {
 		800, 600,
 		windowFlags);
 	if(!window) { sdlCrash("Failed to create window"); }
+
+	SoundPlayer soundMixer;
+	soundMixer.playMusic("src/music.mp3");
 
 	SDL_Event event;
 	bool running = true;
