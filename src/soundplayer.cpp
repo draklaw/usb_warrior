@@ -14,7 +14,7 @@ SoundPlayer::SoundPlayer() {
 	_last_sound = -1;
 
 	if(Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, 1024)) {
-		crash("Failed to initialize SDL_Mixer");
+		_crash("Failed to initialize SDL_Mixer");
 	}
 	Mix_AllocateChannels(SOUNDPLAYER_MAX_CHANNELS);
 	
@@ -31,7 +31,7 @@ SoundPlayer::~SoundPlayer() {
 }
 
 
-void SoundPlayer::crash(const char* msg) {
+void SoundPlayer::_crash(const char* msg) {
 	std::cerr << msg << ": " << Mix_GetError() << "\n";
 	std::exit(EXIT_FAILURE);
 }
@@ -40,8 +40,8 @@ void SoundPlayer::crash(const char* msg) {
 void SoundPlayer::playMusic(const char* file) {
 	if(_music) { Mix_FreeMusic(_music); }
 	_music = Mix_LoadMUS(file);
-	if(!_music) { crash("Failed to load music file"); }
-	else if(Mix_PlayMusic(_music, -1)) { crash("Failed to play music"); }
+	if(!_music) { _crash("Failed to load music file"); }
+	else if(Mix_PlayMusic(_music, -1)) { _crash("Failed to play music"); }
 }
 
 
@@ -49,12 +49,12 @@ int SoundPlayer::loadSound(const char* file) {
 	_last_sound = (_last_sound + 1) % SOUNDPLAYER_MAX_SOUNDS;
 	if(_sounds[_last_sound]) { Mix_FreeChunk(_sounds[_last_sound]); }
 	_sounds[_last_sound] = Mix_LoadWAV(file);
-	if(!_sounds[_last_sound]) { crash("Failed to load sound file"); }
+	if(!_sounds[_last_sound]) { _crash("Failed to load sound file"); }
 	return _last_sound;
 }
 
 
 void SoundPlayer::playSound(int id) {
-	if(!_sounds[id]) { crash("No sound loaded"); }
-	else if(Mix_PlayChannel(-1, _sounds[id], 0)) { crash("Failed to play sound"); }
+	if(!_sounds[id]) { _crash("No sound loaded"); }
+	else if(Mix_PlayChannel(-1, _sounds[id], 0)) { _crash("Failed to play sound"); }
 }

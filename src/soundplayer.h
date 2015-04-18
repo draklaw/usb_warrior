@@ -22,7 +22,7 @@ private:
 	Mix_Chunk* _sounds[SOUNDPLAYER_MAX_SOUNDS];
 	int _last_sound;
 
-	void crash(const char* msg);
+	void _crash(const char* msg);
 };
 
 #endif // USB_WARRIOR_SOUND_H

@@ -17,34 +17,7 @@
 ##  along with usb_warrior.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-
-add_subdirectory(json)
-
-find_package(Eigen3 REQUIRED)
-find_package(SDL2 REQUIRED)
-find_package(SDL2_mixer REQUIRED)
-find_package(SDL2_image REQUIRED)
-
-include_directories(
-	"${EIGEN3_INCLUDE_DIR}"
-	"${SDL2_INCLUDE_DIR}"
-	"json"
-)
-
-add_executable(usb_warrior
-	main.cpp
-	game.cpp
-	game_state.cpp
-	main_state.cpp
-	soundplayer.cpp
-)
-
-message("########### ${SDLMIXER_LIBRARY}")
-target_link_libraries(usb_warrior
-	${SDL2_LIBRARY}
-	${SDL2IMAGE_LIBRARY}
-	${SDLMIXER_LIBRARY}
-	${SDL2_LIBRARY}
-	json
+add_library(json
+	json.c
+	json_helper.c
 )
