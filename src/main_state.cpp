@@ -33,7 +33,7 @@
 
 
 MainState::MainState(Game* game)
-    : GameState(game, durationFromSeconds(MAIN_STATE_UPDATE_TIME)),
+    : GameState(game, "Main", durationFromSeconds(MAIN_STATE_UPDATE_TIME)),
       _scene(game),
       _input(game),
       _left(INVALID_INPUT),
