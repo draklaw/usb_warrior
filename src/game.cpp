@@ -41,6 +41,7 @@ Game::Game(int /*argc*/, char** /*argv*/)
       _renderer(nullptr),
       _imageManager(this),
 	  _soundPlayer(this),
+	  _fontManager(this),
       _state(nullptr),
       _nextState(nullptr) {
 }

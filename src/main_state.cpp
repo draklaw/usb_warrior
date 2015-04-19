@@ -43,7 +43,8 @@ MainState::MainState(Game* game)
       _obj(nullptr),
 	  _msound(nullptr),
 	  _jsound(nullptr),
-	  _music(nullptr) {
+	  _music(nullptr),
+	  _font(nullptr) {
 }
 
 
@@ -130,6 +131,7 @@ void MainState::initialize() {
 	_loader.addSound("assets/test/laser0.wav");
 	_loader.addSound("assets/test/laser1.wav");
 	_loader.addMusic("assets/test/music.ogg");
+	_loader.addFont("assets/test/font.txt");
 
 	_loader.loadAll();
 
@@ -157,6 +159,8 @@ void MainState::initialize() {
 	_jsound = _loader.getSound("assets/test/laser1.wav");
 	_music  = _loader.getMusic("assets/test/music.ogg");
 	_mchannel = -1;
+	
+	_font = _loader.getFont("assets/test/font.txt");
 
 	_obj = _scene.addObject("Test");
 	_scene.addSpriteComponent(_obj, _tilemap, 1);

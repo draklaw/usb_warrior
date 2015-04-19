@@ -28,6 +28,7 @@
 #include "input.h"
 #include "image_manager.h"
 #include "sound_player.h"
+#include "font_manager.h"
 #include "loader.h"
 #include "game_state.h"
 #include "scene.h"
@@ -69,6 +70,8 @@ protected:
 	const Sound* _jsound;
 	const Music* _music;
 	int _mchannel;
+	
+	const Font* _font;
 };
 
 
