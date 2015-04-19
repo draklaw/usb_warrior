@@ -20,6 +20,7 @@
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 add_subdirectory(json)
+add_subdirectory(components)
 
 find_package(Eigen3 REQUIRED)
 find_package(SDL2 REQUIRED)
@@ -30,6 +31,7 @@ include_directories(
 	"${EIGEN3_INCLUDE_DIR}"
 	"${SDL2_INCLUDE_DIR}"
 	"json"
+	"components"
 )
 
 add_executable(usb_warrior
@@ -48,6 +50,8 @@ add_executable(usb_warrior
 	sprite_component.cpp
 	level.cpp
 	scene.cpp
+
+	components/move_component.cpp
 )
 
 target_link_libraries(usb_warrior

@@ -17,21 +17,30 @@
  *  along with usb_warrior.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _MATH_H_
-#define _MATH_H_
+#ifndef _MOVE_COMPONENT_H_
+#define _MOVE_COMPONENT_H_
 
 
-#include <Eigen/Dense>
-#include <Eigen/Geometry>
+#include "../game_object.h"
+#include "../math.h"
+#include "../utils.h"
 
 
-typedef Eigen::Vector2f Vec2;
-typedef Eigen::Vector2i Vec2i;
+class MoveComponent : public LogicComponent {
+public:
+	MoveComponent(GameObject* obj);
+	
+	void update();
+	void jump();
+	void walk(direction d);
+	void sprint(direction d);
 
-//typedef Eigen::Transform<float, 2> Transform;
-
-typedef Eigen::AlignedBox2f Boxf;
-typedef Eigen::AlignedBox2i Boxi;
+protected:
+	GeometryComponent* _puppet;
+	
+	Vec2 _mSpeed;
+	bool _ground;
+};
 
 
 #endif

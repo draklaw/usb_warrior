@@ -191,12 +191,7 @@ void Level::dumpEntities ()
 }
 */
 
-inline unsigned Level::index (unsigned x, unsigned y, unsigned z)
-{
-	return x + y * _width + z * _width * _height;
-}
-
-Tile Level::getTile (unsigned x, unsigned y, unsigned layer)
+Tile Level::getTile (unsigned x, unsigned y, unsigned layer) const
 {
 	return _map[index(x,y,layer)];
 }
@@ -204,4 +199,90 @@ Tile Level::getTile (unsigned x, unsigned y, unsigned layer)
 void Level::setTile (unsigned x, unsigned y, unsigned layer, Tile val)
 {
 	_map[index(x,y,layer)] = val;
+}
+
+
+bool Level::tileCollision(Tile tile) const {
+	return tile > 0 && unsigned(tile) < _collisionTileSet.size() && _collisionTileSet[tile];
+}
+
+
+void Level::setTileCollision(Tile tile, bool collision) {
+	assert(tile >= 0);
+	if(_collisionTileSet.size() <= unsigned(tile)) {
+		_collisionTileSet.resize(tile + 1, false);
+	}
+	_collisionTileSet[tile] = collision;
+}
+
+
+Boxi Level::tileBounds(const Boxf& box) const {
+	const Vec2i& tileSize = _tileMap.tileSize();
+	Boxi tileBox(
+			Vec2i( box.min().x()    / tileSize.x(),
+				   box.min().y()    / tileSize.y()),
+			Vec2i((box.max().x()-1) / tileSize.x() + 1,
+				  (box.max().y()-1) / tileSize.y() + 1)
+	);
+	Boxi maxBox = Boxi(Vec2i::Zero(), Vec2i(_width - 1, _height - 1));
+	return tileBox.intersection(maxBox);
+}
+
+
+Boxf Level::tileBox(unsigned x, unsigned y) const {
+	const Vec2i& tileSize = _tileMap.tileSize();
+	Vec2 pos = Vec2(x*tileSize.x(), y*tileSize.y());
+	return Boxf(pos, pos + tileSize.template cast<float>());
+}
+
+
+bool Level::collide(unsigned layer, const Boxf& box, CollisionInfo* info) const {
+	if(info) {
+		info->flags = 0;
+		info->penetration = Vec2(0, 0);
+	}
+	Boxi boundBox = tileBounds(box);
+	for(int y = boundBox.min().y(); y < boundBox.max().y(); ++y) {
+		for(int x = boundBox.min().x(); x < boundBox.max().x(); ++x) {
+			if(!tileCollision(getTile(x, y, layer))) continue;
+			if(!info) return true;
+
+			Boxf tBox = tileBox(x, y);
+			Boxf inter = box.intersection(tBox);
+
+//			_scene->game()->log("box: ", box.min().transpose(), ", ", box.sizes().transpose());
+//			_scene->game()->log("tBox: ", tBox.min().transpose(), ", ", tBox.sizes().transpose());
+//			_scene->game()->log("inter: ", inter.min().transpose(), ", ", inter.sizes().transpose());
+
+			assert(!inter.isEmpty());
+
+			if(inter.sizes().x() < inter.sizes().y()) {
+				if(box.center().x() < tBox.center().x()) {
+					info->flags |= CollisionInfo::RIGHT;
+					info->penetration.x() = std::min(-inter.sizes().x(), info->penetration.x());
+				} else {
+					info->flags |= CollisionInfo::LEFT;
+					info->penetration.x() = std::max( inter.sizes().x(), info->penetration.x());
+				}
+			} else {
+				if(box.center().y() < tBox.center().y()) {
+					info->flags |= CollisionInfo::BOTTOM;
+					info->penetration.y() = std::min(-inter.sizes().y(), info->penetration.y());
+				} else {
+					info->flags |= CollisionInfo::TOP;
+					info->penetration.y() = std::max( inter.sizes().y(), info->penetration.y());
+				}
+			}
+		}
+	}
+	if(info) {
+		return info->flags;
+	}
+	return false;
+}
+
+
+inline unsigned Level::index (unsigned x, unsigned y, unsigned z) const
+{
+	return x + y * _width + z * _width * _height;
 }

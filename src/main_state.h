@@ -34,6 +34,9 @@
 #include "scene.h"
 
 
+#define UPDATE_TIME (1./60.)
+
+
 class MainState : public GameState {
 public:
 	MainState(Game* game);

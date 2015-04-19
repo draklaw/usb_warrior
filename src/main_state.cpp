@@ -23,17 +23,15 @@
 
 #include <SDL2/SDL_image.h>
 
+#include "main_state.h"
+
+#include "components/move_component.h"
 #include "utils.h"
 #include "game.h"
 
-#include "main_state.h"
-
-
-#define MAIN_STATE_UPDATE_TIME  (1./60.)
-
 
 MainState::MainState(Game* game)
-    : GameState(game, "Main", durationFromSeconds(MAIN_STATE_UPDATE_TIME)),
+    : GameState(game, "Main", durationFromSeconds(UPDATE_TIME)),
       _scene(game),
       _loader(game),
       _input(game),
@@ -52,17 +50,34 @@ MainState::MainState(Game* game)
 
 void MainState::update() {
 	_scene.beginUpdate();
-
+	
 	_input.sync();
 
+	// ppm <=> Player Puppet Master
+	MoveComponent* ppm = static_cast<MoveComponent*>(_obj->getComponent(MOVE_COMPONENT_ID));
+
+//	Vec2i tileSize = _scene.level().tileMap().tileSize();
+//	Tile tile = _scene.level().getTile(geom.pos.x() / tileSize.x(),
+//	                                   geom.pos.y() / tileSize.y(), 0);
+//	bool coll = _scene.level().tileCollision(tile);
+	CollisionInfo info;
+	Boxf objBox = _obj->worldBox();
+	bool coll = _scene.level().collide(0, objBox, &info);
+	_obj->sprite->setTileIndex(coll? 0: 1);
+	if(coll) {
+		_game->log("Collision: ", info.flags, " - ", info.penetration.transpose());
+	}
+	
 	// moves
 	double speed = 4;
 	if(_obj->isActive()) {
-		if(_input.isPressed(_left))  _obj->geom().pos.x() -= speed;
-		if(_input.isPressed(_right)) _obj->geom().pos.x() += speed;
-		if(_input.isPressed(_up))    _obj->geom().pos.y() -= speed;
-		if(_input.isPressed(_down))  _obj->geom().pos.y() += speed;
+		if(_input.isPressed(_left))  ppm->walk(LEFT);
+		if(_input.isPressed(_right)) ppm->walk(RIGHT);
+		if(_input.isPressed(_up))    ppm->jump();
+		if(_input.isPressed(_down))  /* TODO: Duck ! */;
 	}
+	
+	_scene.updateLogic(MOVE_COMPONENT_ID);
 
 	if(_input.justPressed(_use)) _obj->setActive(!_obj->isActive());
 
@@ -134,6 +149,8 @@ void MainState::initialize() {
 	_scene.level().setTileMap(TileMap(_loader.getImage("assets/ts_placeholder.png"), 32, 32));
 
 	_scene.level().loadFromJsonFile("assets/level_0.json");
+	_scene.level().setTileCollision(12, true);
+	_scene.level().setTileCollision(13, true);
 
 	_msound = _loader.getSound("assets/test/laser0.wav");
 	_jsound = _loader.getSound("assets/test/laser1.wav");
@@ -144,6 +161,7 @@ void MainState::initialize() {
 
 	_obj = _scene.addObject("Test");
 	_scene.addSpriteComponent(_obj, _tilemap, 1);
+	_scene.addLogicComponent(_obj, MOVE_COMPONENT_ID, new MoveComponent(_obj));
 	_obj->computeBoxFromSprite(Vec2(.5, .5), 1);
 	_obj->geom().pos = Vec2(1920/4, 1080/4);
 }
@@ -157,13 +175,13 @@ void MainState::shutdown() {
 
 void MainState::start() {
 	_game->log("Start MainState...");
-	_game->log("Play music...");
-	_game->sounds()->playMusic(_music);
+// 	_game->log("Play music...");
+// 	_game->sounds()->playMusic(_music);
 }
 
 
 void MainState::stop() {
-	_game->log("Halt music...");
-	_game->sounds()->haltMusic();
+// 	_game->log("Halt music...");
+// 	_game->sounds()->haltMusic();
 	_game->log("Stop MainState...");
 }

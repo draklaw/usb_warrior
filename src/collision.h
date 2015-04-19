@@ -17,21 +17,24 @@
  *  along with usb_warrior.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _MATH_H_
-#define _MATH_H_
+#ifndef _COLLISION_H_
+#define _COLLISION_H_
 
 
-#include <Eigen/Dense>
-#include <Eigen/Geometry>
+#include "math.h"
 
 
-typedef Eigen::Vector2f Vec2;
-typedef Eigen::Vector2i Vec2i;
+struct CollisionInfo {
+	enum {
+		LEFT   = 0x01,
+		RIGHT  = 0x02,
+		TOP    = 0x04,
+		BOTTOM = 0x08
+	};
 
-//typedef Eigen::Transform<float, 2> Transform;
-
-typedef Eigen::AlignedBox2f Boxf;
-typedef Eigen::AlignedBox2i Boxi;
+	unsigned flags;
+	Vec2     penetration;
+};
 
 
 #endif

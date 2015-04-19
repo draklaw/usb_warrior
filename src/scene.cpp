@@ -60,10 +60,11 @@ void Scene::addSpriteComponent(GameObject* obj, const TileMap& tilemap,
 
 void Scene::addLogicComponent(GameObject* obj, unsigned id, LogicComponent* lcomp) {
 	if (_logicMap.size() <= id) {
-		_logicMap.resize(id);
+		_logicMap.resize(id+1);
 	}
 	
 	_logicMap[id].push_back(lcomp);
+	obj->_registerLogic(id, lcomp);
 }
 
 
@@ -147,22 +148,14 @@ void Scene::renderLevelLayer(unsigned layer, Boxi viewBox, Boxi screenBox) {
 
 	Vec2i lvlTileSize = _level.tileMap().tileSize().array()
 	                  * scale.template cast<int>().array();
-	Boxi levelBox(
-				Vec2i( viewBox.min().x()    / lvlTileSize.x(),
-					   viewBox.min().y()    / lvlTileSize.y()),
-				Vec2i((viewBox.max().x()-1) / lvlTileSize.x() + 1,
-					  (viewBox.max().y()-1) / lvlTileSize.y() + 1)
-	);
-	Boxi maxBox = Boxi(Vec2i::Zero(),
-	                   Vec2i(_level.width()-1, _level.height()-1));
-	levelBox = levelBox.intersection(maxBox);
+	Boxi boundBox = _level.tileBounds(viewBox.template cast<float>());
 
 	SDL_Rect destRect;
 	destRect.w = lvlTileSize.x() * scale.x();
 	destRect.h = lvlTileSize.y() * scale.y();
 
-	for(int y = levelBox.min().y(); y <= levelBox.max().y(); ++y) {
-		for(int x = levelBox.min().x(); x <= levelBox.max().x(); ++x) {
+	for(int y = boundBox.min().y(); y <= boundBox.max().y(); ++y) {
+		for(int x = boundBox.min().x(); x <= boundBox.max().x(); ++x) {
 			Tile tile = _level.getTile(x, y, layer);
 			if(tile < 0) continue;
 

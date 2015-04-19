@@ -23,11 +23,14 @@
 #include <vector>
 #include <unordered_map>
 
+#include "collision.h"
+
 #include "image_manager.h"
 
 class Scene;
 
 typedef int Tile;
+
 
 class Level {
 public:
@@ -42,13 +45,21 @@ public:
 	inline const TileMap& tileMap() const { return _tileMap; }
 	void setTileMap(const TileMap& tileMap);
 
-	Tile getTile(unsigned x, unsigned y, unsigned layer);
+	Tile getTile(unsigned x, unsigned y, unsigned layer) const;
 	void setTile(unsigned x, unsigned y, unsigned layer, Tile val);
-	
+
+	bool tileCollision(Tile tile) const;
+	void setTileCollision(Tile tile, bool collision);
+
+	Boxi tileBounds(const Boxf& box) const;
+	Boxf tileBox(unsigned x, unsigned y) const;
+	bool collide(unsigned layer, const Boxf& box, CollisionInfo* info = nullptr) const;
+
 	// void dumpEntities();
 
 private:
 	typedef std::unordered_map<std::string,std::string> EntityData;
+	typedef std::vector<bool> BoolVector;
 
 private:
 	Scene* _scene;
@@ -58,10 +69,11 @@ private:
 	
 	std::vector<EntityData> _entities;
 	
-	TileMap _tileMap;
+	TileMap    _tileMap;
+	BoolVector _collisionTileSet;
 
 private:
-	unsigned index(unsigned x, unsigned y, unsigned z);
+	unsigned index(unsigned x, unsigned y, unsigned z) const;
 };
 
 #endif
