@@ -54,3 +54,12 @@ target_link_libraries(usb_warrior
 	${SDL2_LIBRARY}
 	json
 )
+
+add_executable(test_level
+	main_level.cpp
+	level.cpp
+)
+
+target_link_libraries(test_level json)
+
+message("########### ${SDLMIXER_LIBRARY}")

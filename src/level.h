@@ -17,43 +17,48 @@
  *  along with usb_warrior.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _SPRITE_COMPONENT_H_
-#define _SPRITE_COMPONENT_H_
+#ifndef _LEVEL_H_
+#define _LEVEL_H_
 
+
+#include <vector>
 
 #include "image_manager.h"
 
 
-class GameObject;
+class Scene;
 
+typedef int Tile;
 
-class SpriteComponent {
+class Level {
 public:
-	SpriteComponent(GameObject* object, const TileMap& tilemap = TileMap(),
-	                unsigned tileIndex = 0);
+	Level(Scene* scene);
+	
+	bool loadFromJsonFile(const char* tiledMap);
+	
+	inline unsigned width()   const { return _width; }
+	inline unsigned height()  const { return _height; }
+	inline unsigned nLayers() const { return _layers; }
 
-	GameObject*    object()    const { return _object; }
-	bool           isVisible() const { return _flags & VISIBLE; }
-	const TileMap& tilemap()   const { return _tilemap; }
-	// Index can be invalid.
-	unsigned       tileIndex() const { return _tileIndex; }
+	inline const TileMap& tileMap() const { return _tileMap; }
+	void setTileMap(const TileMap& tileMap);
 
-	void setVisible(bool visible);
-	void setTilemap(const TileMap& tilemap);
-	void setTileIndex(unsigned index);
-
-private:
-	enum {
-		VISIBLE = 0x01
-	};
+	Tile getTile(unsigned x, unsigned y, unsigned layer);
+	void setTile(unsigned x, unsigned y, unsigned layer, Tile val);
 
 private:
-	GameObject* _object;
+	typedef std::vector<Tile> TileVector;
 
-	unsigned    _flags;
-	TileMap     _tilemap;
-	unsigned    _tileIndex;
+private:
+	Scene* _scene;
+
+	TileVector _map;
+	unsigned _width, _height, _layers;
+
+	TileMap _tileMap;
+
+private:
+	unsigned index(unsigned x, unsigned y, unsigned z);
 };
-
 
 #endif

@@ -35,7 +35,8 @@ class SoundComponent;
 
 
 enum {
-	OBJECT_DESTROYED
+	OBJECT_DESTROYED = 0x01,
+	OBJECT_ACTIVE    = 0x02
 };
 
 enum {
@@ -57,6 +58,9 @@ public:
 	void computeBoxFromSprite(const Vec2& anchor = Vec2::Zero(), float scale=1.f);
 
 	inline bool isDestroyed() const { return _flags & OBJECT_DESTROYED; }
+	inline bool isActive()    const { return _flags & OBJECT_ACTIVE; }
+
+	void setActive(bool active);
 
 	void _nextUpdate();
 	inline void _setFlags(unsigned flags) { _flags = flags; }

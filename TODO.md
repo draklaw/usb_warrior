@@ -3,13 +3,13 @@
 ## Code
 
 ### Game core
-- Allow to destroy/desactive game objects/components [ drak ]
+- [Partly done] Allow to destroy/desactive game objects/components [ drak ]
 - Tilemap rendering [ drak ]
 - Font rendering [ drak ]
 - Tilemap object parsing [ doc ]
+- SoundComponent [ tom ]
 - Collisions with tilemap
 - Animation (component or part of SpriteComponent)
-- SoundComponent
 - Generic "Logic" component ?
 - Keymap config file
 

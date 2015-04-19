@@ -68,7 +68,11 @@ void Scene::render(double interp) {
 	for(SpriteComponent& sprite: _sprites) {
 		unsigned index = std::min(sprite.tileIndex(), sprite.tilemap().nTiles() - 1);
 		GameObject* obj = sprite.object();
-		if(!obj) {
+		if(!sprite.isVisible() || !obj || !obj->isActive() || obj->isDestroyed()) {
+			if(!obj || obj->isDestroyed()) {
+				_game->log("Try to display a sprite linked to an invalid/destroyed game object");
+				sprite.setVisible(false);
+			}
 			continue;
 		}
 		assert(!obj->isDestroyed());

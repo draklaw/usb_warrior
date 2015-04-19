@@ -17,50 +17,29 @@
  *  along with usb_warrior.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _MAIN_STATE_H_
-#define _MAIN_STATE_H_
 
+#include <cstdlib>
+#include <cassert>
+#include <cstdio>
 
-#include <Eigen/Geometry>
+#include "level.h"
 
-#include <SDL2/SDL_render.h>
-
-#include "input.h"
-#include "image_manager.h"
-#include "sound_player.h"
-#include "game_state.h"
-#include "scene.h"
-
-
-class MainState : public GameState {
-public:
-	MainState(Game* game);
-
-	void update();
-	void frame(double interp);
-
-protected:
-	void initialize();
-	void shutdown();
-
-	void start();
-	void stop();
-
-protected:
-	Scene _scene;
-
-	InputManager _input;
-	Input        _left;
-	Input        _right;
-	Input        _up;
-	Input        _down;
-	Input        _use;
-
-	GameObject*  _obj;
-	TileMap      _tilemap;
-	const Sound* _sounds[4];
-	const Music* _music;
-};
-
-
-#endif
+int main(int argc, char** argv)
+{
+	Level* l = new Level();
+	if (!l->loadFromJsonFile("assets/level_0.json"))
+		return EXIT_FAILURE;
+	
+	for (int y = 0 ; y < 20 ; y++)
+	{
+		for (int x = 0 ; x < 40 ; x++)
+		{
+			for (int z = 0 ; z < 2 ; z++)
+				printf ("%.2i%s", l->getTile(x,y,z),!z?",":"");
+			printf (" ");
+		}
+		printf ("\n");
+	}
+	
+	return EXIT_SUCCESS;
+}
