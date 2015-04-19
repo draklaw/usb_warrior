@@ -23,8 +23,12 @@
 
 #include <iostream>
 
-#include "level.h"
 #include "json/json.h"
+
+#include "game.h"
+#include "scene.h"
+#include "level.h"
+
 
 #define PANIC(test) do {               \
 	if (test) {                          \
@@ -34,9 +38,14 @@
 	}                                    \
 } while (false)
 
-Level::Level()
-{
+
+Level::Level(Scene* scene)
+    : _scene(scene) {
 	_width = _height = _layers = 0;
+}
+
+void Level::setTileMap(const TileMap& tileMap) {
+	_tileMap = tileMap;
 }
 
 // TODO: Convert to private method ? Add assertion ?
@@ -47,6 +56,7 @@ static inline bool isTileLayer (json_t* layer)
 
 bool Level::loadFromJsonFile (const char* tiledMap)
 {
+	_scene->game()->log("Load level \"", tiledMap, "\"...");
 	json_t* root = NULL;
 	json_t* item = NULL;
 	json_t* iter = NULL;
