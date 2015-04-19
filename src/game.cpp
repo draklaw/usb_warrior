@@ -31,12 +31,9 @@
 #include <SDL2/SDL_image.h>
 
 #include "game_state.h"
-#include "soundplayer.h"
+#include "sound_player.h"
 
 #include "game.h"
-
-
-#define SOUNDPLAYER_MAX_CHANNELS 32
 
 
 Game::Game(int /*argc*/, char** /*argv*/)
@@ -45,7 +42,7 @@ Game::Game(int /*argc*/, char** /*argv*/)
       _imageManager(this),
       _state(nullptr),
       _nextState(nullptr),
-	  _player(nullptr) {
+	  _player(this) {
 }
 
 
@@ -71,7 +68,11 @@ void Game::initialize() {
 	}
 
 	log("Initialize SDL_mixer...");
-	_player = new SoundPlayer;
+	if(Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, 1024)) {
+		sndCrash("Failed to initialize SDL_mixer backend");
+	}
+	Mix_AllocateChannels(SOUNDPLAYER_MAX_CHANNELS);
+	Mix_VolumeMusic(SOUNDPLAYER_DEFAULT_VOLUME);
 
 	unsigned windowFlags = 0
 #ifdef NDEBUG
@@ -108,7 +109,7 @@ void Game::shutdown() {
 	}
 
 	log("Quit SDL_mixer...");
-	delete _player;
+	Mix_CloseAudio();
 
 	log("Quit SDL_image...");
 	IMG_Quit();

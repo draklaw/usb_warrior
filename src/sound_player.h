@@ -26,6 +26,10 @@
 #include <unordered_map>
 
 
+#define SOUNDPLAYER_MAX_CHANNELS    32
+#define SOUNDPLAYER_DEFAULT_VOLUME  (MIX_MAX_VOLUME / 25)
+
+
 class Game;
 
 
@@ -55,7 +59,6 @@ public:
 class SoundPlayer {
 public:
 	SoundPlayer(Game *game);
-	~SoundPlayer();
 
 	Sound loadSound(const std::string& filename);
 	Music loadMusic(const std::string& filename);
@@ -69,8 +72,6 @@ private:
 
 private:
 	Game*    _game;
-
-	Music*   _music;
 
 	SoundMap _soundMap;
 	MusicMap _musicMap;	

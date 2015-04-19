@@ -22,11 +22,9 @@
 
 #include <SDL2/SDL_mixer.h>
 
-#include "soundplayer.h"
+#include "game.h"
 
-
-#define SOUNDPLAYER_MAX_CHANNELS    32
-#define SOUNDPLAYER_DEFAULT_VOLUME  (MIX_MAX_VOLUME / 25)
+#include "sound_player.h"
 
 
 Sound::~Sound() {
@@ -45,19 +43,8 @@ Music::~Music() {
 
 SoundPlayer::SoundPlayer(Game* game)
 	: _game(game),
-	  _music(nullptr),
 	  _soundMap(),
 	  _musicMap() {
-	if(Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, 1024)) {
-		_game->sndCrash("Failed to initialize SDL_Mixer");
-	}
-	Mix_AllocateChannels(SOUNDPLAYER_MAX_CHANNELS);
-	Mix_VolumeMusic(SOUNDPLAYER_DEFAULT_VOLUME);
-}
-
-
-SoundPlayer::~SoundPlayer() {
-	Mix_CloseAudio();
 }
 
 
@@ -102,7 +89,7 @@ Music SoundPlayer::loadMusic(const std::string& filename) {
 		_game->log("Load music \"", filename, "\"...");
 
 		Mix_Music *track = Mix_LoadMUS(filename.c_str());
-		if(!music.track) {
+		if(!track) {
 			_game->error("Failed to load music: ", Mix_GetError());
 			return Music();
 		}
@@ -126,12 +113,10 @@ Music SoundPlayer::loadMusic(const std::string& filename) {
 
 
 bool SoundPlayer::playSound(Sound& sound) {
-	return Mix_PlayChannel(-1, sound, 0)) == 0;
+	return Mix_PlayChannel(-1, sound.chunk, 0) == 0;
 }
 
 
 bool SoundPlayer::playMusic(Music& music) {
-	if(_music) { Mix_FreeMusic(_music); }
-	_music = &music;
-	return _music->track && Mix_PlayMusic(_music->track, -1) == 0;
+	return music.track && Mix_PlayMusic(music.track, -1) == 0;
 }

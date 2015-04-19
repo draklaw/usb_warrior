@@ -27,6 +27,7 @@
 
 
 #include "image_manager.h"
+#include "sound_player.h"
 
 
 class GameState;
@@ -90,7 +91,7 @@ private:
 	GameState*     _state;
 	GameState*     _nextState;
 
-	SoundPlayer*   _player;
+	SoundPlayer    _player;
 };
 
 
