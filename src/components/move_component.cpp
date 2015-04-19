@@ -55,7 +55,7 @@ void MoveComponent::jump() {
 	_ground = false;
 }
 
-void MoveComponent::walk(direction d) {
+void MoveComponent::walk(Direction d) {
 	switch (d) {
 		case LEFT:
 			_mSpeed += Vec2(-ACC_WALK,0);
@@ -67,6 +67,6 @@ void MoveComponent::walk(direction d) {
 	}
 }
 
-void MoveComponent::sprint(direction d) {
+void MoveComponent::sprint(Direction d) {
 	//TODO: Implement.
 }

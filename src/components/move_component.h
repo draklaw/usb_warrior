@@ -32,8 +32,8 @@ public:
 	
 	void update();
 	void jump();
-	void walk(direction d);
-	void sprint(direction d);
+	void walk(Direction d);
+	void sprint(Direction d);
 
 protected:
 	GeometryComponent* _puppet;

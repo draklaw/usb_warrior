@@ -73,7 +73,7 @@ void MainState::update() {
 		if(_input.isPressed(_left))  ppm->walk(LEFT);
 		if(_input.isPressed(_right)) ppm->walk(RIGHT);
 		if(_input.isPressed(_up))    ppm->jump();
-		if(_input.isPressed(_down))  /* TODO: Duck ! */;
+//		if(_input.isPressed(_down))  /* TODO: Duck ! */;
 	}
 	
 //	if(_input.justPressed(_use)) _obj->setEnabled(!_obj->isEnabled());
@@ -101,10 +101,11 @@ void MainState::update() {
 
 
 void MainState::frame(double interp) {
-	Vec2i viewCenter = _obj->geom().pos.template cast<int>();
-	Boxi viewBox(viewCenter - _game->screenSize() / 2,
-	             viewCenter + _game->screenSize() / 2);
-	Boxi screenBox(Vec2i::Zero(), _game->screenSize());
+	Vec2 screenSize = _game->screenSize().template cast<float>();
+	Vec2 viewCenter = _obj->posInterp(interp);
+	Boxf viewBox(viewCenter - screenSize / 2,
+	            viewCenter + screenSize / 2);
+	Boxf screenBox(Vec2::Zero(), screenSize);
 
 	_scene.beginRender();
 
