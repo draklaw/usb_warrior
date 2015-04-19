@@ -50,7 +50,7 @@ MainState::MainState(Game* game)
 
 void MainState::update() {
 	_scene.beginUpdate();
-	
+
 	_input.sync();
 
 	// ppm <=> Player Puppet Master
