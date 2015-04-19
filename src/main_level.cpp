@@ -27,16 +27,16 @@
 int main(int argc, char** argv)
 {
 	Level* l = new Level();
-	if (!l->loadFromJsonFile("assets/test/random_tm.json"))
+	if (!l->loadFromJsonFile("assets/level_0.json"))
 		return EXIT_FAILURE;
 	
-	for (int x = 0 ; x < 20 ; x++)
+	for (int y = 0 ; y < 20 ; y++)
 	{
-		for (int y = 0 ; y < 20 ; y++)
+		for (int x = 0 ; x < 40 ; x++)
 		{
 			for (int z = 0 ; z < 2 ; z++)
-				printf ("%i ", l->getTile(x,y,z));
-			printf (",");
+				printf ("%.2i%s", l->getTile(x,y,z),!z?",":"");
+			printf (" ");
 		}
 		printf ("\n");
 	}

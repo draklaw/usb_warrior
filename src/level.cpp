@@ -89,8 +89,8 @@ bool Level::loadFromJsonFile (const char* tiledMap)
 		unsigned x = 0, y = 0;
 		for (unsigned i = 0 ; i < _width * _height ; i++)
 		{
-			x = i / _height;
-			y = i % _height;
+			x = i % _width;
+			y = i / _width;
 			
 			setTile(x,y,z,atoi(iter->text));
 			
