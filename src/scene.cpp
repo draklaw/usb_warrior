@@ -112,27 +112,19 @@ void Scene::render(double interp, Boxi viewBox, Boxi screenBox) {
 			continue;
 		}
 
-		const GeometryComponent& geom0 = obj->geom(PREV_UP);
-		const GeometryComponent& geom1 = obj->geom(CURR_UP);
-
 		float epsilon = .001;
-		Vec2 pos     = lerp<Vec2>(interp, geom0.pos,         geom1.pos);
+		Vec2 pos     = obj->posInterp(interp);
 		//float rot   = lerp(interp, geom0.rot,               geom1.rot);
-		Vec2 topleft = lerp<Vec2>(interp, geom0.box.min(),   geom1.box.min());
-		Vec2 sizes   = lerp<Vec2>(interp, geom0.box.sizes(), geom1.box.sizes());
+		Boxf box     = obj->worldBoxInterp(interp);
 
 		SDL_Rect tileRect = sprite.tilemap().tileRect(index);
 		SDL_Rect destRect;
-		destRect.x = std::floor(pos.x() + topleft.x() - epsilon);
-		destRect.y = std::floor(pos.y() + topleft.y() - epsilon);
-		destRect.w = std::floor(sizes.x() + epsilon);
-		destRect.h = std::floor(sizes.y() + epsilon);
-
-//		_game->log("Before: ", destRect.x, ", ", destRect.y, ", ", destRect.w, ", ", destRect.h);
-		destRect.x  = (destRect.x - viewBox.min().x()) * scale.x() + screenBox.min().x();
-		destRect.y  = (destRect.y - viewBox.min().y()) * scale.y() + screenBox.min().y();
-		destRect.w *= scale.x();
-		destRect.h *= scale.y();
+		destRect.x = (box.min().x() - viewBox.min().x()) * scale.x()
+		           + screenBox.min().x() - epsilon;
+		destRect.y = (box.min().y() - viewBox.min().y()) * scale.y()
+		           + screenBox.min().y() - epsilon;
+		destRect.w = box.sizes().x() * scale.x() + epsilon;
+		destRect.h = box.sizes().y() * scale.y() + epsilon;
 //		_game->log("After : ", destRect.x, ", ", destRect.y, ", ", destRect.w, ", ", destRect.h);
 
 		// TODO: rotation / flips

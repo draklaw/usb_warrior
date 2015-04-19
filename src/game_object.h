@@ -25,6 +25,7 @@
 #include <string>
 
 #include "math.h"
+#include "utils.h"
 #include "geometry_component.h"
 
 
@@ -92,6 +93,23 @@ public:
 	inline bool isEnabled()    const { return _flags & OBJECT_ACTIVE; }
 	bool hasComponent(unsigned id) const;
 	LogicComponent* getComponent(unsigned id) const;
+
+	inline Vec2 posInterp(double interp) const
+	{ return lerp<Vec2>(interp, _geom[PREV_UP].pos, _geom[CURR_UP].pos); }
+	inline Boxf boxInterp(double interp) const {
+		return Boxf(
+			lerp<Vec2>(interp, _geom[PREV_UP].box.min(), _geom[CURR_UP].box.min()),
+			lerp<Vec2>(interp, _geom[PREV_UP].box.max(), _geom[CURR_UP].box.max())
+		);
+	}
+	inline Boxf worldBoxInterp(double interp) const {
+		Boxf prev = worldBox(PREV_UP);
+		Boxf curr = worldBox(CURR_UP);
+		return Boxf(
+			lerp<Vec2>(interp, prev.min(), curr.min()),
+			lerp<Vec2>(interp, prev.max(), curr.max())
+		);
+	}
 
 	Boxf worldBox(unsigned updateIndex = 0) const;
 
