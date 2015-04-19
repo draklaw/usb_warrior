@@ -31,7 +31,7 @@ typedef Eigen::Vector2i Vec2i;
 //typedef Eigen::Transform<float, 2> Transform;
 
 typedef Eigen::AlignedBox2f Boxf;
-typedef Eigen::AlignedBox1i Boxi;
+typedef Eigen::AlignedBox2i Boxi;
 
 
 #endif

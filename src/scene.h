@@ -25,10 +25,12 @@
 
 #include "game_object.h"
 #include "sprite_component.h"
+#include "level.h"
 
 
 class Game;
 
+class LogicComponent;
 
 class Scene {
 public:
@@ -38,21 +40,38 @@ public:
 
 	void addSpriteComponent(GameObject* obj, const TileMap& tilemap,
 	                        unsigned index = 0);
+	void addLogicComponent(GameObject* obj, unsigned id, LogicComponent* lcomp);
+
+	inline Level& level() { return _level; }
 
 	void beginUpdate();
-	void render(double interp);
+	void updateLogic(unsigned id);
+
+	void beginRender();
+	void endRender();
+	void render(double interp, Boxi viewBox, Boxi screenBox);
+	void renderLevelLayer(unsigned layer, Boxi viewBox, Boxi screenBox);
+
+	inline Game* game() const { return _game; }
 
 private:
 	typedef std::vector<GameObject>      ObjectVector;
 	typedef std::vector<SpriteComponent> SpriteVector;
 
+	typedef std::vector<LogicComponent*> LogicVector;
+	typedef std::vector<LogicVector>     LogicMap;
+
 private:
 	Game*         _game;
+
+	Level         _level;
 
 	std::size_t   _objectCounter;
 	ObjectVector  _objects;
 
 	SpriteVector  _sprites;
+	
+	LogicMap      _logicMap;
 };
 
 

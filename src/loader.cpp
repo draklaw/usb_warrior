@@ -17,7 +17,10 @@
  *  along with usb_warrior.  If not, see <http://www.gnu.org/licenses/>.
  */
 
- #include "image_loader.h"
+#include "game.h"
+#include "image_manager.h"
+
+#include "loader.h"
 
 
 Loader::Loader(Game* game) : _game(game) {
@@ -34,41 +37,61 @@ void Loader::addSound(const std::string& filename) {
 }
 
 
-unsigned Loader::loadAllImages() {
+void Loader::addMusic(const std::string& filename) {
+	_musicMap.emplace(filename, nullptr);
+}
+
+
+const Image* Loader::getImage(const std::string& filename) {
+	return _imageMap.at(filename);
+}
+
+
+const Sound* Loader::getSound(const std::string& filename) {
+	return _soundMap.at(filename);
+}
+
+
+const Music* Loader::getMusic(const std::string& filename) {
+	return _musicMap.at(filename);
+}
+
+
+unsigned Loader::loadAll() {
 	unsigned err = 0;
-	for(auto& fileImg: _imageMap) {
-		fileImg.second = _game->images()->load(fileImg.first);
-		if(!fileImg.second) { err++; }
+	for(auto& file: _imageMap) {
+		file.second = _game->images()->loadImage(file.first);
+		if(!file.second) { err++; }
+	}
+	for(auto& file: _soundMap) {
+		file.second = _game->sounds()->loadSound(file.first);
+		if(!file.second) { err++; }
+	}
+	for(auto& file: _musicMap) {
+		file.second = _game->sounds()->loadMusic(file.first);
+		if(!file.second) { err++; }
 	}
 	return err;
 }
 
 
-unsigned Loader::loadAllSounds() {
-	unsigned err = 0;
-	for(auto& fileSnd: _soundMap) {
-		fileSnd.second = _game->sounds()->load(fileSnd.first);
-		if(!fileSnd.second) { err++; }
-	}
-	return err;
-}
-
-
-void Loader::releaseAllImages() {
-	for(auto& fileImg: _imageMap) {
-		if(fileImg.second) {
-			_game->images()->release(fileImg.first);
-			fileImg.second = nullptr;
+void Loader::releaseAll() {
+	for(auto& file: _imageMap) {
+		if(file.second) {
+			_game->images()->releaseImage(file.second);
+			file.second = nullptr;
 		}
 	}
-}
-
-
-void Loader::releaseAllSounds() {
-	for(auto& fileSnd: _soundMap) {
-		if(fileSnd.second) {
-			_game->sounds()->release(fileSnd.first);
-			fileSnd.second = nullptr;
+	for(auto& file: _soundMap) {
+		if(file.second) {
+			_game->sounds()->releaseSound(file.second);
+			file.second = nullptr;
+		}
+	}
+	for(auto& file: _musicMap) {
+		if(file.second) {
+			_game->sounds()->releaseMusic(file.second);
+			file.second = nullptr;
 		}
 	}
 }

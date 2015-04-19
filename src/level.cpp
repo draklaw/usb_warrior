@@ -123,13 +123,14 @@ bool Level::loadFromJsonFile (const char* tiledMap)
 			x = i % _width;
 			y = i / _width;
 			
-			setTile(x,y,z,atoi(iter->text));
+			setTile(x, y, z, atoi(iter->text) - 1);
 			
 			iter = iter->next;
 		}
 		
-		item = item->next; // Next layer.
 		z++;
+		if (item->next != NULL)
+			item = item->next; // Next layer.
 	}
 	
 	// Back to first layer (checking object layer data).

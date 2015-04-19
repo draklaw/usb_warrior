@@ -4,14 +4,14 @@
 
 ### Game core
 - [Partly done] Allow to destroy/desactive game objects/components [ drak ]
-- Tilemap rendering [ drak ]
 - Font rendering [ drak ]
-- Tilemap object parsing [ doc ]
-- SoundComponent [ tom ]
+- Tile depth [ drak, if needed ]
+- SoundComponent [ tom, if needed ]
 - Collisions with tilemap
 - Animation (component or part of SpriteComponent)
-- Generic "Logic" component ?
+- Generic "Logic" component, add enable/disable
 - Keymap config file
+- Fix roundoff errors in rendering
 
 ### Gameplay
 - Character physics / movements

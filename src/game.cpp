@@ -85,7 +85,7 @@ void Game::initialize() {
 	_window = SDL_CreateWindow(
 	            "USB Warrior",
 	            SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-	            800, 600,
+	            1920/2, 1080/2,
 	            windowFlags);
 	if(!_window) { sdlCrash("Failed to create window"); }
 
@@ -170,7 +170,15 @@ void Game::quit() {
 }
 
 
+Vec2i Game::screenSize() const {
+	Vec2i size;
+	SDL_GetWindowSize(_window, &size.x(), &size.y());
+	return size;
+}
+
+
 int Game::getRefreshRate() const{
+	// TODO: real implementation
 	return 60;
 }
 
