@@ -17,39 +17,29 @@
  *  along with usb_warrior.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _MAIN_STATE_H_
-#define _MAIN_STATE_H_
+
+#include "sprite_component.h"
+
+#include "game_object.h"
 
 
-#include <Eigen/Geometry>
-
-#include <SDL2/SDL_render.h>
-
-#include "image_manager.h"
-#include "game_state.h"
-#include "scene.h"
-
-
-class MainState : public GameState {
-public:
-	MainState(Game* game);
-
-	void update();
-	void frame(double interp);
-
-protected:
-	void initialize();
-	void shutdown();
-
-	void start();
-	void stop();
-
-protected:
-	Scene _scene;
-
-	GameObject* _obj;
-	TileMap     _tilemap;
-};
+GameObject::GameObject(Scene* scene, const char* name)
+    : sprite(0),
+      sound(0),
+      _scene(scene),
+      _flags(0),
+      _name(name) {
+}
 
 
-#endif
+void GameObject::computeBoxFromSprite(const Vec2& anchor, float scale) {
+	assert(sprite);
+	Vec2 size = sprite->tilemap().tileSize().template cast<float>();
+	Vec2 offset = scale * -(size.array() * anchor.array()).matrix();
+	_geom[0].box = Boxf(offset, scale*size + offset);
+}
+
+
+void GameObject::_nextUpdate() {
+	_geom[1] = _geom[0];
+}

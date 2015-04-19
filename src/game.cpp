@@ -42,6 +42,7 @@
 Game::Game(int /*argc*/, char** /*argv*/)
     : _window(nullptr),
       _renderer(nullptr),
+      _imageManager(this),
       _state(nullptr),
       _nextState(nullptr),
 	  _player(nullptr) {

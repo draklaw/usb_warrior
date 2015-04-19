@@ -17,38 +17,42 @@
  *  along with usb_warrior.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _MAIN_STATE_H_
-#define _MAIN_STATE_H_
+#ifndef _SCENE_H_
+#define _SCENE_H_
 
 
-#include <Eigen/Geometry>
+#include <vector>
 
-#include <SDL2/SDL_render.h>
-
-#include "image_manager.h"
-#include "game_state.h"
-#include "scene.h"
+#include "game_object.h"
+#include "sprite_component.h"
 
 
-class MainState : public GameState {
+class Game;
+
+
+class Scene {
 public:
-	MainState(Game* game);
+	Scene(Game* game);
 
-	void update();
-	void frame(double interp);
+	GameObject* addObject(const char* name = nullptr);
 
-protected:
-	void initialize();
-	void shutdown();
+	void addSpriteComponent(GameObject* obj, const TileMap& tilemap,
+	                        unsigned index = 0);
 
-	void start();
-	void stop();
+	void beginUpdate();
+	void render(double interp);
 
-protected:
-	Scene _scene;
+private:
+	typedef std::vector<GameObject>      ObjectVector;
+	typedef std::vector<SpriteComponent> SpriteVector;
 
-	GameObject* _obj;
-	TileMap     _tilemap;
+private:
+	Game*         _game;
+
+	std::size_t   _objectCounter;
+	ObjectVector  _objects;
+
+	SpriteVector  _sprites;
 };
 
 

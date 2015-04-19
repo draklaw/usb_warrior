@@ -17,39 +17,17 @@
  *  along with usb_warrior.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _MAIN_STATE_H_
-#define _MAIN_STATE_H_
+#ifndef _UTILS_H_
+#define _UTILS_H_
 
 
-#include <Eigen/Geometry>
-
-#include <SDL2/SDL_render.h>
-
-#include "image_manager.h"
-#include "game_state.h"
-#include "scene.h"
+#define SDL_TRY(_code) do { if(_code) { _game->sdlCrash(__FILE__); } } while(false)
 
 
-class MainState : public GameState {
-public:
-	MainState(Game* game);
-
-	void update();
-	void frame(double interp);
-
-protected:
-	void initialize();
-	void shutdown();
-
-	void start();
-	void stop();
-
-protected:
-	Scene _scene;
-
-	GameObject* _obj;
-	TileMap     _tilemap;
-};
+template < typename T >
+T lerp(double f, const T& a, const T& b) {
+	return (1.d - f) * a + f * b;
+}
 
 
 #endif
