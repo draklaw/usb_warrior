@@ -54,6 +54,7 @@ public:
 
 	void sdlCrash(const char* msg);
 	void imgCrash(const char* msg);
+	void sndCrash(const char* msg);
 
 	template < typename... Args >
 	void error(Args... args) {

@@ -176,3 +176,9 @@ void Game::imgCrash(const char* msg) {
 	error(msg, ": ", IMG_GetError());
 	std::exit(EXIT_FAILURE);
 }
+
+
+void Game::sndCrash(const char* msg) {
+	error(msg, ": ", Mix_GetError());
+	std::exit(EXIT_FAILURE);
+}
