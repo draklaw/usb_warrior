@@ -20,12 +20,10 @@
 #ifndef _LEVEL_H_
 #define _LEVEL_H_
 
-
 #include <vector>
 #include <unordered_map>
 
 #include "image_manager.h"
-
 
 class Scene;
 
