@@ -24,6 +24,11 @@
 #include "font_manager.h"
 
 
+Font::Font()
+    : _image(nullptr) {
+}
+
+
 bool Font::parseFile(const char *filename) {
 	FILE* fd = fopen(filename, "r");
 	if (fd == NULL) return false;
@@ -46,6 +51,17 @@ bool Font::parseFile(const char *filename) {
 	}
 
 	return true;
+}
+
+
+void Font::setImage(const Image* image) {
+	_image = image;
+}
+
+
+void Font::render(Game* game, unsigned x, unsigned y, char* text,
+                  unsigned maxWidth = 0xffffffff) {
+
 }
 
 

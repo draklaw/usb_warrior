@@ -3,7 +3,6 @@
 ## Code
 
 ### Game core
-- Fix roundoff errors in rendering
 - Font rendering [ drax ]
 - Animation (component or part of SpriteComponent)
 - Keymap config file

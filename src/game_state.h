@@ -66,12 +66,15 @@ protected:
 
 	Duration     _updateTime;
 	Duration     _frameTime;
+	unsigned     _maxUpdateLatency;
 
 	bool         _enabled;
 	bool         _running;
 
 	TimePoint    _nextUpdate;
 	TimePoint    _nextFrame;
+
+	double       _uptime;
 };
 
 
