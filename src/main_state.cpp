@@ -69,17 +69,20 @@ void MainState::update() {
 	}
 	
 	// moves
-	double speed = 4;
-	if(_obj->isActive()) {
+	if(_obj->isEnabled()) {
 		if(_input.isPressed(_left))  ppm->walk(LEFT);
 		if(_input.isPressed(_right)) ppm->walk(RIGHT);
 		if(_input.isPressed(_up))    ppm->jump();
 		if(_input.isPressed(_down))  /* TODO: Duck ! */;
 	}
 	
-	_scene.updateLogic(MOVE_COMPONENT_ID);
+//	if(_input.justPressed(_use)) _obj->setEnabled(!_obj->isEnabled());
+	if(_input.justPressed(_use)) {
+		LogicComponent* cmp =  _obj->getComponent(MOVE_COMPONENT_ID);
+		cmp->setEnabled(!cmp->isEnabled());
+	}
 
-	if(_input.justPressed(_use)) _obj->setActive(!_obj->isActive());
+	_scene.updateLogic(MOVE_COMPONENT_ID);
 
 	// sounds
 	static bool was_moving = false;

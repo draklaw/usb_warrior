@@ -41,14 +41,25 @@ enum {
 	MOVE_COMPONENT_ID
 };
 
+
+enum {
+	COMP_ENABLED = 0x01
+};
+
+
 class LogicComponent {
 public:
 	LogicComponent(GameObject* obj);
 	
 	virtual void update() = 0;
 
+	GameObject* object() const { return _obj; }
+	bool isEnabled() const { return _flags & COMP_ENABLED; }
+	void setEnabled(bool enabled);
+
 protected:
 	GameObject* _obj;
+	unsigned    _flags;
 };
 
 
@@ -78,13 +89,13 @@ public:
 	void computeBoxFromSprite(const Vec2& anchor = Vec2::Zero(), float scale=1.f);
 
 	inline bool isDestroyed() const { return _flags & OBJECT_DESTROYED; }
-	inline bool isActive()    const { return _flags & OBJECT_ACTIVE; }
+	inline bool isEnabled()    const { return _flags & OBJECT_ACTIVE; }
 	bool hasComponent(unsigned id) const;
 	LogicComponent* getComponent(unsigned id) const;
 
 	Boxf worldBox(unsigned updateIndex = 0) const;
 
-	void setActive(bool active);
+	void setEnabled(bool active);
 	
 	void _nextUpdate();
 	void _registerLogic(unsigned id, LogicComponent* lcomp);

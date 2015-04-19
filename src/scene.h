@@ -21,6 +21,7 @@
 #define _SCENE_H_
 
 
+#include <memory>
 #include <vector>
 
 #include "game_object.h"
@@ -58,8 +59,9 @@ private:
 	typedef std::vector<GameObject>      ObjectVector;
 	typedef std::vector<SpriteComponent> SpriteVector;
 
-	typedef std::vector<LogicComponent*> LogicVector;
-	typedef std::vector<LogicVector>     LogicMap;
+	typedef std::unique_ptr<LogicComponent>  LogicPtr;
+	typedef std::vector<LogicPtr>            LogicVector;
+	typedef std::vector<LogicVector>         LogicMap;
 
 private:
 	Game*         _game;

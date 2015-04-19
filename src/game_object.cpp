@@ -23,8 +23,16 @@
 #include "game_object.h"
 
 LogicComponent::LogicComponent(GameObject* obj)
-    : _obj(obj) {
+    : _obj(obj),
+      _flags(COMP_ENABLED) {
 }
+
+
+void LogicComponent::setEnabled(bool enabled) {
+	if(enabled) _flags |=  COMP_ENABLED;
+	else        _flags &= !COMP_ENABLED;
+}
+
 
 GameObject::GameObject(Scene* scene, const char* name)
     : sprite(0),
@@ -59,7 +67,7 @@ Boxf GameObject::worldBox(unsigned updateIndex) const {
 }
 
 
-void GameObject::setActive(bool active) {
+void GameObject::setEnabled(bool active) {
 	if(active) _flags |=  OBJECT_ACTIVE;
 	else       _flags &= ~OBJECT_ACTIVE;
 }
