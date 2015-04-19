@@ -22,12 +22,13 @@
 
 #include <unordered_map>
 
+#include "image_manager.h"
+
 
 class Game;
 
 
-class Character {
-public:
+struct Character {
 	int x;
 	int y;
 	int width;
@@ -40,7 +41,14 @@ public:
 
 class Font {
 public:
+	Font();
+
 	bool parseFile(const char* filename);
+
+	void setImage(const Image* image);
+
+	void render(Game* game, unsigned x, unsigned y, char* text,
+	            unsigned maxWidth = 0xffffffff);
 
 public:
 	std::string  name;
@@ -50,10 +58,11 @@ private:
 	typedef std::unordered_map<unsigned, Character> CharMap;
 
 private:
-	int     _lineHeight;
-	int     _baseLine;
+	int          _lineHeight;
+	int          _baseLine;
 
-	CharMap _charMap;
+	CharMap      _charMap;
+	const Image  _image;
 };
 
 
