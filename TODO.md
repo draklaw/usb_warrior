@@ -3,12 +3,11 @@
 ## Code
 
 ### Game core
-- [Partly done] Allow to destroy/desactive game objects/components [ drak ]
-- Generic "Logic" component, add enable/disable
-- Font rendering [ tom ]
+- Fix roundoff errors in rendering
+- Font rendering [ drax ]
 - Animation (component or part of SpriteComponent)
 - Keymap config file
-- Fix roundoff errors in rendering
+- [Partly done] Allow to destroy/desactive game objects/components [ drak ]
 - Tile depth [ drak, if needed ]
 - SoundComponent [ tom, if needed ]
 

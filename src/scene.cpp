@@ -77,7 +77,9 @@ void Scene::beginUpdate() {
 
 void Scene::updateLogic(unsigned id) {
 	for (LogicPtr& lcomp: _logicMap[id]) {
-		lcomp.get()->update();
+		if(lcomp->object()->isEnabled() && lcomp->isEnabled()) {
+			lcomp->update();
+		}
 	}
 }
 
@@ -102,7 +104,7 @@ void Scene::render(double interp, Boxi viewBox, Boxi screenBox) {
 	for(SpriteComponent& sprite: _sprites) {
 		unsigned index = std::min(sprite.tileIndex(), sprite.tilemap().nTiles() - 1);
 		GameObject* obj = sprite.object();
-		if(!sprite.isVisible() || !obj || !obj->isActive() || obj->isDestroyed()) {
+		if(!sprite.isVisible() || !obj || !obj->isEnabled() || obj->isDestroyed()) {
 			if(!obj || obj->isDestroyed()) {
 				_game->log("Try to display a sprite linked to an invalid/destroyed game object");
 				sprite.setVisible(false);
