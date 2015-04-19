@@ -44,6 +44,7 @@ add_executable(usb_warrior
 
 	game_object.cpp
 	sprite_component.cpp
+	level.cpp
 	scene.cpp
 )
 

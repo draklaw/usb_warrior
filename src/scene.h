@@ -25,6 +25,7 @@
 
 #include "game_object.h"
 #include "sprite_component.h"
+#include "level.h"
 
 
 class Game;
@@ -39,8 +40,16 @@ public:
 	void addSpriteComponent(GameObject* obj, const TileMap& tilemap,
 	                        unsigned index = 0);
 
+	inline Level& level() { return _level; }
+
 	void beginUpdate();
-	void render(double interp);
+
+	void beginRender();
+	void endRender();
+	void render(double interp, Boxi viewBox, Boxi screenBox);
+	void renderLevelLayer(unsigned layer, Boxi viewBox, Boxi screenBox);
+
+	inline Game* game() const { return _game; }
 
 private:
 	typedef std::vector<GameObject>      ObjectVector;
@@ -48,6 +57,8 @@ private:
 
 private:
 	Game*         _game;
+
+	Level         _level;
 
 	std::size_t   _objectCounter;
 	ObjectVector  _objects;

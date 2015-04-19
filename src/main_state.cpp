@@ -69,7 +69,24 @@ void MainState::update() {
 
 
 void MainState::frame(double interp) {
-	_scene.render(interp);
+	Vec2i viewCenter = _obj->geom().pos.template cast<int>();
+	Boxi viewBox(viewCenter - _game->screenSize() / 2,
+	             viewCenter + _game->screenSize() / 2);
+	Boxi screenBox(Vec2i::Zero(), _game->screenSize());
+
+	_scene.beginRender();
+
+	if(_scene.level().nLayers() > 0) {
+		_scene.renderLevelLayer(0, viewBox, screenBox);
+	}
+
+	_scene.render(interp, viewBox, screenBox);
+
+	for(unsigned layer = 1; layer < _scene.level().nLayers(); ++layer) {
+		_scene.renderLevelLayer(layer, viewBox, screenBox);
+	}
+
+	_scene.endRender();
 }
 
 
@@ -89,6 +106,12 @@ void MainState::initialize() {
 	_input.mapScanCode(_use,   SDL_SCANCODE_SPACE);
 
 	_tilemap = _game->images()->loadTilemap("assets/test/tileset.png", 32, 32);
+
+	_scene.level().setTileMap(_game->images()->loadTilemap("assets/ts_placeholder.png", 32, 32));
+
+//	_scene.level().loadFromJsonFile("assets/level_0.json");
+	_game->log("Level: ", _scene.level().width(), ", ", _scene.level().height(),
+	           ", ", _scene.level().nLayers(), ", ");
 	
 	_sounds[0] = _game->sounds()->loadSound("assets/test/laser0.wav");
 	_sounds[1] = _game->sounds()->loadSound("assets/test/laser1.wav");
@@ -97,15 +120,17 @@ void MainState::initialize() {
 	_music = _game->sounds()->loadMusic("assets/test/music.ogg");
 
 	_obj = _scene.addObject("Test");
-	_scene.addSpriteComponent(_obj, _tilemap, 3);
-	_obj->computeBoxFromSprite(Vec2(.5, .5), 2);
-	_obj->geom().pos = Vec2(400, 300);
+	_scene.addSpriteComponent(_obj, _tilemap, 1);
+	_obj->computeBoxFromSprite(Vec2(.5, .5), 1);
+	_obj->geom().pos = Vec2(1920/4, 1080/4);
 }
 
 
 void MainState::shutdown() {
 	_game->log("Shutdown MainState...");
 
+	TileMap tm = _scene.level().tileMap();
+	_game->images()->releaseTilemap(tm);
 	_game->images()->releaseTilemap(_tilemap);
 	
 	for (int i = 0; i < 4; i++) {
