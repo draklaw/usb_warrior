@@ -53,6 +53,7 @@ protected:
 	Input        _right;
 	Input        _up;
 	Input        _down;
+	Input        _use;
 
 	GameObject*  _obj;
 	TileMap      _tilemap;

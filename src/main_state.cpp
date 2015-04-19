@@ -40,6 +40,7 @@ MainState::MainState(Game* game)
       _right(INVALID_INPUT),
       _up(INVALID_INPUT),
       _down(INVALID_INPUT),
+      _use(INVALID_INPUT),
       _obj(nullptr) {
 }
 
@@ -51,11 +52,14 @@ void MainState::update() {
 
 	double speed = 4;
 
-	if(_input.isPressed(_left))  _obj->geom().pos.x() -= speed;
-	if(_input.isPressed(_right)) _obj->geom().pos.x() += speed;
-	if(_input.isPressed(_up))    _obj->geom().pos.y() -= speed;
-	if(_input.isPressed(_down))  _obj->geom().pos.y() += speed;
+	if(_obj->isActive()) {
+		if(_input.isPressed(_left))  _obj->geom().pos.x() -= speed;
+		if(_input.isPressed(_right)) _obj->geom().pos.x() += speed;
+		if(_input.isPressed(_up))    _obj->geom().pos.y() -= speed;
+		if(_input.isPressed(_down))  _obj->geom().pos.y() += speed;
+	}
 
+	if(_input.justPressed(_use)) _obj->setActive(!_obj->isActive());
 }
 
 
@@ -71,11 +75,13 @@ void MainState::initialize() {
 	_right = _input.addInput("right");
 	_up    = _input.addInput("up");
 	_down  = _input.addInput("down");
+	_use   = _input.addInput("use");
 
 	_input.mapScanCode(_left,  SDL_SCANCODE_LEFT);
 	_input.mapScanCode(_right, SDL_SCANCODE_RIGHT);
 	_input.mapScanCode(_up,    SDL_SCANCODE_UP);
 	_input.mapScanCode(_down,  SDL_SCANCODE_DOWN);
+	_input.mapScanCode(_use,   SDL_SCANCODE_SPACE);
 
 	_tilemap = _game->images()->loadTilemap("assets/test/tileset.png", 32, 32);
 

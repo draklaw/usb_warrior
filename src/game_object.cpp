@@ -27,7 +27,7 @@ GameObject::GameObject(Scene* scene, const char* name)
     : sprite(0),
       sound(0),
       _scene(scene),
-      _flags(0),
+      _flags(OBJECT_ACTIVE),
       _name(name) {
 }
 
@@ -37,6 +37,12 @@ void GameObject::computeBoxFromSprite(const Vec2& anchor, float scale) {
 	Vec2 size = sprite->tilemap().tileSize().template cast<float>();
 	Vec2 offset = scale * -(size.array() * anchor.array()).matrix();
 	_geom[0].box = Boxf(offset, scale*size + offset);
+}
+
+
+void GameObject::setActive(bool active) {
+	if(active) _flags |=  OBJECT_ACTIVE;
+	else       _flags &= ~OBJECT_ACTIVE;
 }
 
 
