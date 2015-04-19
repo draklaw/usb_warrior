@@ -53,7 +53,7 @@ private:
 private:
 	Scene* _scene;
 	
-	TileVector _map;
+	std::vector<Tile> _map;
 	unsigned _width, _height, _layers;
 	
 	std::vector<EntityData> _entities;
