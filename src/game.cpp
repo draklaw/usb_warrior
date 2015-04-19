@@ -31,8 +31,12 @@
 #include <SDL2/SDL_image.h>
 
 #include "game_state.h"
+#include "soundplayer.h"
 
 #include "game.h"
+
+
+#define SOUNDPLAYER_MAX_CHANNELS 32
 
 
 Game::Game(int /*argc*/, char** /*argv*/)
@@ -40,7 +44,8 @@ Game::Game(int /*argc*/, char** /*argv*/)
       _renderer(nullptr),
       _imageManager(this),
       _state(nullptr),
-      _nextState(nullptr) {
+      _nextState(nullptr),
+	  _player(nullptr) {
 }
 
 
@@ -64,6 +69,9 @@ void Game::initialize() {
 	if(IMG_Init(initImgFlags) != initImgFlags) {
 		imgCrash("Failed to initialize SDL_image backend");
 	}
+
+	log("Initialize SDL_mixer...");
+	_player = new SoundPlayer;
 
 	unsigned windowFlags = 0
 #ifdef NDEBUG
@@ -98,6 +106,9 @@ void Game::quit() {
 		SDL_DestroyWindow(_window);
 		_window = nullptr;
 	}
+
+	log("Quit SDL_mixer...");
+	delete _player;
 
 	log("Quit SDL_image...");
 	IMG_Quit();
@@ -142,6 +153,7 @@ int Game::run(GameState* state) {
 //		}
 //	}
 	assert(state);
+	_player->playMusic("./assets/test/music.ogg");
 	_state = state;
 	_state->run();
 

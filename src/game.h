@@ -30,6 +30,7 @@
 
 
 class GameState;
+class SoundPlayer;
 
 
 class Game {
@@ -87,6 +88,8 @@ private:
 
 	GameState*     _state;
 	GameState*     _nextState;
+
+	SoundPlayer*   _player;
 };
 
 

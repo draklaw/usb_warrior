@@ -57,16 +57,16 @@ protected:
 	virtual void stop();
 
 protected:
-	Game*      _game;
+	Game*        _game;
 
-	Duration   _updateTime;
-	Duration   _frameTime;
+	Duration     _updateTime;
+	Duration     _frameTime;
 
-	bool       _enabled;
-	bool       _running;
+	bool         _enabled;
+	bool         _running;
 
-	TimePoint  _nextUpdate;
-	TimePoint  _nextFrame;
+	TimePoint    _nextUpdate;
+	TimePoint    _nextFrame;
 };
 
 

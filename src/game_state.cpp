@@ -19,7 +19,8 @@
 
 
 #include <algorithm>
-#include <thread>
+
+#include <SDL2/SDL_timer.h>
 
 #include "game.h"
 
@@ -69,7 +70,7 @@ void GameState::run() {
 
 		if(next_event > time) {
 			// Wait !
-			std::this_thread::sleep_for(next_event - time);
+			SDL_Delay(std::max(unsigned(secondsFromDuration(next_event - time) * 1000), 1u));
 		} else if(next_event == _nextUpdate) {
 			// Update !
 			update();
