@@ -17,58 +17,64 @@
  *  along with usb_warrior.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _INPUT_H_
-#define _INPUT_H_
+#include <SDL2/SDL_mixer.h>
 
+#ifndef _SOUND_PLAYER_H_
+#define _SOUND_PLAYER_H_
 
 #include <string>
-#include <vector>
 #include <unordered_map>
 
-#include <SDL2/SDL_events.h>
 
+#define SOUNDPLAYER_MAX_CHANNELS    32
+#define SOUNDPLAYER_DEFAULT_VOLUME  (MIX_MAX_VOLUME / 25)
 
-#define INVALID_INPUT 0xffffffff
 
 class Game;
 
 
-typedef unsigned Input;
-typedef unsigned ScanCode;
-
-
-class InputManager {
+class Sound {
 public:
-	InputManager(Game* game);
+	~Sound();
 
-	Input addInput(const char* name);
-	void  mapScanCode(Input input, ScanCode scanCode);
+	Mix_Chunk*   chunk;
+	unsigned     volume;
 
-	void sync();
-
-	bool isPressed   (Input input) const;
-	bool justPressed (Input input) const;
-	bool justReleased(Input input) const;
-
-private:
-	struct InputDesc {
-		std::string name;
-		unsigned    count;
-		unsigned    prevCount;
-
-		inline InputDesc(const std::string& name)
-		    : name(name), count(0) {}
-	};
-
-	typedef std::vector<InputDesc> InputMap;
-	typedef std::unordered_map<ScanCode, Input> ScanCodeMap;
-
-private:
-	Game*       _game;
-
-	InputMap    _inputMap;
-	ScanCodeMap _scanCodeMap;
+	std::string  name;
+	unsigned     useCount;
 };
 
+
+class Music {
+public:
+	~Music();
+
+	Mix_Music*   track;
+
+	std::string  name;
+	unsigned     useCount;
+};
+
+
+class SoundPlayer {
+public:
+	SoundPlayer(Game *game);
+
+	Sound loadSound(const std::string& filename);
+	Music loadMusic(const std::string& filename);
+
+	bool playSound(Sound& sound);
+	bool playMusic(Music& music);
+
+private:
+	typedef std::unordered_map<std::string, Sound> SoundMap;
+	typedef std::unordered_map<std::string, Music> MusicMap;
+
+private:
+	Game*    _game;
+
+	SoundMap _soundMap;
+	MusicMap _musicMap;	
+};
 
 #endif

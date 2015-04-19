@@ -17,58 +17,38 @@
  *  along with usb_warrior.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _INPUT_H_
-#define _INPUT_H_
-
+#ifndef _LOADER_H_
+#define _LOADER_H_
 
 #include <string>
-#include <vector>
 #include <unordered_map>
 
-#include <SDL2/SDL_events.h>
-
-
-#define INVALID_INPUT 0xffffffff
 
 class Game;
 
 
-typedef unsigned Input;
-typedef unsigned ScanCode;
-
-
-class InputManager {
+class Loader {
 public:
-	InputManager(Game* game);
+	Loader(Game* game);
 
-	Input addInput(const char* name);
-	void  mapScanCode(Input input, ScanCode scanCode);
+	void addImage(const std::string& filename);
+	void addSound(const std::string& filename);
 
-	void sync();
-
-	bool isPressed   (Input input) const;
-	bool justPressed (Input input) const;
-	bool justReleased(Input input) const;
-
-private:
-	struct InputDesc {
-		std::string name;
-		unsigned    count;
-		unsigned    prevCount;
-
-		inline InputDesc(const std::string& name)
-		    : name(name), count(0) {}
-	};
-
-	typedef std::vector<InputDesc> InputMap;
-	typedef std::unordered_map<ScanCode, Input> ScanCodeMap;
+	unsigned loadAllImages();
+	unsigned loadAllSounds();
+	
+	void releaseAllImages();
+	void releaseAllSounds();
 
 private:
-	Game*       _game;
+	typedef std::unordered_map<std::string, const Image*> ImageMap;
+	typedef std::unordered_map<std::string, const Sound*> SoundMap;
 
-	InputMap    _inputMap;
-	ScanCodeMap _scanCodeMap;
+private:
+	Game*    _game;
+
+	ImageMap _imageMap;
+	SoundMap _soundMap;
 };
-
 
 #endif

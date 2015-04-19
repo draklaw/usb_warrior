@@ -27,6 +27,7 @@
 
 
 #include "image_manager.h"
+#include "sound_player.h"
 
 
 class GameState;
@@ -54,6 +55,7 @@ public:
 
 	void sdlCrash(const char* msg);
 	void imgCrash(const char* msg);
+	void sndCrash(const char* msg);
 
 	template < typename... Args >
 	void error(Args... args) {
@@ -89,7 +91,7 @@ private:
 	GameState*     _state;
 	GameState*     _nextState;
 
-	SoundPlayer*   _player;
+	SoundPlayer    _player;
 };
 
 
