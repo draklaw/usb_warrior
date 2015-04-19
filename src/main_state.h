@@ -25,6 +25,7 @@
 
 #include <SDL2/SDL_render.h>
 
+#include "input.h"
 #include "image_manager.h"
 #include "game_state.h"
 #include "scene.h"
@@ -47,8 +48,15 @@ protected:
 protected:
 	Scene _scene;
 
-	GameObject* _obj;
-	TileMap     _tilemap;
+	InputManager _input;
+	Input        _left;
+	Input        _right;
+	Input        _up;
+	Input        _down;
+	Input        _use;
+
+	GameObject*  _obj;
+	TileMap      _tilemap;
 };
 
 

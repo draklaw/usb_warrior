@@ -39,8 +39,9 @@ Duration durationFromSeconds(double sec) {
 }
 
 
-GameState::GameState(Game* game, Duration updateTime)
+GameState::GameState(Game* game, const std::string& name, Duration updateTime)
     : _game(game),
+      _name(name),
       _updateTime(updateTime),
       _frameTime(durationFromSeconds(1.01d / game->getRefreshRate())),
       _enabled(false),

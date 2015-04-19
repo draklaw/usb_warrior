@@ -33,15 +33,24 @@ public:
 	                unsigned tileIndex = 0);
 
 	GameObject*    object()    const { return _object; }
+	bool           isVisible() const { return _flags & VISIBLE; }
 	const TileMap& tilemap()   const { return _tilemap; }
 	// Index can be invalid.
 	unsigned       tileIndex() const { return _tileIndex; }
 
+	void setVisible(bool visible);
 	void setTilemap(const TileMap& tilemap);
 	void setTileIndex(unsigned index);
 
 private:
+	enum {
+		VISIBLE = 0x01
+	};
+
+private:
 	GameObject* _object;
+
+	unsigned    _flags;
 	TileMap     _tilemap;
 	unsigned    _tileIndex;
 };
