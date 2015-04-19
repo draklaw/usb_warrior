@@ -64,7 +64,9 @@ public:
 	inline       Scene*       scene() const { return _scene; }
 	inline const std::string& name () const { return _name;  }
 
-	inline GeometryComponent& geom(unsigned updateIndex = 0)
+	inline       GeometryComponent& geom(unsigned updateIndex = 0)
+	{ assert(updateIndex < 2u); return _geom[updateIndex]; }
+	inline const GeometryComponent& geom(unsigned updateIndex = 0) const
 	{ assert(updateIndex < 2u); return _geom[updateIndex]; }
 
 	void computeBoxFromSprite(const Vec2& anchor = Vec2::Zero(), float scale=1.f);
@@ -72,6 +74,8 @@ public:
 	inline bool isDestroyed() const { return _flags & OBJECT_DESTROYED; }
 	inline bool isActive()    const { return _flags & OBJECT_ACTIVE; }
 	bool hasComponent(unsigned id) const;
+
+	Boxf worldBox(unsigned updateIndex = 0) const;
 
 	void setActive(bool active);
 	

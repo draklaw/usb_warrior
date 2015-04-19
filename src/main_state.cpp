@@ -58,11 +58,24 @@ void MainState::update() {
 	if(_input.justPressed(_up))    _game->sounds()->playSound(_sounds[2]);
 	if(_input.justPressed(_down))  _game->sounds()->playSound(_sounds[3]);
 
+	GeometryComponent& geom = _obj->geom();
 	if(_obj->isActive()) {
-		if(_input.isPressed(_left))  _obj->geom().pos.x() -= speed;
-		if(_input.isPressed(_right)) _obj->geom().pos.x() += speed;
-		if(_input.isPressed(_up))    _obj->geom().pos.y() -= speed;
-		if(_input.isPressed(_down))  _obj->geom().pos.y() += speed;
+		if(_input.isPressed(_left))  geom.pos.x() -= speed;
+		if(_input.isPressed(_right)) geom.pos.x() += speed;
+		if(_input.isPressed(_up))    geom.pos.y() -= speed;
+		if(_input.isPressed(_down))  geom.pos.y() += speed;
+	}
+
+//	Vec2i tileSize = _scene.level().tileMap().tileSize();
+//	Tile tile = _scene.level().getTile(geom.pos.x() / tileSize.x(),
+//	                                   geom.pos.y() / tileSize.y(), 0);
+//	bool coll = _scene.level().tileCollision(tile);
+	CollisionInfo info;
+	Boxf objBox = _obj->worldBox();
+	bool coll = _scene.level().collide(0, objBox, &info);
+	_obj->sprite->setTileIndex(coll? 0: 1);
+	if(coll) {
+		_game->log("Collision: ", info.flags, " - ", info.penetration.transpose());
 	}
 
 	if(_input.justPressed(_use)) _obj->setActive(!_obj->isActive());
@@ -122,7 +135,9 @@ void MainState::initialize() {
 	_scene.level().setTileMap(TileMap(_loader.getImage("assets/ts_placeholder.png"), 32, 32));
 
 	_scene.level().loadFromJsonFile("assets/level_0.json");
-	
+	_scene.level().setTileCollision(12, true);
+	_scene.level().setTileCollision(13, true);
+
 	_sounds[0] = _loader.getSound("assets/test/laser0.wav");
 	_sounds[1] = _loader.getSound("assets/test/laser1.wav");
 	_sounds[2] = _loader.getSound("assets/test/laser2.wav");

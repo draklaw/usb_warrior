@@ -48,6 +48,12 @@ bool GameObject::hasComponent(unsigned id) const {
 }
 
 
+Boxf GameObject::worldBox(unsigned updateIndex) const {
+	const GeometryComponent& g = geom(updateIndex);
+	return Boxf(g.pos + g.box.min(), g.pos + g.box.max());
+}
+
+
 void GameObject::setActive(bool active) {
 	if(active) _flags |=  OBJECT_ACTIVE;
 	else       _flags &= ~OBJECT_ACTIVE;
