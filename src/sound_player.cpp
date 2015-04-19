@@ -48,20 +48,19 @@ SoundPlayer::SoundPlayer(Game* game)
 }
 
 
-Sound SoundPlayer::loadSound(const std::string& filename) {
+const Sound* SoundPlayer::loadSound(const std::string& filename) {
 	auto it = _soundMap.find(filename);
 	if(it == _soundMap.end()) {
 		Sound snd;
 
 		_game->log("Load sound \"", filename, "\"...");
 
-		Mix_Chunk* chunk = Mix_LoadWAV(filename.c_str());
-		if(!chunk) {
+		snd.chunk = Mix_LoadWAV(filename.c_str());
+		if(!snd.chunk) {
 			_game->error("Failed to load sound: ", Mix_GetError());
-			return Sound();
+			return new Sound();
 		}
 
-		snd.chunk = chunk;
 		snd.volume = SOUNDPLAYER_DEFAULT_VOLUME;
 		Mix_VolumeChunk(snd.chunk, snd.volume);
 		snd.name = filename;
@@ -77,24 +76,22 @@ Sound SoundPlayer::loadSound(const std::string& filename) {
 
 	++(it->second.useCount);
 
-	return it->second;
+	return &(it->second);
 }
 
 
-Music SoundPlayer::loadMusic(const std::string& filename) {
+const Music* SoundPlayer::loadMusic(const std::string& filename) {
 	auto it = _musicMap.find(filename);
 	if(it == _musicMap.end()) {
 		Music mus;
 
 		_game->log("Load music \"", filename, "\"...");
 
-		Mix_Music *track = Mix_LoadMUS(filename.c_str());
-		if(!track) {
+		mus.track = Mix_LoadMUS(filename.c_str());
+		if(!mus.track) {
 			_game->error("Failed to load music: ", Mix_GetError());
-			return Music();
+			return new Music();
 		}
-
-		mus.track = track;
 		mus.name = filename;
 		mus.useCount = 0;
 
@@ -108,15 +105,48 @@ Music SoundPlayer::loadMusic(const std::string& filename) {
 
 	++(it->second.useCount);
 
-	return it->second;
+	return &(it->second);
 }
 
 
-bool SoundPlayer::playSound(Sound& sound) {
-	return Mix_PlayChannel(-1, sound.chunk, 0) == 0;
+void SoundPlayer::releaseSound(const Sound* sound) {
+	auto it = _soundMap.find(sound->name);
+	assert(it != _soundMap.end());
+
+	--(it->second.useCount);
+	if(!it->second.useCount) {
+		_game->log("Release sound \"", it->second.name, "\"...");
+		_soundMap.erase(it);
+	}
 }
 
 
-bool SoundPlayer::playMusic(Music& music) {
-	return music.track && Mix_PlayMusic(music.track, -1) == 0;
+void SoundPlayer::releaseMusic(const Music* music) {
+	auto it = _musicMap.find(music->name);
+	assert(it != _musicMap.end());
+
+	--(it->second.useCount);
+	if(!it->second.useCount) {
+		_game->log("Release music \"", it->second.name, "\"...");
+		_musicMap.erase(it);
+	}
+}
+
+
+void SoundPlayer::playSound(const Sound* sound) {
+	if(sound->chunk) {
+		Mix_PlayChannel(-1, sound->chunk, 0);
+	}
+}
+
+
+void SoundPlayer::playMusic(const Music* music) {
+	if(music->track) {
+		Mix_PlayMusic(music->track, -1);
+	}
+}
+
+
+void SoundPlayer::haltMusic() {
+	Mix_HaltMusic();
 }

@@ -17,10 +17,10 @@
  *  along with usb_warrior.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <SDL2/SDL_mixer.h>
-
 #ifndef _SOUND_PLAYER_H_
 #define _SOUND_PLAYER_H_
+
+#include <SDL2/SDL_mixer.h>
 
 #include <string>
 #include <unordered_map>
@@ -37,6 +37,7 @@ class Sound {
 public:
 	~Sound();
 
+public:
 	Mix_Chunk*   chunk;
 	unsigned     volume;
 
@@ -49,6 +50,7 @@ class Music {
 public:
 	~Music();
 
+public:
 	Mix_Music*   track;
 
 	std::string  name;
@@ -60,11 +62,16 @@ class SoundPlayer {
 public:
 	SoundPlayer(Game *game);
 
-	Sound loadSound(const std::string& filename);
-	Music loadMusic(const std::string& filename);
+	const Sound* loadSound(const std::string& filename);
+	const Music* loadMusic(const std::string& filename);
+	
+	void releaseSound(const Sound* sound);
+	void releaseMusic(const Music* music);
 
-	bool playSound(Sound& sound);
-	bool playMusic(Music& music);
+	void playSound(const Sound* sound);
+	void playMusic(const Music* music);
+
+	void haltMusic();
 
 private:
 	typedef std::unordered_map<std::string, Sound> SoundMap;

@@ -50,6 +50,7 @@ public:
 
 	inline SDL_Renderer* renderer() const { return _renderer; }
 	inline ImageManager* images() { return &_imageManager; }
+	inline SoundPlayer* sounds() { return &_soundPlayer; }
 
 	int getRefreshRate() const;
 
@@ -87,11 +88,10 @@ private:
 	SDL_Renderer*  _renderer;
 
 	ImageManager   _imageManager;
+	SoundPlayer    _soundPlayer;
 
 	GameState*     _state;
 	GameState*     _nextState;
-
-	SoundPlayer    _player;
 };
 
 

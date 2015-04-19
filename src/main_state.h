@@ -27,6 +27,7 @@
 
 #include "input.h"
 #include "image_manager.h"
+#include "sound_player.h"
 #include "game_state.h"
 #include "scene.h"
 
@@ -56,6 +57,8 @@ protected:
 
 	GameObject*  _obj;
 	TileMap      _tilemap;
+	const Sound* _sounds[4];
+	const Music* _music;
 };
 
 
