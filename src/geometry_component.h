@@ -17,38 +17,20 @@
  *  along with usb_warrior.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _MAIN_STATE_H_
-#define _MAIN_STATE_H_
+#ifndef _GEOMETRY_COMPONENT_H_
+#define _GEOMETRY_COMPONENT_H_
 
 
-#include <Eigen/Geometry>
-
-#include <SDL2/SDL_render.h>
-
-#include "image_manager.h"
-#include "game_state.h"
-#include "scene.h"
+#include "math.h"
 
 
-class MainState : public GameState {
+class GeometryComponent {
 public:
-	MainState(Game* game);
+	GeometryComponent() : pos(0, 0), box(), rot(0) {}
 
-	void update();
-	void frame(double interp);
-
-protected:
-	void initialize();
-	void shutdown();
-
-	void start();
-	void stop();
-
-protected:
-	Scene _scene;
-
-	GameObject* _obj;
-	TileMap     _tilemap;
+	Vec2  pos;
+	Boxf  box;
+	float rot;
 };
 
 

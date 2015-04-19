@@ -23,6 +23,7 @@
 
 #include <SDL2/SDL_image.h>
 
+#include "utils.h"
 #include "game.h"
 
 #include "main_state.h"
@@ -33,55 +34,43 @@
 
 MainState::MainState(Game* game)
     : GameState(game, durationFromSeconds(MAIN_STATE_UPDATE_TIME)),
-      _pos(200, 0),
-      _prevPos(200, 0),
-      _sprite(nullptr) {
+      _scene(game),
+      _obj(nullptr) {
 }
 
 
 void MainState::update() {
-	double alpha = 0.1;
+	_scene.beginUpdate();
+
+	double alpha = 0.05;
 	Eigen::Matrix2f rot;
 	rot << cos(alpha), sin(alpha), -sin(alpha), cos(alpha);
 
-	_prevPos = _pos;
-	_pos = rot * _pos;
-	_game->log("Update: ", _pos.transpose());
+	Vec2 center(400, 300);
+	_obj->geom().pos = rot * (_obj->geom().pos - center) + center;
 }
 
 void MainState::frame(double interp) {
-	_game->log("Frame: ", interp);
-
-	Eigen::Vector2f pos = (1-interp) * _prevPos + interp * _pos;
-	pos += Eigen::Vector2f(400, 300);
-
-	SDL_Rect rect;
-	rect.x = pos.x();
-	rect.y = pos.y();
-	rect.w = 32;
-	rect.h = 32;
-
-//	SDL_RenderClear(_game->renderer());
-	SDL_RenderCopy(_game->renderer(), _sprite, nullptr, &rect);
-	SDL_RenderPresent(_game->renderer());
+	_scene.render(interp);
 }
 
 
 void MainState::initialize() {
 	_game->log("Initialize MainState...");
 
-	SDL_Surface* surf = IMG_Load("./assets/test/character.png");
-	if(!surf) _game->imgCrash("Failed to load image");
-	_sprite = SDL_CreateTextureFromSurface(_game->renderer(), surf);
-	if(!surf) _game->sdlCrash("Failed to create texture");
-	SDL_FreeSurface(surf);
+	_tilemap = _game->images()->loadTilemap("assets/test/tileset.png", 32, 32);
+
+	_obj = _scene.addObject("Test");
+	_scene.addSpriteComponent(_obj, _tilemap, 3);
+	_obj->computeBoxFromSprite(Vec2(.5, .5), 2);
+	_obj->geom().pos = Vec2(500, 300);
 }
 
 
 void MainState::shutdown() {
 	_game->log("Shutdown MainState...");
 
-	SDL_DestroyTexture(_sprite);
+	_game->images()->releaseTilemap(_tilemap);
 }
 
 

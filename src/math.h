@@ -17,39 +17,21 @@
  *  along with usb_warrior.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _MAIN_STATE_H_
-#define _MAIN_STATE_H_
+#ifndef _H_
+#define _H_
 
 
+#include <Eigen/Dense>
 #include <Eigen/Geometry>
 
-#include <SDL2/SDL_render.h>
 
-#include "image_manager.h"
-#include "game_state.h"
-#include "scene.h"
+typedef Eigen::Vector2f Vec2;
+typedef Eigen::Vector2i Vec2i;
 
+//typedef Eigen::Transform<float, 2> Transform;
 
-class MainState : public GameState {
-public:
-	MainState(Game* game);
-
-	void update();
-	void frame(double interp);
-
-protected:
-	void initialize();
-	void shutdown();
-
-	void start();
-	void stop();
-
-protected:
-	Scene _scene;
-
-	GameObject* _obj;
-	TileMap     _tilemap;
-};
+typedef Eigen::AlignedBox2f Boxf;
+typedef Eigen::AlignedBox1i Boxi;
 
 
 #endif

@@ -17,38 +17,33 @@
  *  along with usb_warrior.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _MAIN_STATE_H_
-#define _MAIN_STATE_H_
+#ifndef _SPRITE_COMPONENT_H_
+#define _SPRITE_COMPONENT_H_
 
-
-#include <Eigen/Geometry>
-
-#include <SDL2/SDL_render.h>
 
 #include "image_manager.h"
-#include "game_state.h"
-#include "scene.h"
 
 
-class MainState : public GameState {
+class GameObject;
+
+
+class SpriteComponent {
 public:
-	MainState(Game* game);
+	SpriteComponent(GameObject* object, const TileMap& tilemap = TileMap(),
+	                unsigned tileIndex = 0);
 
-	void update();
-	void frame(double interp);
+	GameObject*    object()    const { return _object; }
+	const TileMap& tilemap()   const { return _tilemap; }
+	// Index can be invalid.
+	unsigned       tileIndex() const { return _tileIndex; }
 
-protected:
-	void initialize();
-	void shutdown();
+	void setTilemap(const TileMap& tilemap);
+	void setTileIndex(unsigned index);
 
-	void start();
-	void stop();
-
-protected:
-	Scene _scene;
-
-	GameObject* _obj;
+private:
+	GameObject* _object;
 	TileMap     _tilemap;
+	unsigned    _tileIndex;
 };
 
 

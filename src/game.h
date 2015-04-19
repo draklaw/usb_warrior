@@ -26,6 +26,9 @@
 #include <SDL2/SDL_render.h>
 
 
+#include "image_manager.h"
+
+
 class GameState;
 
 
@@ -44,6 +47,7 @@ public:
 	int run(GameState* state);
 
 	inline SDL_Renderer* renderer() const { return _renderer; }
+	inline ImageManager* images() { return &_imageManager; }
 
 	int getRefreshRate() const;
 
@@ -78,6 +82,8 @@ public:
 private:
 	SDL_Window*    _window;
 	SDL_Renderer*  _renderer;
+
+	ImageManager   _imageManager;
 
 	GameState*     _state;
 	GameState*     _nextState;

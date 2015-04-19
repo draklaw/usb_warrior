@@ -32,6 +32,12 @@ add_executable(usb_warrior
 	game.cpp
 	game_state.cpp
 	main_state.cpp
+
+	image_manager.cpp
+
+	game_object.cpp
+	sprite_component.cpp
+	scene.cpp
 )
 
 target_link_libraries(usb_warrior
