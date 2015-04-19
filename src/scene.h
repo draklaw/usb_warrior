@@ -30,6 +30,7 @@
 
 class Game;
 
+class LogicComponent;
 
 class Scene {
 public:
@@ -39,10 +40,12 @@ public:
 
 	void addSpriteComponent(GameObject* obj, const TileMap& tilemap,
 	                        unsigned index = 0);
+	void addLogicComponent(GameObject* obj, unsigned id, LogicComponent* lcomp);
 
 	inline Level& level() { return _level; }
 
 	void beginUpdate();
+	void updateLogic(unsigned id);
 
 	void beginRender();
 	void endRender();
@@ -55,6 +58,9 @@ private:
 	typedef std::vector<GameObject>      ObjectVector;
 	typedef std::vector<SpriteComponent> SpriteVector;
 
+	typedef std::vector<LogicComponent*> LogicVector;
+	typedef std::vector<LogicVector>     LogicMap;
+
 private:
 	Game*         _game;
 
@@ -64,6 +70,8 @@ private:
 	ObjectVector  _objects;
 
 	SpriteVector  _sprites;
+	
+	LogicMap      _logicMap;
 };
 
 

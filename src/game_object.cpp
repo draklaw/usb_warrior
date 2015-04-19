@@ -22,6 +22,9 @@
 
 #include "game_object.h"
 
+LogicComponent::LogicComponent(GameObject* obj)
+	: _obj(obj) {
+}
 
 GameObject::GameObject(Scene* scene, const char* name)
     : sprite(0),
@@ -40,6 +43,11 @@ void GameObject::computeBoxFromSprite(const Vec2& anchor, float scale) {
 }
 
 
+bool GameObject::hasComponent(unsigned id) const {
+	return id < _logicMap.size() && _logicMap[id];
+}
+
+
 void GameObject::setActive(bool active) {
 	if(active) _flags |=  OBJECT_ACTIVE;
 	else       _flags &= ~OBJECT_ACTIVE;
@@ -48,4 +56,13 @@ void GameObject::setActive(bool active) {
 
 void GameObject::_nextUpdate() {
 	_geom[1] = _geom[0];
+}
+
+
+void GameObject::_registerLogic(unsigned id, LogicComponent* lcomp) {
+	if (_logicMap.size() <= id) {
+		_logicMap.resize(id, nullptr);
+	}
+	
+	_logicMap[id] = lcomp;
 }

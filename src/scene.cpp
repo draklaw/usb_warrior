@@ -22,6 +22,7 @@
 
 #include "utils.h"
 #include "game.h"
+#include "game_object.h"
 
 #include "scene.h"
 
@@ -57,9 +58,25 @@ void Scene::addSpriteComponent(GameObject* obj, const TileMap& tilemap,
 }
 
 
+void Scene::addLogicComponent(GameObject* obj, unsigned id, LogicComponent* lcomp) {
+	if (_logicMap.size() <= id) {
+		_logicMap.resize(id);
+	}
+	
+	_logicMap[id].push_back(lcomp);
+}
+
+
 void Scene::beginUpdate() {
 	for(GameObject& obj: _objects) {
 		obj._nextUpdate();
+	}
+}
+
+
+void Scene::updateLogic(unsigned id) {
+	for (LogicComponent* lcomp: _logicMap[id]) {
+		lcomp->update();
 	}
 }
 

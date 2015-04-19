@@ -34,6 +34,17 @@ class SpriteComponent;
 class SoundComponent;
 
 
+class LogicComponent {
+public:
+	LogicComponent(GameObject* obj);
+	
+	virtual void update() = 0;
+
+protected:
+	GameObject* _obj;
+};
+
+
 enum {
 	OBJECT_DESTROYED = 0x01,
 	OBJECT_ACTIVE    = 0x02
@@ -59,15 +70,20 @@ public:
 
 	inline bool isDestroyed() const { return _flags & OBJECT_DESTROYED; }
 	inline bool isActive()    const { return _flags & OBJECT_ACTIVE; }
+	bool hasComponent(unsigned id) const;
 
 	void setActive(bool active);
-
+	
 	void _nextUpdate();
+	void _registerLogic(unsigned id, LogicComponent* lcomp);
 	inline void _setFlags(unsigned flags) { _flags = flags; }
 
 public:
 	SpriteComponent*   sprite;
 	SoundComponent*    sound;
+
+private:
+	typedef std::vector<LogicComponent*> LogicMap;
 
 private:
 	Scene*             _scene;
@@ -76,6 +92,7 @@ private:
 	std::string        _name;
 
 	GeometryComponent  _geom[2];
+	LogicMap           _logicMap;
 };
 
 
