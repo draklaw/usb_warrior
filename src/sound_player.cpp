@@ -133,10 +133,8 @@ void SoundPlayer::releaseMusic(const Music* music) {
 }
 
 
-void SoundPlayer::playSound(const Sound* sound) {
-	if(sound->chunk) {
-		Mix_PlayChannel(-1, sound->chunk, 0);
-	}
+int SoundPlayer::playSound(const Sound* sound, int loops) {
+	return sound->chunk ? Mix_PlayChannel(-1, sound->chunk, loops) : -1;
 }
 
 
@@ -144,6 +142,11 @@ void SoundPlayer::playMusic(const Music* music) {
 	if(music->track) {
 		Mix_PlayMusic(music->track, -1);
 	}
+}
+
+
+void SoundPlayer::haltSound(int channel) {
+	if(channel != -1) { Mix_HaltChannel(channel); }
 }
 
 

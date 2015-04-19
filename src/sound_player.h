@@ -64,13 +64,14 @@ public:
 
 	const Sound* loadSound(const std::string& filename);
 	const Music* loadMusic(const std::string& filename);
-	
+
 	void releaseSound(const Sound* sound);
 	void releaseMusic(const Music* music);
 
-	void playSound(const Sound* sound);
+	int playSound(const Sound* sound, int loops);
 	void playMusic(const Music* music);
 
+	void haltSound(int channel);
 	void haltMusic();
 
 private:
