@@ -20,17 +20,29 @@
 #ifndef _LEVEL_H_
 #define _LEVEL_H_
 
+
 #include <vector>
+
+#include "image_manager.h"
+
+
+class Scene;
 
 typedef int Tile;
 
 class Level {
 public:
-	Level();
-	~Level();
+	Level(Scene* scene);
 	
 	bool loadFromJsonFile(const char* tiledMap);
 	
+	inline unsigned width()   const { return _width; }
+	inline unsigned height()  const { return _height; }
+	inline unsigned nLayers() const { return _layers; }
+
+	inline const TileMap& tileMap() const { return _tileMap; }
+	void setTileMap(const TileMap& tileMap);
+
 	Tile getTile(unsigned x, unsigned y, unsigned layer);
 	void setTile(unsigned x, unsigned y, unsigned layer, Tile val);
 
@@ -38,8 +50,12 @@ private:
 	typedef std::vector<Tile> TileVector;
 
 private:
+	Scene* _scene;
+
 	TileVector _map;
 	unsigned _width, _height, _layers;
+
+	TileMap _tileMap;
 
 private:
 	unsigned index(unsigned x, unsigned y, unsigned z);
