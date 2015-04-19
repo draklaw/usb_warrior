@@ -28,6 +28,7 @@
 
 #include "math.h"
 #include "image_manager.h"
+#include "sound_player.h"
 
 
 class GameState;
@@ -52,11 +53,13 @@ public:
 
 	inline SDL_Renderer* renderer() const { return _renderer; }
 	inline ImageManager* images() { return &_imageManager; }
+	inline SoundPlayer* sounds() { return &_soundPlayer; }
 
 	int getRefreshRate() const;
 
 	void sdlCrash(const char* msg);
 	void imgCrash(const char* msg);
+	void sndCrash(const char* msg);
 
 	template < typename... Args >
 	void error(Args... args) {
@@ -88,11 +91,10 @@ private:
 	SDL_Renderer*  _renderer;
 
 	ImageManager   _imageManager;
+	SoundPlayer    _soundPlayer;
 
 	GameState*     _state;
 	GameState*     _nextState;
-
-	SoundPlayer*   _player;
 };
 
 

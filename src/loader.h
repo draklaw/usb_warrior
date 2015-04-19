@@ -17,29 +17,38 @@
  *  along with usb_warrior.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#ifndef _LOADER_H_
+#define _LOADER_H_
 
-#include <cstdlib>
-#include <cassert>
-#include <cstdio>
+#include <string>
+#include <unordered_map>
 
-#include "level.h"
 
-int main(int /*argc*/, char** /*argv*/)
-{
-	Level* l = new Level();
-	if (!l->loadFromJsonFile("assets/level_0.json"))
-		return EXIT_FAILURE;
+class Game;
+
+
+class Loader {
+public:
+	Loader(Game* game);
+
+	void addImage(const std::string& filename);
+	void addSound(const std::string& filename);
+
+	unsigned loadAllImages();
+	unsigned loadAllSounds();
 	
-	for (int y = 0 ; y < 20 ; y++)
-	{
-		for (int x = 0 ; x < 40 ; x++)
-		{
-			for (int z = 0 ; z < 2 ; z++)
-				printf ("%.2i%s", l->getTile(x,y,z),!z?",":"");
-			printf (" ");
-		}
-		printf ("\n");
-	}
-	
-	return EXIT_SUCCESS;
-}
+	void releaseAllImages();
+	void releaseAllSounds();
+
+private:
+	typedef std::unordered_map<std::string, const Image*> ImageMap;
+	typedef std::unordered_map<std::string, const Sound*> SoundMap;
+
+private:
+	Game*    _game;
+
+	ImageMap _imageMap;
+	SoundMap _soundMap;
+};
+
+#endif

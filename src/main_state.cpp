@@ -52,6 +52,11 @@ void MainState::update() {
 
 	double speed = 4;
 
+	if(_input.justPressed(_left))  _game->sounds()->playSound(_sounds[0]);
+	if(_input.justPressed(_right)) _game->sounds()->playSound(_sounds[1]);
+	if(_input.justPressed(_up))    _game->sounds()->playSound(_sounds[2]);
+	if(_input.justPressed(_down))  _game->sounds()->playSound(_sounds[3]);
+
 	if(_obj->isActive()) {
 		if(_input.isPressed(_left))  _obj->geom().pos.x() -= speed;
 		if(_input.isPressed(_right)) _obj->geom().pos.x() += speed;
@@ -101,11 +106,18 @@ void MainState::initialize() {
 	_input.mapScanCode(_use,   SDL_SCANCODE_SPACE);
 
 	_tilemap = _game->images()->loadTilemap("assets/test/tileset.png", 32, 32);
+
 	_scene.level().setTileMap(_game->images()->loadTilemap("assets/ts_placeholder.png", 32, 32));
 
-	_scene.level().loadFromJsonFile("assets/level_0.json");
+//	_scene.level().loadFromJsonFile("assets/level_0.json");
 	_game->log("Level: ", _scene.level().width(), ", ", _scene.level().height(),
 	           ", ", _scene.level().nLayers(), ", ");
+	
+	_sounds[0] = _game->sounds()->loadSound("assets/test/laser0.wav");
+	_sounds[1] = _game->sounds()->loadSound("assets/test/laser1.wav");
+	_sounds[2] = _game->sounds()->loadSound("assets/test/laser2.wav");
+	_sounds[3] = _game->sounds()->loadSound("assets/test/laser3.wav");
+	_music = _game->sounds()->loadMusic("assets/test/music.ogg");
 
 	_obj = _scene.addObject("Test");
 	_scene.addSpriteComponent(_obj, _tilemap, 1);
@@ -120,14 +132,23 @@ void MainState::shutdown() {
 	TileMap tm = _scene.level().tileMap();
 	_game->images()->releaseTilemap(tm);
 	_game->images()->releaseTilemap(_tilemap);
+	
+	for (int i = 0; i < 4; i++) {
+		_game->sounds()->releaseSound(_sounds[i]);
+	}
+	_game->sounds()->releaseMusic(_music);
 }
 
 
 void MainState::start() {
 	_game->log("Start MainState...");
+	_game->log("Play music...");
+	_game->sounds()->playMusic(_music);
 }
 
 
 void MainState::stop() {
+	_game->log("Halt music...");
+	_game->sounds()->haltMusic();
 	_game->log("Stop MainState...");
 }

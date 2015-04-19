@@ -40,7 +40,7 @@ add_executable(usb_warrior
 
 	input.cpp
 	image_manager.cpp
-	soundplayer.cpp
+	sound_player.cpp
 
 	game_object.cpp
 	sprite_component.cpp
@@ -55,12 +55,3 @@ target_link_libraries(usb_warrior
 	${SDL2_LIBRARY}
 	json
 )
-
-#add_executable(test_level
-#	main_level.cpp
-#	level.cpp
-#)
-
-#target_link_libraries(test_level json)
-
-message("########### ${SDLMIXER_LIBRARY}")
