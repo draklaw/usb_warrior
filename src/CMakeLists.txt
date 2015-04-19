@@ -41,6 +41,7 @@ add_executable(usb_warrior
 	input.cpp
 	image_manager.cpp
 	sound_player.cpp
+	font_manager.cpp
 	loader.cpp
 
 	game_object.cpp

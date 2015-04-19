@@ -42,6 +42,11 @@ void Loader::addMusic(const std::string& filename) {
 }
 
 
+void Loader::addFont(const std::string& filename) {
+	_fontMap.emplace(filename, nullptr);
+}
+
+
 const Image* Loader::getImage(const std::string& filename) {
 	return _imageMap.at(filename);
 }
@@ -57,6 +62,11 @@ const Music* Loader::getMusic(const std::string& filename) {
 }
 
 
+const Font* Loader::getFont(const std::string& filename) {
+	return _fontMap.at(filename);
+}
+
+
 unsigned Loader::loadAll() {
 	unsigned err = 0;
 	for(auto& file: _imageMap) {
@@ -69,6 +79,10 @@ unsigned Loader::loadAll() {
 	}
 	for(auto& file: _musicMap) {
 		file.second = _game->sounds()->loadMusic(file.first);
+		if(!file.second) { err++; }
+	}
+	for(auto& file: _fontMap) {
+		file.second = _game->fonts()->loadFont(file.first);
 		if(!file.second) { err++; }
 	}
 	return err;
@@ -91,6 +105,12 @@ void Loader::releaseAll() {
 	for(auto& file: _musicMap) {
 		if(file.second) {
 			_game->sounds()->releaseMusic(file.second);
+			file.second = nullptr;
+		}
+	}
+	for(auto& file: _fontMap) {
+		if(file.second) {
+			_game->fonts()->releaseFont(file.second);
 			file.second = nullptr;
 		}
 	}
