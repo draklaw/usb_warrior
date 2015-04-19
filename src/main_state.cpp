@@ -109,7 +109,7 @@ void MainState::initialize() {
 
 	_scene.level().setTileMap(_game->images()->loadTilemap("assets/ts_placeholder.png", 32, 32));
 
-//	_scene.level().loadFromJsonFile("assets/level_0.json");
+	_scene.level().loadFromJsonFile("assets/level_0.json");
 	_game->log("Level: ", _scene.level().width(), ", ", _scene.level().height(),
 	           ", ", _scene.level().nLayers(), ", ");
 	
