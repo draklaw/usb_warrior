@@ -76,6 +76,7 @@ void Scene::render(double interp) {
 		const GeometryComponent& geom0 = obj->geom(1);
 		const GeometryComponent& geom1 = obj->geom(0);
 
+		float epsilon = .001;
 		Vec2 pos     = lerp<Vec2>(interp, geom0.pos,         geom1.pos);
 		//float rot   = lerp(interp, geom0.rot,               geom1.rot);
 		Vec2 topleft = lerp<Vec2>(interp, geom0.box.min(),   geom1.box.min());
@@ -83,10 +84,10 @@ void Scene::render(double interp) {
 
 		SDL_Rect tileRect = sprite.tilemap().tileRect(index);
 		SDL_Rect destRect;
-		destRect.x = pos.x() + topleft.x();
-		destRect.y = pos.y() + topleft.y();
-		destRect.w = sizes.x();
-		destRect.h = sizes.y();
+		destRect.x = std::floor(pos.x() + topleft.x() - epsilon);
+		destRect.y = std::floor(pos.y() + topleft.y() - epsilon);
+		destRect.w = std::floor(sizes.x() - epsilon);
+		destRect.h = std::floor(sizes.y() - epsilon);
 
 		// TODO: rotation / flips
 		SDL_TRY(SDL_RenderCopy(_game->renderer(),
