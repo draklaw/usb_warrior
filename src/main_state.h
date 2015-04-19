@@ -64,8 +64,11 @@ protected:
 
 	GameObject*  _obj;
 	TileMap      _tilemap;
-	const Sound* _sounds[4];
+
+	const Sound* _msound;
+	const Sound* _jsound;
 	const Music* _music;
+	int _mchannel;
 };
 
 

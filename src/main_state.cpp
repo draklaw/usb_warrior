@@ -40,7 +40,10 @@ MainState::MainState(Game* game)
       _up(INVALID_INPUT),
       _down(INVALID_INPUT),
       _use(INVALID_INPUT),
-      _obj(nullptr) {
+      _obj(nullptr),
+	  _msound(nullptr),
+	  _jsound(nullptr),
+	  _music(nullptr) {
 }
 
 
@@ -48,11 +51,6 @@ void MainState::update() {
 	_scene.beginUpdate();
 	
 	_input.sync();
-	
-	if(_input.justPressed(_left))  _game->sounds()->playSound(_sounds[0]);
-	if(_input.justPressed(_right)) _game->sounds()->playSound(_sounds[1]);
-	if(_input.justPressed(_up))    _game->sounds()->playSound(_sounds[2]);
-	if(_input.justPressed(_down))  _game->sounds()->playSound(_sounds[3]);
 
 	// ppm <=> Player Puppet Master
 	MoveComponent* ppm = static_cast<MoveComponent*>(_obj->getComponent(MOVE_COMPONENT_ID));
@@ -69,6 +67,8 @@ void MainState::update() {
 		_game->log("Collision: ", info.flags, " - ", info.penetration.transpose());
 	}
 	
+	// moves
+	double speed = 4;
 	if(_obj->isActive()) {
 		if(_input.isPressed(_left))  ppm->walk(LEFT);
 		if(_input.isPressed(_right)) ppm->walk(RIGHT);
@@ -76,10 +76,23 @@ void MainState::update() {
 		if(_input.isPressed(_down))  /* TODO: Duck ! */;
 	}
 	
-	if(_input.justPressed(_use))
-		_obj->setActive(!_obj->isActive());
-	
 	_scene.updateLogic(MOVE_COMPONENT_ID);
+
+	if(_input.justPressed(_use)) _obj->setActive(!_obj->isActive());
+
+	// sounds
+	static bool was_moving = false;
+	bool is_moving = _input.isPressed(_left) || _input.isPressed(_right)
+		|| _input.isPressed(_up) || _input.isPressed(_down);
+
+	if(is_moving && !was_moving) {
+		_mchannel = _game->sounds()->playSound(_msound, -1);
+	} else if (!is_moving && was_moving) {
+		_game->sounds()->haltSound(_mchannel);
+	}
+	was_moving = is_moving;
+
+	if(_input.justPressed(_use)) _game->sounds()->playSound(_jsound, 0);
 }
 
 
@@ -113,8 +126,6 @@ void MainState::initialize() {
 
 	_loader.addSound("assets/test/laser0.wav");
 	_loader.addSound("assets/test/laser1.wav");
-	_loader.addSound("assets/test/laser2.wav");
-	_loader.addSound("assets/test/laser3.wav");
 	_loader.addMusic("assets/test/music.ogg");
 
 	_loader.loadAll();
@@ -139,11 +150,10 @@ void MainState::initialize() {
 	_scene.level().setTileCollision(12, true);
 	_scene.level().setTileCollision(13, true);
 
-	_sounds[0] = _loader.getSound("assets/test/laser0.wav");
-	_sounds[1] = _loader.getSound("assets/test/laser1.wav");
-	_sounds[2] = _loader.getSound("assets/test/laser2.wav");
-	_sounds[3] = _loader.getSound("assets/test/laser3.wav");
-	_music     = _loader.getMusic("assets/test/music.ogg");
+	_msound = _loader.getSound("assets/test/laser0.wav");
+	_jsound = _loader.getSound("assets/test/laser1.wav");
+	_music  = _loader.getMusic("assets/test/music.ogg");
+	_mchannel = -1;
 
 	_obj = _scene.addObject("Test");
 	_scene.addSpriteComponent(_obj, _tilemap, 1);
@@ -155,7 +165,6 @@ void MainState::initialize() {
 
 void MainState::shutdown() {
 	_game->log("Shutdown MainState...");
-
 	_loader.releaseAll();
 }
 
