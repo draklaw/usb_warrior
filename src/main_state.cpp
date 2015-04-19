@@ -23,17 +23,15 @@
 
 #include <SDL2/SDL_image.h>
 
+#include "main_state.h"
+
+#include "components/move_component.h"
 #include "utils.h"
 #include "game.h"
 
-#include "main_state.h"
-
-
-#define MAIN_STATE_UPDATE_TIME  (1./60.)
-
 
 MainState::MainState(Game* game)
-    : GameState(game, "Main", durationFromSeconds(MAIN_STATE_UPDATE_TIME)),
+    : GameState(game, "Main", durationFromSeconds(UPDATE_TIME)),
       _scene(game),
       _input(game),
       _left(INVALID_INPUT),
@@ -47,24 +45,28 @@ MainState::MainState(Game* game)
 
 void MainState::update() {
 	_scene.beginUpdate();
-
+	
 	_input.sync();
-
-	double speed = 4;
-
+	
 	if(_input.justPressed(_left))  _game->sounds()->playSound(_sounds[0]);
 	if(_input.justPressed(_right)) _game->sounds()->playSound(_sounds[1]);
 	if(_input.justPressed(_up))    _game->sounds()->playSound(_sounds[2]);
 	if(_input.justPressed(_down))  _game->sounds()->playSound(_sounds[3]);
-
+	
+	// ppp <=> Player Puppet Master
+	MoveComponent* ppm = static_cast<MoveComponent*>(_obj->getComponent(MOVE_COMPONENT_ID));
+	
 	if(_obj->isActive()) {
-		if(_input.isPressed(_left))  _obj->geom().pos.x() -= speed;
-		if(_input.isPressed(_right)) _obj->geom().pos.x() += speed;
-		if(_input.isPressed(_up))    _obj->geom().pos.y() -= speed;
-		if(_input.isPressed(_down))  _obj->geom().pos.y() += speed;
+		if(_input.isPressed(_left))  ppm->walk(LEFT);
+		if(_input.isPressed(_right)) ppm->walk(RIGHT);
+		if(_input.isPressed(_up))    ppm->jump();
+		if(_input.isPressed(_down))  /* TODO: Duck ! */;
 	}
-
-	if(_input.justPressed(_use)) _obj->setActive(!_obj->isActive());
+	
+	if(_input.justPressed(_use))
+		_obj->setActive(!_obj->isActive());
+	
+	_scene.updateLogic(MOVE_COMPONENT_ID);
 }
 
 
@@ -112,7 +114,7 @@ void MainState::initialize() {
 	_scene.level().loadFromJsonFile("assets/level_0.json");
 	_game->log("Level: ", _scene.level().width(), ", ", _scene.level().height(),
 	           ", ", _scene.level().nLayers(), ", ");
-	
+
 	_sounds[0] = _game->sounds()->loadSound("assets/test/laser0.wav");
 	_sounds[1] = _game->sounds()->loadSound("assets/test/laser1.wav");
 	_sounds[2] = _game->sounds()->loadSound("assets/test/laser2.wav");
@@ -121,6 +123,7 @@ void MainState::initialize() {
 
 	_obj = _scene.addObject("Test");
 	_scene.addSpriteComponent(_obj, _tilemap, 1);
+	_scene.addLogicComponent(_obj, MOVE_COMPONENT_ID, new MoveComponent(_obj));
 	_obj->computeBoxFromSprite(Vec2(.5, .5), 1);
 	_obj->geom().pos = Vec2(1920/4, 1080/4);
 }
@@ -142,13 +145,13 @@ void MainState::shutdown() {
 
 void MainState::start() {
 	_game->log("Start MainState...");
-	_game->log("Play music...");
-	_game->sounds()->playMusic(_music);
+// 	_game->log("Play music...");
+// 	_game->sounds()->playMusic(_music);
 }
 
 
 void MainState::stop() {
-	_game->log("Halt music...");
-	_game->sounds()->haltMusic();
+// 	_game->log("Halt music...");
+// 	_game->sounds()->haltMusic();
 	_game->log("Stop MainState...");
 }

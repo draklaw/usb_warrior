@@ -23,7 +23,7 @@
 #include "game_object.h"
 
 LogicComponent::LogicComponent(GameObject* obj)
-	: _obj(obj) {
+    : _obj(obj) {
 }
 
 GameObject::GameObject(Scene* scene, const char* name)
@@ -48,6 +48,11 @@ bool GameObject::hasComponent(unsigned id) const {
 }
 
 
+LogicComponent* GameObject::getComponent(unsigned id) const {
+	return (id < _logicMap.size())?_logicMap[id]:nullptr;
+}
+
+
 void GameObject::setActive(bool active) {
 	if(active) _flags |=  OBJECT_ACTIVE;
 	else       _flags &= ~OBJECT_ACTIVE;
@@ -61,7 +66,7 @@ void GameObject::_nextUpdate() {
 
 void GameObject::_registerLogic(unsigned id, LogicComponent* lcomp) {
 	if (_logicMap.size() <= id) {
-		_logicMap.resize(id, nullptr);
+		_logicMap.resize(id+1, nullptr);
 	}
 	
 	_logicMap[id] = lcomp;
