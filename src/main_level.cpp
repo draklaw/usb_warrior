@@ -30,6 +30,7 @@ int main(int argc, char** argv)
 	if (!l->loadFromJsonFile("assets/level_0.json"))
 		return EXIT_FAILURE;
 	
+	/*
 	for (int y = 0 ; y < 20 ; y++)
 	{
 		for (int x = 0 ; x < 40 ; x++)
@@ -40,6 +41,9 @@ int main(int argc, char** argv)
 		}
 		printf ("\n");
 	}
+	*/
+	
+	// l->dumpEntities();
 	
 	return EXIT_SUCCESS;
 }

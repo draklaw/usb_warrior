@@ -18,6 +18,7 @@
  */
 
 #include <cstdlib>
+#include <cstring>
 #include <cstdio>
 
 #include <iostream>
@@ -32,7 +33,8 @@
 #define PANIC(test) do {               \
 	if (test) {                          \
 		printf (#test ": %i\n", __LINE__); \
-		goto panic;                        \
+		json_free_value(&root);            \
+		return false;                      \
 	}                                    \
 } while (false)
 
@@ -42,11 +44,15 @@ Level::Level(Scene* scene)
 	_width = _height = _layers = 0;
 }
 
-
 void Level::setTileMap(const TileMap& tileMap) {
 	_tileMap = tileMap;
 }
 
+// TODO: Convert to private method ? Add assertion ?
+static inline bool isTileLayer (json_t* layer)
+{
+	return strcmp(json_find_first_label(layer,"type")->child->text,"tilelayer") == 0;
+}
 
 bool Level::loadFromJsonFile (const char* tiledMap)
 {
@@ -55,6 +61,7 @@ bool Level::loadFromJsonFile (const char* tiledMap)
 	json_t* item = NULL;
 	json_t* iter = NULL;
 	
+	// Parse data.
 	FILE* jsonFile = fopen(tiledMap, "r");
 	PANIC(jsonFile == NULL);
 	
@@ -77,25 +84,37 @@ bool Level::loadFromJsonFile (const char* tiledMap)
 	item = item->child;
 	
 	// Counting layers.
+	unsigned objectLayers = 0;
 	iter = item->child;
-	PANIC(iter == NULL || iter->type != JSON_OBJECT);
-	_layers = 1;
+	_layers = 0;
 	
-	while (iter != item->child_end)
-	{
-		_layers++;
+	do {
+		PANIC(iter == NULL || iter->type != JSON_OBJECT);
+		if (isTileLayer(iter))
+			_layers++;
+		else
+			objectLayers++;
 		iter = iter->next;
-	}
+	} while (iter != NULL);
 	
 	// Allocating memory.
 	_map.reserve(_width*_height*_layers);
 	
-	// Checking layer data.
+	// Checking map layer data.
+	unsigned z = 0;
 	item = item->child; // First layer.
 	
-	for (unsigned z = 0 ; z < _layers ; z++)
+	while (z < _layers)
 	{
+		PANIC(item == NULL);
+		if (!isTileLayer(item))
+		{
+			item = item->next;
+			continue;
+		}
+		
 		iter = json_find_first_label(item,"data")->child;
+		PANIC(iter == NULL || iter->type != JSON_ARRAY);
 		
 		iter = iter->child; // First entry in data.
 		unsigned x = 0, y = 0;
@@ -110,15 +129,66 @@ bool Level::loadFromJsonFile (const char* tiledMap)
 		}
 		
 		item = item->next; // Next layer.
+		z++;
+	}
+	
+	// Back to first layer (checking object layer data).
+	item = item->parent->child;
+	z = 0;
+	
+	while (z < objectLayers)
+	{
+		if (isTileLayer(item))
+		{
+			item = item->next;
+			continue;
+		}
+		
+		// First object.
+		iter = json_find_first_label(item,"objects")->child->child;
+		
+		while (iter != NULL)
+		{
+			json_t* prop = NULL;
+			EntityData e;
+			
+			e.emplace("name",json_find_first_label(iter,"name")->child->text);
+			e.emplace("type",json_find_first_label(iter,"type")->child->text);
+			e.emplace("x",json_find_first_label(iter,"x")->child->text);
+			e.emplace("y",json_find_first_label(iter,"y")->child->text);
+			
+			// Pile up custom properties.
+			prop = json_find_first_label(iter,"properties")->child->child;
+			while (prop != NULL) {
+				e.emplace(prop->text,prop->child->text);
+				prop = prop->next;
+			}
+			
+			_entities.push_back(e);
+			
+			// Next object.
+			iter = iter->next;
+		}
+		
+		item = item->next;
+		z++;
 	}
 	
 	json_free_value(&root);
 	return true;
-	
-	panic:
-		json_free_value(&root);
-		return false;
 }
+
+/*
+void Level::dumpEntities ()
+{
+	for (auto& e:_entities)
+	{
+		for (auto& av:e)
+			std::cout << av.first << ":" << av.second << "\t";
+		std::cout << std::endl;
+	}
+}
+*/
 
 inline unsigned Level::index (unsigned x, unsigned y, unsigned z)
 {
