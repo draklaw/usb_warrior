@@ -26,26 +26,28 @@
 
 bool Font::parseFile(const char *filename) {
 	FILE* fd = fopen(filename, "r");
-	if (fd == NULL) return false;
+	if (fd == NULL) { return false; }
 
 	if(fscanf(fd, "%d %d %*d %*d %*d %*d %*d %*d %*d %*d\n",
-	          &_lineHeight, &_baseLine) != 2)
-		return false;
-		
+	          &_lineHeight, &_baseLine) != 2) {	goto fail; }
+
 	int nb_chars;
-	if(fscanf(fd, "%d\n", &nb_chars) != 1) return false;
+	if(fscanf(fd, "%d\n", &nb_chars) != 1) { goto fail; }
 	for (int i = 0; i < nb_chars; i++) {
 		unsigned codepoint;
 		Character chr;
 		if(fscanf(fd, "%u %d %d %d %d %d %d %d %*d %*d\n", &codepoint,
 		          &chr.x, &chr.y, &chr.width, &chr.height,
-			      &chr.xoff, &chr.yoff, &chr.xadv) != 8) {
-			return false;
-		}
+		          &chr.xoff, &chr.yoff, &chr.xadv) != 8) { goto fail; }
 		_charMap.emplace(codepoint, chr);
 	}
 
+	fclose(fd);
 	return true;
+
+fail:
+	fclose(fd);
+	return false;
 }
 
 

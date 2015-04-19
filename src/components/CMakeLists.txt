@@ -17,46 +17,12 @@
 ##  along with usb_warrior.  If not, see <http://www.gnu.org/licenses/>.
 ##
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-
-add_subdirectory(json)
-#add_subdirectory(components)
-
-find_package(Eigen3 REQUIRED)
-find_package(SDL2 REQUIRED)
-find_package(SDL2_mixer REQUIRED)
-find_package(SDL2_image REQUIRED)
-
 include_directories(
 	"${EIGEN3_INCLUDE_DIR}"
 	"${SDL2_INCLUDE_DIR}"
-	"json"
+	"${CMAKE_SOURCE_DIR}/src"
 )
 
-add_executable(usb_warrior
-	main.cpp
-	game.cpp
-	game_state.cpp
-	main_state.cpp
-
-	input.cpp
-	image_manager.cpp
-	sound_player.cpp
-	font_manager.cpp
-	loader.cpp
-
-	game_object.cpp
-	sprite_component.cpp
-	level.cpp
-	scene.cpp
-
-	components/move_component.cpp
-)
-
-target_link_libraries(usb_warrior
-	${SDL2_LIBRARY}
-	${SDL2IMAGE_LIBRARY}
-	${SDLMIXER_LIBRARY}
-	${SDL2_LIBRARY}
-	json
+add_library(components
+	move_component.cpp
 )
