@@ -44,6 +44,7 @@ GameState::GameState(Game* game, const std::string& name, Duration updateTime)
       _name(name),
       _updateTime(updateTime),
       _frameTime(durationFromSeconds(1.01d / game->getRefreshRate())),
+      _maxUpdateLatency(2),
       _enabled(false),
       _running(false) {
 }
@@ -61,14 +62,22 @@ void GameState::run() {
 
 	TimePoint time = now();
 	_nextFrame  = time;
-	_nextUpdate = time + _updateTime;
+	_nextUpdate = time;
 
 	while(_running) {
 		_game->dispatchPendingEvents();
 
 		time = now();
-		TimePoint next_event = std::min(_nextUpdate, _nextFrame);
 
+		// Do not accumulate to much frames.
+		if(_nextFrame < time) _nextFrame = time;
+
+		// If we are more than _maxUpdateLacency frame late, lets slow down
+		// time.
+		if(_nextUpdate + _maxUpdateLatency * _updateTime < time)
+			_nextUpdate = time - _maxUpdateLatency * _updateTime;
+
+		TimePoint next_event = std::min(_nextUpdate, _nextFrame);
 		if(next_event > time) {
 			// Wait !
 			SDL_Delay(std::max(unsigned(secondsFromDuration(next_event - time) * 1000), 1u));
@@ -76,6 +85,7 @@ void GameState::run() {
 			// Update !
 			update();
 			_nextUpdate += _updateTime;
+			_uptime     += secondsFromDuration(_updateTime);
 		} else {
 			// Frame ! (Everything is more funny with bangs !)
 			double interp = 1.d

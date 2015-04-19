@@ -23,11 +23,11 @@
 
 #define SDL_TRY(_code) do { if(_code) { _game->sdlCrash(__FILE__); } } while(false)
 
-enum direction {
-	UP,
-	LEFT,
-	DOWN,
-	RIGHT
+enum Direction {
+	UP    = 0x01,
+	RIGHT = 0x02,
+	DOWN  = 0x04,
+	LEFT  = 0x08
 };
 
 template < typename T >

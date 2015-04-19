@@ -50,8 +50,8 @@ public:
 
 	void beginRender();
 	void endRender();
-	void render(double interp, Boxi viewBox, Boxi screenBox);
-	void renderLevelLayer(unsigned layer, Boxi viewBox, Boxi screenBox);
+	void render(double interp, Boxf viewBox, Boxf screenBox);
+	void renderLevelLayer(unsigned layer, Boxf viewBox, Boxf screenBox);
 
 	inline Game* game() const { return _game; }
 

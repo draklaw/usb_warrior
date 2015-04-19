@@ -31,16 +31,16 @@
 
 
 MainState::MainState(Game* game)
-    : GameState(game, "Main", durationFromSeconds(UPDATE_TIME)),
-      _scene(game),
-      _loader(game),
-      _input(game),
-      _left(INVALID_INPUT),
-      _right(INVALID_INPUT),
-      _up(INVALID_INPUT),
-      _down(INVALID_INPUT),
-      _use(INVALID_INPUT),
-      _obj(nullptr),
+	: GameState(game, "Main", durationFromSeconds(UPDATE_TIME)),
+	  _scene(game),
+	  _loader(game),
+	  _input(game),
+	  _left(INVALID_INPUT),
+	  _right(INVALID_INPUT),
+	  _up(INVALID_INPUT),
+	  _down(INVALID_INPUT),
+	  _use(INVALID_INPUT),
+	  _obj(nullptr),
 	  _msound(nullptr),
 	  _jsound(nullptr),
 	  _music(nullptr),
@@ -50,7 +50,7 @@ MainState::MainState(Game* game)
 
 void MainState::update() {
 	_scene.beginUpdate();
-	
+
 	_input.sync();
 
 	// ppm <=> Player Puppet Master
@@ -73,7 +73,7 @@ void MainState::update() {
 		if(_input.isPressed(_left))  ppm->walk(LEFT);
 		if(_input.isPressed(_right)) ppm->walk(RIGHT);
 		if(_input.isPressed(_up))    ppm->jump();
-		if(_input.isPressed(_down))  /* TODO: Duck ! */;
+//		if(_input.isPressed(_down))  /* TODO: Duck ! */;
 	}
 	
 //	if(_input.justPressed(_use)) _obj->setEnabled(!_obj->isEnabled());
@@ -101,10 +101,11 @@ void MainState::update() {
 
 
 void MainState::frame(double interp) {
-	Vec2i viewCenter = _obj->geom().pos.template cast<int>();
-	Boxi viewBox(viewCenter - _game->screenSize() / 2,
-	             viewCenter + _game->screenSize() / 2);
-	Boxi screenBox(Vec2i::Zero(), _game->screenSize());
+	Vec2 screenSize = _game->screenSize().template cast<float>();
+	Vec2 viewCenter = _obj->posInterp(interp);
+	Boxf viewBox(viewCenter - screenSize / 2,
+	             viewCenter + screenSize / 2);
+	Boxf screenBox(Vec2::Zero(), screenSize);
 
 	_scene.beginRender();
 
@@ -118,6 +119,8 @@ void MainState::frame(double interp) {
 		_scene.renderLevelLayer(layer, viewBox, screenBox);
 	}
 
+	_font.render(_game, 100, 400, "La chaine de test a afficher.", 250);
+
 	_scene.endRender();
 }
 
@@ -127,6 +130,7 @@ void MainState::initialize() {
 
 	_loader.addImage("assets/test/tileset.png");
 	_loader.addImage("assets/ts_placeholder.png");
+	_loader.addImage("assets/test/font_0.png");
 
 	_loader.addSound("assets/test/laser0.wav");
 	_loader.addSound("assets/test/laser1.wav");
@@ -159,8 +163,9 @@ void MainState::initialize() {
 	_jsound = _loader.getSound("assets/test/laser1.wav");
 	_music  = _loader.getMusic("assets/test/music.ogg");
 	_mchannel = -1;
-	
+
 	_font = _loader.getFont("assets/test/font.txt");
+	_font.setImage(_loader.getImage("assets/test/font_0.png"));
 
 	_obj = _scene.addObject("Test");
 	_scene.addSpriteComponent(_obj, _tilemap, 1);

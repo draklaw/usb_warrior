@@ -24,7 +24,44 @@
 #include "font_manager.h"
 
 
-bool Font::parseFile(const char *filename) {
+SDL_Rect Character::charRect() const {
+	SDL_Rect rect;
+	rect.x = _x;
+	rect.y = _y;
+	rect.w = _w;
+	rect.h = _h;
+	return rect;
+}
+
+
+SDL_Rect Character::destRect(unsigned x, unsigned y) const {
+	SDL_Rect rect;
+	rect.x = x + _xoff;
+	rect.y = y + _yoff;
+	rect.w = _w;
+	rect.h = _h;
+	return rect;
+}
+
+
+Font::Font(const FontImpl* font)
+    : _font(font),
+      _image(nullptr) {
+}
+
+
+void Font::setImage(const Image* image) {
+	_image = image;
+}
+
+
+void Font::render(Game* game, unsigned x, unsigned y, const char* text,
+                  unsigned maxWidth) const {
+	_font->render(game, _image, x, y, text, maxWidth);
+}
+
+
+bool FontImpl::parseFile(const char *filename) {
 	FILE* fd = fopen(filename, "r");
 	if (fd == NULL) { return false; }
 
@@ -37,8 +74,8 @@ bool Font::parseFile(const char *filename) {
 		unsigned codepoint;
 		Character chr;
 		if(fscanf(fd, "%u %d %d %d %d %d %d %d %*d %*d\n", &codepoint,
-		          &chr.x, &chr.y, &chr.width, &chr.height,
-		          &chr.xoff, &chr.yoff, &chr.xadv) != 8) { goto fail; }
+		          &chr._x, &chr._y, &chr._w, &chr._h, &chr._xoff, &chr._yoff,
+		          &chr._xadv) != 8) { goto fail; }
 		_charMap.emplace(codepoint, chr);
 	}
 
@@ -51,23 +88,43 @@ fail:
 }
 
 
-FontManager::FontManager(Game* game)
-	: _game(game),
-	  _fontMap() {
-	
+void FontImpl::render(Game* game, const Image* image, unsigned x, unsigned y,
+                      const char* text, unsigned maxWidth) const {
+	unsigned xOrig = x;
+	for(int i = 0; text[i] != '\0'; i++) {
+		auto chrIt = _charMap.find(text[i]);
+		if(chrIt == _charMap.end()) {
+			chrIt = _charMap.find('?');
+		}
+		const Character& chr = chrIt->second;
+		if(x + chr._xadv > xOrig + maxWidth) {
+			y += _baseLine;
+			x = xOrig;
+		}
+		SDL_Rect charRect = chr.charRect();
+		SDL_Rect destRect = chr.destRect(x, y);
+		SDL_RenderCopy(game->renderer(), image->texture, &charRect, &destRect);
+		x += chr._xadv;
+	}
 }
 
 
-const Font* FontManager::loadFont(const std::string& filename) {
+FontManager::FontManager(Game* game)
+	: _game(game),
+	  _fontMap() {
+}
+
+
+const FontImpl* FontManager::loadFont(const std::string& filename) {
 	auto it = _fontMap.find(filename);
 	if(it == _fontMap.end()) {
-		Font fnt;
+		FontImpl fnt;
 
 		_game->log("Load font  \"", filename, "\"...");
 
 		if(!fnt.parseFile(filename.c_str())) {
 			_game->error("Failed to load font");
-			return new Font();
+			return nullptr;
 		}
 		fnt.name = filename;
 		fnt.useCount = 0;
@@ -83,7 +140,7 @@ const Font* FontManager::loadFont(const std::string& filename) {
 }
 
 
-void FontManager::releaseFont(const Font* font) {
+void FontManager::releaseFont(const FontImpl* font) {
 	auto it = _fontMap.find(font->name);
 	assert(it != _fontMap.end());
 

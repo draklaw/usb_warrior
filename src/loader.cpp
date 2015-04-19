@@ -62,8 +62,8 @@ const Music* Loader::getMusic(const std::string& filename) {
 }
 
 
-const Font* Loader::getFont(const std::string& filename) {
-	return _fontMap.at(filename);
+Font Loader::getFont(const std::string& filename) {
+	return Font(_fontMap.at(filename));
 }
 
 

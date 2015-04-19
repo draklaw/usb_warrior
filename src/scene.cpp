@@ -94,7 +94,7 @@ void Scene::endRender() {
 }
 
 
-void Scene::render(double interp, Boxi viewBox, Boxi screenBox) {
+void Scene::render(double interp, Boxf viewBox, Boxf screenBox) {
 	Vec2 scale = (  screenBox.sizes().array().template cast<float>()
 	              / viewBox.  sizes().array().template cast<float>()).matrix();
 //	_game->log("view: ", viewBox.min().transpose(), ", ", viewBox.sizes().transpose());
@@ -112,27 +112,19 @@ void Scene::render(double interp, Boxi viewBox, Boxi screenBox) {
 			continue;
 		}
 
-		const GeometryComponent& geom0 = obj->geom(PREV_UP);
-		const GeometryComponent& geom1 = obj->geom(CURR_UP);
-
 		float epsilon = .001;
-		Vec2 pos     = lerp<Vec2>(interp, geom0.pos,         geom1.pos);
 		//float rot   = lerp(interp, geom0.rot,               geom1.rot);
-		Vec2 topleft = lerp<Vec2>(interp, geom0.box.min(),   geom1.box.min());
-		Vec2 sizes   = lerp<Vec2>(interp, geom0.box.sizes(), geom1.box.sizes());
+		Boxf box     = obj->worldBoxInterp(interp);
+//		_game->log("box: ", box.min().transpose(), ", ", box.sizes().transpose());
 
 		SDL_Rect tileRect = sprite.tilemap().tileRect(index);
 		SDL_Rect destRect;
-		destRect.x = std::floor(pos.x() + topleft.x() - epsilon);
-		destRect.y = std::floor(pos.y() + topleft.y() - epsilon);
-		destRect.w = std::floor(sizes.x() + epsilon);
-		destRect.h = std::floor(sizes.y() + epsilon);
-
-//		_game->log("Before: ", destRect.x, ", ", destRect.y, ", ", destRect.w, ", ", destRect.h);
-		destRect.x  = (destRect.x - viewBox.min().x()) * scale.x() + screenBox.min().x();
-		destRect.y  = (destRect.y - viewBox.min().y()) * scale.y() + screenBox.min().y();
-		destRect.w *= scale.x();
-		destRect.h *= scale.y();
+		destRect.x = (box.min().x() - viewBox.min().x()) * scale.x()
+		           + screenBox.min().x() - epsilon;
+		destRect.y = (box.min().y() - viewBox.min().y()) * scale.y()
+		           + screenBox.min().y() - epsilon;
+		destRect.w = box.sizes().x() * scale.x() + epsilon;
+		destRect.h = box.sizes().y() * scale.y() + epsilon;
 //		_game->log("After : ", destRect.x, ", ", destRect.y, ", ", destRect.w, ", ", destRect.h);
 
 		// TODO: rotation / flips
@@ -143,29 +135,35 @@ void Scene::render(double interp, Boxi viewBox, Boxi screenBox) {
 }
 
 
-void Scene::renderLevelLayer(unsigned layer, Boxi viewBox, Boxi screenBox) {
+void Scene::renderLevelLayer(unsigned layer, Boxf viewBox, Boxf screenBox) {
 
-	Vec2 scale = screenBox.sizes().array().template cast<float>()
-	           / viewBox.  sizes().array().template cast<float>();
+	Vec2 scale = screenBox.sizes().array() / viewBox.sizes().array();
 
-	Vec2i lvlTileSize = _level.tileMap().tileSize().array()
-	                  * scale.template cast<int>().array();
-	Boxi boundBox = _level.tileBounds(viewBox.template cast<float>());
+	Vec2 lvlTileSize = _level.tileMap().tileSize().template cast<float>().array()
+	                 * scale.array();
+	Boxi boundBox = _level.tileBounds(viewBox);
 
 	SDL_Rect destRect;
-	destRect.w = lvlTileSize.x() * scale.x();
-	destRect.h = lvlTileSize.y() * scale.y();
-
 	for(int y = boundBox.min().y(); y <= boundBox.max().y(); ++y) {
 		for(int x = boundBox.min().x(); x <= boundBox.max().x(); ++x) {
 			Tile tile = _level.getTile(x, y, layer);
 			if(tile < 0) continue;
 
+			// It is important to compute both corners the same way to avoid
+			// roundoff errors.
+			Vec2 tileCoord = Vec2(x  , y  ).array() * lvlTileSize.array()
+			               - viewBox.min().array();
+			Vec2 nextCoord = Vec2(x+1, y+1).array() * lvlTileSize.array()
+			               - viewBox.min().array();
+			float epsilon = 0.01;
+			Vec2 tl = tileCoord.array() * scale.array() + screenBox.min().array();
+			Vec2 br = nextCoord.array() * scale.array() + screenBox.min().array();
+			destRect.x = tl.x() - epsilon;
+			destRect.y = tl.y() - epsilon;
+			destRect.w = br.x() - tl.x() + epsilon;
+			destRect.h = br.y() - tl.y() + epsilon;
+
 			SDL_Rect tileRect = _level.tileMap().tileRect(tile);
-			destRect.x = (x * lvlTileSize.x() - viewBox.min().x())
-								* scale.x() + screenBox.min().x();
-			destRect.y = (y * lvlTileSize.y() - viewBox.min().y())
-								* scale.y() + screenBox.min().y();
 			SDL_TRY(SDL_RenderCopy(_game->renderer(),
 								   _level.tileMap().image()->texture,
 								   &tileRect, &destRect));

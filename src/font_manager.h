@@ -22,26 +22,34 @@
 
 #include <unordered_map>
 
+#include "image_manager.h"
+
 
 class Game;
 
 
 class Character {
 public:
-	int x;
-	int y;
-	int width;
-	int height;
-	int xoff;
-	int yoff;
-	int xadv;
+	SDL_Rect charRect() const;
+	SDL_Rect destRect(unsigned x, unsigned y) const;
+
+public:
+	int _x;
+	int _y;
+	int _w;
+	int _h;
+	int _xoff;
+	int _yoff;
+	int _xadv;
 };
 
 
-class Font {
+class FontImpl {
 public:
 	bool parseFile(const char* filename);
 
+	void render(Game* game, const Image* image, unsigned x, unsigned y,
+	            const char* text, unsigned maxWidth) const;
 public:
 	std::string  name;
 	unsigned     useCount;
@@ -57,15 +65,30 @@ private:
 };
 
 
+class Font {
+public:
+	Font(const FontImpl* font);
+
+	void setImage(const Image* image);
+
+	void render(Game* game, unsigned x, unsigned y, const char* text,
+	            unsigned maxWidth = 0xffffffff) const;
+
+private:
+	const FontImpl* _font;
+	const Image*    _image;
+};
+
+
 class FontManager {
 public:
 	FontManager(Game* game);
 
-	const Font* loadFont(const std::string& filename);
-	void releaseFont(const Font* font);
+	const FontImpl* loadFont(const std::string& filename);
+	void releaseFont(const FontImpl* font);
 
 private:
-	typedef std::unordered_map<std::string, Font> FontMap;
+	typedef std::unordered_map<std::string, FontImpl> FontMap;
 
 private:
 	Game*   _game;

@@ -58,7 +58,7 @@ const Sound* SoundPlayer::loadSound(const std::string& filename) {
 		snd.chunk = Mix_LoadWAV(filename.c_str());
 		if(!snd.chunk) {
 			_game->error("Failed to load sound: ", Mix_GetError());
-			return new Sound();
+			return nullptr;
 		}
 
 		snd.volume = SOUNDPLAYER_DEFAULT_VOLUME;
@@ -90,7 +90,7 @@ const Music* SoundPlayer::loadMusic(const std::string& filename) {
 		mus.track = Mix_LoadMUS(filename.c_str());
 		if(!mus.track) {
 			_game->error("Failed to load music: ", Mix_GetError());
-			return new Music();
+			return nullptr;
 		}
 		mus.name = filename;
 		mus.useCount = 0;
