@@ -17,55 +17,29 @@
  *  along with usb_warrior.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _MAIN_STATE_H_
-#define _MAIN_STATE_H_
+#ifndef _MOVE_COMPONENT_H_
+#define _MOVE_COMPONENT_H_
 
 
-#include <Eigen/Geometry>
-
-#include <SDL2/SDL_render.h>
-
-#include "input.h"
-#include "image_manager.h"
-#include "sound_player.h"
-#include "loader.h"
-#include "game_state.h"
-#include "scene.h"
+#include "../game_object.h"
+#include "../math.h"
+#include "../utils.h"
 
 
-#define UPDATE_TIME (1./60.)
-
-
-class MainState : public GameState {
+class MoveComponent : public LogicComponent {
 public:
-	MainState(Game* game);
-
+	MoveComponent(GameObject* obj);
+	
 	void update();
-	void frame(double interp);
+	void jump();
+	void walk(direction d);
+	void sprint(direction d);
 
 protected:
-	void initialize();
-	void shutdown();
-
-	void start();
-	void stop();
-
-protected:
-	Scene _scene;
-
-	Loader _loader;
-
-	InputManager _input;
-	Input        _left;
-	Input        _right;
-	Input        _up;
-	Input        _down;
-	Input        _use;
-
-	GameObject*  _obj;
-	TileMap      _tilemap;
-	const Sound* _sounds[4];
-	const Music* _music;
+	GeometryComponent* _puppet;
+	
+	Vec2 _mSpeed;
+	bool _ground;
 };
 
 

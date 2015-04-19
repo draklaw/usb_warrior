@@ -60,10 +60,11 @@ void Scene::addSpriteComponent(GameObject* obj, const TileMap& tilemap,
 
 void Scene::addLogicComponent(GameObject* obj, unsigned id, LogicComponent* lcomp) {
 	if (_logicMap.size() <= id) {
-		_logicMap.resize(id);
+		_logicMap.resize(id+1);
 	}
 	
 	_logicMap[id].push_back(lcomp);
+	obj->_registerLogic(id, lcomp);
 }
 
 

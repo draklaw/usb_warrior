@@ -23,6 +23,12 @@
 
 #define SDL_TRY(_code) do { if(_code) { _game->sdlCrash(__FILE__); } } while(false)
 
+enum direction {
+	UP,
+	LEFT,
+	DOWN,
+	RIGHT
+};
 
 template < typename T >
 T lerp(double f, const T& a, const T& b) {
