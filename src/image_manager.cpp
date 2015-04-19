@@ -89,8 +89,7 @@ ImageManager::ImageManager(Game* game)
 }
 
 
-TileMap ImageManager::loadTilemap(const std::string& filename,
-                                  unsigned tileWidth, unsigned tileHeight) {
+const Image* ImageManager::loadImage(const std::string& filename) {
 	auto it = _imageMap.find(filename);
 	if(it == _imageMap.end()) {
 		Image img;
@@ -100,14 +99,14 @@ TileMap ImageManager::loadTilemap(const std::string& filename,
 		SDL_Surface* surf = IMG_Load(filename.c_str());
 		if(!surf) {
 			_game->error("Failed to load image: ", IMG_GetError());
-			return TileMap();
+			return nullptr;
 		}
 
 		img.texture = SDL_CreateTextureFromSurface(_game->renderer(), surf);
 		if(!img.texture) {
 			SDL_FreeSurface(surf);
 			_game->error("Failed to create \"", filename, "\" texture: ", SDL_GetError());
-			return TileMap();
+			return nullptr;
 		}
 
 		img.size     = Vec2i(surf->w, surf->h);
@@ -126,15 +125,14 @@ TileMap ImageManager::loadTilemap(const std::string& filename,
 
 	++(it->second.useCount);
 
-	return TileMap(&it->second, tileWidth, tileHeight);
+	return &it->second;
 }
 
 
-void ImageManager::releaseTilemap(TileMap& tilemap) {
-	auto it = _imageMap.find(tilemap.image()->name);
+void ImageManager::releaseImage(const Image* img) {
+	auto it = _imageMap.find(img->name);
 	assert(it != _imageMap.end());
 
-	tilemap._reset();
 	--(it->second.useCount);
 
 	if(!it->second.useCount) {

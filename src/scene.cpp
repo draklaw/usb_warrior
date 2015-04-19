@@ -92,8 +92,8 @@ void Scene::render(double interp, Boxi viewBox, Boxi screenBox) {
 			continue;
 		}
 
-		const GeometryComponent& geom0 = obj->geom(1);
-		const GeometryComponent& geom1 = obj->geom(0);
+		const GeometryComponent& geom0 = obj->geom(PREV_UP);
+		const GeometryComponent& geom1 = obj->geom(CURR_UP);
 
 		float epsilon = .001;
 		Vec2 pos     = lerp<Vec2>(interp, geom0.pos,         geom1.pos);

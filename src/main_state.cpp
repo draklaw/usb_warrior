@@ -35,6 +35,7 @@
 MainState::MainState(Game* game)
     : GameState(game, "Main", durationFromSeconds(MAIN_STATE_UPDATE_TIME)),
       _scene(game),
+      _loader(game),
       _input(game),
       _left(INVALID_INPUT),
       _right(INVALID_INPUT),
@@ -93,6 +94,17 @@ void MainState::frame(double interp) {
 void MainState::initialize() {
 	_game->log("Initialize MainState...");
 
+	_loader.addImage("assets/test/tileset.png");
+	_loader.addImage("assets/ts_placeholder.png");
+
+	_loader.addSound("assets/test/laser0.wav");
+	_loader.addSound("assets/test/laser1.wav");
+	_loader.addSound("assets/test/laser2.wav");
+	_loader.addSound("assets/test/laser3.wav");
+	_loader.addMusic("assets/test/music.ogg");
+
+	_loader.loadAll();
+
 	_left  = _input.addInput("left");
 	_right = _input.addInput("right");
 	_up    = _input.addInput("up");
@@ -105,19 +117,17 @@ void MainState::initialize() {
 	_input.mapScanCode(_down,  SDL_SCANCODE_DOWN);
 	_input.mapScanCode(_use,   SDL_SCANCODE_SPACE);
 
-	_tilemap = _game->images()->loadTilemap("assets/test/tileset.png", 32, 32);
+	_tilemap = TileMap(_loader.getImage("assets/test/tileset.png"), 32, 32);
 
-	_scene.level().setTileMap(_game->images()->loadTilemap("assets/ts_placeholder.png", 32, 32));
+	_scene.level().setTileMap(TileMap(_loader.getImage("assets/ts_placeholder.png"), 32, 32));
 
 	_scene.level().loadFromJsonFile("assets/level_0.json");
-	_game->log("Level: ", _scene.level().width(), ", ", _scene.level().height(),
-	           ", ", _scene.level().nLayers(), ", ");
 	
-	_sounds[0] = _game->sounds()->loadSound("assets/test/laser0.wav");
-	_sounds[1] = _game->sounds()->loadSound("assets/test/laser1.wav");
-	_sounds[2] = _game->sounds()->loadSound("assets/test/laser2.wav");
-	_sounds[3] = _game->sounds()->loadSound("assets/test/laser3.wav");
-	_music = _game->sounds()->loadMusic("assets/test/music.ogg");
+	_sounds[0] = _loader.getSound("assets/test/laser0.wav");
+	_sounds[1] = _loader.getSound("assets/test/laser1.wav");
+	_sounds[2] = _loader.getSound("assets/test/laser2.wav");
+	_sounds[3] = _loader.getSound("assets/test/laser3.wav");
+	_music     = _loader.getMusic("assets/test/music.ogg");
 
 	_obj = _scene.addObject("Test");
 	_scene.addSpriteComponent(_obj, _tilemap, 1);
@@ -129,14 +139,7 @@ void MainState::initialize() {
 void MainState::shutdown() {
 	_game->log("Shutdown MainState...");
 
-	TileMap tm = _scene.level().tileMap();
-	_game->images()->releaseTilemap(tm);
-	_game->images()->releaseTilemap(_tilemap);
-	
-	for (int i = 0; i < 4; i++) {
-		_game->sounds()->releaseSound(_sounds[i]);
-	}
-	_game->sounds()->releaseMusic(_music);
+	_loader.releaseAll();
 }
 
 

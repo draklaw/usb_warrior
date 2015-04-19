@@ -23,6 +23,9 @@
 #include <string>
 #include <unordered_map>
 
+#include "image_manager.h"
+#include "sound_player.h"
+
 
 class Game;
 
@@ -33,22 +36,26 @@ public:
 
 	void addImage(const std::string& filename);
 	void addSound(const std::string& filename);
+	void addMusic(const std::string& filename);
 
-	unsigned loadAllImages();
-	unsigned loadAllSounds();
-	
-	void releaseAllImages();
-	void releaseAllSounds();
+	const Image* getImage(const std::string& filename);
+	const Sound* getSound(const std::string& filename);
+	const Music* getMusic(const std::string& filename);
+
+	unsigned loadAll();
+	void releaseAll();
 
 private:
 	typedef std::unordered_map<std::string, const Image*> ImageMap;
 	typedef std::unordered_map<std::string, const Sound*> SoundMap;
+	typedef std::unordered_map<std::string, const Music*> MusicMap;
 
 private:
 	Game*    _game;
 
 	ImageMap _imageMap;
 	SoundMap _soundMap;
+	MusicMap _musicMap;
 };
 
 #endif

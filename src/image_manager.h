@@ -70,9 +70,8 @@ class ImageManager {
 public:
 	ImageManager(Game* game);
 
-	TileMap loadTilemap(const std::string& filename,
-	                    unsigned tileWidth, unsigned tileHeight);
-	void releaseTilemap(TileMap& tilemap);
+	const Image* loadImage(const std::string& filename);
+	void releaseImage(const Image* img);
 
 private:
 	typedef std::unordered_map<std::string, Image> ImageMap;
