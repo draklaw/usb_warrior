@@ -68,7 +68,6 @@ void MainState::update() {
 	}
 	
 	// moves
-	double speed = 4;
 	if(_obj->isActive()) {
 		if(_input.isPressed(_left))  ppm->walk(LEFT);
 		if(_input.isPressed(_right)) ppm->walk(RIGHT);

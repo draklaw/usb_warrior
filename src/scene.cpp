@@ -63,7 +63,7 @@ void Scene::addLogicComponent(GameObject* obj, unsigned id, LogicComponent* lcom
 		_logicMap.resize(id+1);
 	}
 	
-	_logicMap[id].push_back(lcomp);
+	_logicMap[id].emplace_back(lcomp);
 	obj->_registerLogic(id, lcomp);
 }
 
@@ -76,8 +76,8 @@ void Scene::beginUpdate() {
 
 
 void Scene::updateLogic(unsigned id) {
-	for (LogicComponent* lcomp: _logicMap[id]) {
-		lcomp->update();
+	for (LogicPtr& lcomp: _logicMap[id]) {
+		lcomp.get()->update();
 	}
 }
 
