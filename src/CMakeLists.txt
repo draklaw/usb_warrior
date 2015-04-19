@@ -38,6 +38,7 @@ add_executable(usb_warrior
 	game_state.cpp
 	main_state.cpp
 
+	input.cpp
 	image_manager.cpp
 	soundplayer.cpp
 

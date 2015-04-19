@@ -22,6 +22,8 @@
 
 
 #include <chrono>
+#include <string>
+
 
 typedef std::chrono::high_resolution_clock        Clock;
 typedef std::chrono::nanoseconds                  Duration;
@@ -36,16 +38,18 @@ Duration durationFromSeconds(double sec);
 
 class GameState {
 public:
-	GameState(Game* game, Duration updateTime);
+	GameState(Game* game, const std::string& name, Duration updateTime);
 
 	virtual void update() = 0;
 	virtual void frame(double interp) = 0;
 
 	inline bool isRunning() const { return _running; }
+	inline const std::string& name() const { return _name; }
 
 	void run();
 	void pause();
 	void quit();
+
 
 	TimePoint now();
 
@@ -58,6 +62,7 @@ protected:
 
 protected:
 	Game*        _game;
+	std::string  _name;
 
 	Duration     _updateTime;
 	Duration     _frameTime;

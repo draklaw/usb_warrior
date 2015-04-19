@@ -33,8 +33,13 @@
 
 
 MainState::MainState(Game* game)
-    : GameState(game, durationFromSeconds(MAIN_STATE_UPDATE_TIME)),
+    : GameState(game, "Main", durationFromSeconds(MAIN_STATE_UPDATE_TIME)),
       _scene(game),
+      _input(game),
+      _left(INVALID_INPUT),
+      _right(INVALID_INPUT),
+      _up(INVALID_INPUT),
+      _down(INVALID_INPUT),
       _obj(nullptr) {
 }
 
@@ -42,13 +47,17 @@ MainState::MainState(Game* game)
 void MainState::update() {
 	_scene.beginUpdate();
 
-	double alpha = 0.05;
-	Eigen::Matrix2f rot;
-	rot << cos(alpha), sin(alpha), -sin(alpha), cos(alpha);
+	_input.sync();
 
-	Vec2 center(400, 300);
-	_obj->geom().pos = rot * (_obj->geom().pos - center) + center;
+	double speed = 4;
+
+	if(_input.isPressed(_left))  _obj->geom().pos.x() -= speed;
+	if(_input.isPressed(_right)) _obj->geom().pos.x() += speed;
+	if(_input.isPressed(_up))    _obj->geom().pos.y() -= speed;
+	if(_input.isPressed(_down))  _obj->geom().pos.y() += speed;
+
 }
+
 
 void MainState::frame(double interp) {
 	_scene.render(interp);
@@ -58,12 +67,22 @@ void MainState::frame(double interp) {
 void MainState::initialize() {
 	_game->log("Initialize MainState...");
 
+	_left  = _input.addInput("left");
+	_right = _input.addInput("right");
+	_up    = _input.addInput("up");
+	_down  = _input.addInput("down");
+
+	_input.mapScanCode(_left,  SDL_SCANCODE_LEFT);
+	_input.mapScanCode(_right, SDL_SCANCODE_RIGHT);
+	_input.mapScanCode(_up,    SDL_SCANCODE_UP);
+	_input.mapScanCode(_down,  SDL_SCANCODE_DOWN);
+
 	_tilemap = _game->images()->loadTilemap("assets/test/tileset.png", 32, 32);
 
 	_obj = _scene.addObject("Test");
 	_scene.addSpriteComponent(_obj, _tilemap, 3);
 	_obj->computeBoxFromSprite(Vec2(.5, .5), 2);
-	_obj->geom().pos = Vec2(500, 300);
+	_obj->geom().pos = Vec2(400, 300);
 }
 
 

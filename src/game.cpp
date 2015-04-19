@@ -50,7 +50,7 @@ Game::Game(int /*argc*/, char** /*argv*/)
 
 
 Game::~Game() {
-	quit();
+	shutdown();
 }
 
 
@@ -95,7 +95,7 @@ void Game::initialize() {
 }
 
 
-void Game::quit() {
+void Game::shutdown() {
 	if(_renderer) {
 		log("Destroy renderer...");
 		SDL_DestroyRenderer(_renderer);
@@ -123,41 +123,49 @@ void Game::dispatchPendingEvents() {
 	while(SDL_PollEvent(&event)) {
 		switch(event.type) {
 		case SDL_QUIT:
-			_state->quit();
-			_state = nullptr;
+			quit();
 			break;
 		}
 	}
 }
 
 
+void Game::changeState(GameState* nextState) {
+	assert(nextState);
+	if(!_state) {
+		warning("Try to change to state \"", nextState->name(),
+		        "\" after quit has been called");
+		return;
+	}
+	if(_nextState) {
+		warning("Changing to state \"", nextState->name(),
+		        "\" while an other state is planned: \"", _nextState->name(), "\"");
+	}
+	_nextState = nextState;
+}
+
+
 int Game::run(GameState* state) {
-//	SDL_Surface* surf = IMG_Load("./assets/splash.png");
-//	if(!surf) imgCrash("Failed to load image");
-//	SDL_Texture* testTex = SDL_CreateTextureFromSurface(_renderer, surf);
-//	if(!surf) sdlCrash("Failed to create texture");
-//	SDL_FreeSurface(surf);
-
-//	SDL_RenderCopy(_renderer, testTex, nullptr, nullptr);
-//	SDL_RenderPresent(_renderer);
-
-//	SDL_Event event;
-//	bool running = true;
-//	while(running) {
-//		SDL_WaitEvent(&event);
-
-//		std::cout << "Event: " << event.type << "\n";
-
-//		switch(event.type) {
-//			case SDL_QUIT: running = false; break;
-//		}
-//	}
 	assert(state);
-	_player->playMusic("./assets/test/music.ogg");
-	_state = state;
-	_state->run();
+
+	_nextState = state;
+	while(_nextState) {
+		_state     = _nextState;
+		_nextState = nullptr;
+		log("Running state \"", _state->name(), "\"");
+		_state->run();
+	}
 
 	return EXIT_SUCCESS;
+}
+
+
+void Game::quit() {
+	if(_state) {
+		_state->quit();
+		_state = nullptr;
+		_nextState = nullptr;
+	}
 }
 
 

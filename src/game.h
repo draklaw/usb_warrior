@@ -39,13 +39,13 @@ public:
 	~Game();
 
 	void initialize();
-	void quit();
+	void shutdown();
 
 	void dispatchPendingEvents();
 
 	void changeState(GameState* nextState);
-
 	int run(GameState* state);
+	void quit();
 
 	inline SDL_Renderer* renderer() const { return _renderer; }
 	inline ImageManager* images() { return &_imageManager; }
