@@ -20,7 +20,7 @@
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 add_subdirectory(json)
-add_subdirectory(components)
+#add_subdirectory(components)
 
 find_package(Eigen3 REQUIRED)
 find_package(SDL2 REQUIRED)
