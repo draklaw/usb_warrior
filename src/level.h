@@ -21,6 +21,7 @@
 #define _LEVEL_H_
 
 #include <vector>
+#include <unordered_map>
 
 typedef int Tile;
 
@@ -33,13 +34,17 @@ public:
 	
 	Tile getTile(unsigned x, unsigned y, unsigned layer);
 	void setTile(unsigned x, unsigned y, unsigned layer, Tile val);
+	
+	// void dumpEntities();
 
 private:
-	typedef std::vector<Tile> TileVector;
+	typedef std::unordered_map<std::string,std::string> EntityData;
 
 private:
-	TileVector _map;
+	std::vector<Tile> _map;
 	unsigned _width, _height, _layers;
+	
+	std::vector<EntityData> _entities;
 
 private:
 	unsigned index(unsigned x, unsigned y, unsigned z);
