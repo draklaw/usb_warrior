@@ -24,7 +24,7 @@
 
 #include "level.h"
 
-int main(int argc, char** argv)
+int main(int /*argc*/, char** /*argv*/)
 {
 	Level* l = new Level();
 	if (!l->loadFromJsonFile("assets/level_0.json"))

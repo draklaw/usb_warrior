@@ -26,6 +26,7 @@
 #include <SDL2/SDL_render.h>
 
 
+#include "math.h"
 #include "image_manager.h"
 
 
@@ -46,6 +47,8 @@ public:
 	void changeState(GameState* nextState);
 	int run(GameState* state);
 	void quit();
+
+	Vec2i screenSize() const;
 
 	inline SDL_Renderer* renderer() const { return _renderer; }
 	inline ImageManager* images() { return &_imageManager; }

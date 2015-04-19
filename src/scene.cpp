@@ -28,6 +28,7 @@
 
 Scene::Scene(Game* game)
     : _game(game),
+      _level(this),
       _objectCounter(0),
       _objects() {
 }
@@ -63,8 +64,23 @@ void Scene::beginUpdate() {
 }
 
 
-void Scene::render(double interp) {
+void Scene::beginRender() {
 	SDL_TRY(SDL_RenderClear(_game->renderer()));
+}
+
+
+void Scene::endRender() {
+	SDL_RenderPresent(_game->renderer());
+}
+
+
+void Scene::render(double interp, Boxi viewBox, Boxi screenBox) {
+	Vec2 scale = (  screenBox.sizes().array().template cast<float>()
+	              / viewBox.  sizes().array().template cast<float>()).matrix();
+//	_game->log("view: ", viewBox.min().transpose(), ", ", viewBox.sizes().transpose());
+//	_game->log("screen: ", screenBox.min().transpose(), ", ", screenBox.sizes().transpose());
+//	_game->log("scale: ", scale.transpose());
+
 	for(SpriteComponent& sprite: _sprites) {
 		unsigned index = std::min(sprite.tileIndex(), sprite.tilemap().nTiles() - 1);
 		GameObject* obj = sprite.object();
@@ -75,7 +91,6 @@ void Scene::render(double interp) {
 			}
 			continue;
 		}
-		assert(!obj->isDestroyed());
 
 		const GeometryComponent& geom0 = obj->geom(1);
 		const GeometryComponent& geom1 = obj->geom(0);
@@ -90,13 +105,58 @@ void Scene::render(double interp) {
 		SDL_Rect destRect;
 		destRect.x = std::floor(pos.x() + topleft.x() - epsilon);
 		destRect.y = std::floor(pos.y() + topleft.y() - epsilon);
-		destRect.w = std::floor(sizes.x() - epsilon);
-		destRect.h = std::floor(sizes.y() - epsilon);
+		destRect.w = std::floor(sizes.x() + epsilon);
+		destRect.h = std::floor(sizes.y() + epsilon);
+
+//		_game->log("Before: ", destRect.x, ", ", destRect.y, ", ", destRect.w, ", ", destRect.h);
+		destRect.x  = (destRect.x - viewBox.min().x()) * scale.x() + screenBox.min().x();
+		destRect.y  = (destRect.y - viewBox.min().y()) * scale.y() + screenBox.min().y();
+		destRect.w *= scale.x();
+		destRect.h *= scale.y();
+//		_game->log("After : ", destRect.x, ", ", destRect.y, ", ", destRect.w, ", ", destRect.h);
 
 		// TODO: rotation / flips
 		SDL_TRY(SDL_RenderCopy(_game->renderer(),
 		                       sprite.tilemap().image()->texture,
-					           &tileRect, &destRect));
+		                       &tileRect, &destRect));
 	}
-	SDL_RenderPresent(_game->renderer());
+}
+
+
+void Scene::renderLevelLayer(unsigned layer, Boxi viewBox, Boxi screenBox) {
+
+	Vec2 scale = screenBox.sizes().array().template cast<float>()
+	           / viewBox.  sizes().array().template cast<float>();
+
+	Vec2i lvlTileSize = _level.tileMap().tileSize().array()
+	                  * scale.template cast<int>().array();
+	Boxi levelBox(
+				Vec2i( viewBox.min().x()    / lvlTileSize.x(),
+					   viewBox.min().y()    / lvlTileSize.y()),
+				Vec2i((viewBox.max().x()-1) / lvlTileSize.x() + 1,
+					  (viewBox.max().y()-1) / lvlTileSize.y() + 1)
+	);
+	Boxi maxBox = Boxi(Vec2i::Zero(),
+	                   Vec2i(_level.width()-1, _level.height()-1));
+	levelBox = levelBox.intersection(maxBox);
+
+	SDL_Rect destRect;
+	destRect.w = lvlTileSize.x() * scale.x();
+	destRect.h = lvlTileSize.y() * scale.y();
+
+	for(int y = levelBox.min().y(); y <= levelBox.max().y(); ++y) {
+		for(int x = levelBox.min().x(); x <= levelBox.max().x(); ++x) {
+			Tile tile = _level.getTile(x, y, layer);
+			if(tile < 0) continue;
+
+			SDL_Rect tileRect = _level.tileMap().tileRect(tile);
+			destRect.x = (x * lvlTileSize.x() - viewBox.min().x())
+								* scale.x() + screenBox.min().x();
+			destRect.y = (y * lvlTileSize.y() - viewBox.min().y())
+								* scale.y() + screenBox.min().y();
+			SDL_TRY(SDL_RenderCopy(_game->renderer(),
+								   _level.tileMap().image()->texture,
+								   &tileRect, &destRect));
+		}
+	}
 }
