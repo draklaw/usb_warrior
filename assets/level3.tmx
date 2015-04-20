@@ -5,7 +5,7 @@
  </tileset>
  <layer name="bg" width="60" height="34">
   <data encoding="base64" compression="zlib">
-   eJzt2NFOwjAUBuCugAhC8JUQBEFfSlHhxoRXQkC4Ah7Jf4GTaDPWdmXZWs7Fl+zinNA/6zZOP4QQn1C7sBvlWse0LqspzGANP/B4YQPlWse0LqsNbCECCXNprh3Z1ZdBHRlvOS/n5bziC0078V/RefLM66Oi80b4YfnnuZBRvihvFx74/gaH84aN84aN84ZtiIxPHuVtYKFNaMijpqUJMr57lHeEhY5hJI/Gllzm/SLcQStj797D/5MueTvy/PuqrLOdS955St6y0uWN9+wh5RxCzWs6V1F/nrNbJWHdlFc9ZyDxnr2/ovsbSztnCvF9xXk577U9v6Hnpe9UiPu5k3AuTt8p3/I+w4tDP82Dr/AGlZOqhmldUp9LzURZpw3qj+fBBXxD76SvYVqX1OdSs1TWaYP6V/ALTlO0+A==
+   eJzt2EtuwjAUBVDb9MOnFWyJb4GyqZYWOkHKloAWGAFL4kZgqVhRbMeEYPMGR8rgPck3tpzY34yxCTxe2JPyrGNal9UUfuAPVtC9sJ7yrGNal9UaNsBBQCTMvXK7+lvwjIxlykt5KS+boWnLzhWdJ8+8PrrXvE1oFZCX40WLf/uA4Pm61/mlvGGivGGjvGF7Q8a+R3krGGgVKuKoammMjF8e5R1goEMYiKOhJZfzfhFq8JKxd8eL/5+8Zt668G+/cskbpeS91bOsLm+8Zvcp9xC+zq96zyDFa7ZhMb+m5yrZn+fZrZQwTybrOe2eKcT9ivJSXt/2K8qbnld+p0Jcz/WEe3H5nfIt7zuMHPrlefADPqF08qBhWpfU51IzVsZpQ/bH58E5LKB90tEwrUvqc6lZKuO0Ift/4QCDpLT4
   </data>
  </layer>
  <layer name="terminal 50%" width="60" height="34" opacity="0.46">
@@ -15,14 +15,15 @@
  </layer>
  <layer name="ladders/tp" width="60" height="34">
   <data encoding="base64" compression="zlib">
-   eJzt2LkNgDAMhWFDQk3GpmIrjoZjJDwBCjnt8D4pJVZ+0WCIAACgtsnmm+26fLMlOgKfs4ZoMEmvUgR6/aBXB/T6Qa8O6PWDXh1q9S490cpn47P34XO+wvv1g97yzoAzB+6DEnrfpL7f33qlQ2/b0Ns29Mp28XfBHfGvWFvvyDuEi9gjtPVKVmu3a9kD2NUgZw==
+   eJzt2DkOgzAQheEJSw1XzlJQ5U5kb7IcKa9JC47XGXifNK3lX5awjAgREZU2NOnW7jfp1tboWXoDmfn2NrVIW0fdShalereVyA6zxxwq/3X+xfN1w14b2OuGvTaw101o7xV37g1zxzx4/ybDXjfsze/lMUfP96+G3imx97e23p9S77o52s8jNvYuG3t1e+Oe/AT8K7bW2+Fb3wd87631ajXiDE6YM+ai6P617guvvCU5
   </data>
  </layer>
  <objectgroup name="Calque d'objets 1">
-  <object id="6" name="player" type="player" x="736" y="80" width="32" height="48"/>
-  <object id="7" name="tp_bot" type="TBC" x="576" y="464" width="32" height="48">
+  <object id="6" name="player" type="player" x="736" y="96" width="32" height="48"/>
+  <object id="7" name="tp_bot" type="trigger" x="560" y="400" width="32" height="112">
    <properties>
     <property name="enabled" value="0"/>
+    <property name="use" value="teleport tp_top"/>
    </properties>
   </object>
   <object id="8" name="exit" type="trigger" x="864" y="208" width="64" height="64">
@@ -34,12 +35,13 @@
     <property name="sprite" value="assets/exit.png"/>
    </properties>
   </object>
-  <object id="12" name="tp_top" type="TBC" x="784" y="224" width="32" height="48">
+  <object id="12" name="tp_top" type="trigger" x="784" y="160" width="32" height="112">
    <properties>
     <property name="enabled" value="0"/>
+    <property name="use" value="teleport tp_bot"/>
    </properties>
   </object>
-  <object id="14" name="key1" type="trigger" x="656" y="96" width="32" height="32">
+  <object id="14" name="key1" type="trigger" x="656" y="112" width="32" height="32">
    <properties>
     <property name="enabled" value="1"/>
     <property name="hit_point" value="add_item desactivate; disable object key1"/>
@@ -61,17 +63,17 @@
     <property name="tiles_y" value="1"/>
    </properties>
   </object>
-  <object id="17" name="tp_terminal" type="trigger" x="48" y="320" width="32" height="48">
+  <object id="17" name="tp_terminal" type="trigger" x="48" y="336" width="32" height="48">
    <properties>
     <property name="sprite" value="assets/terminal.png"/>
     <property name="tile_disable" value="0"/>
     <property name="tile_enable" value="1"/>
    </properties>
   </object>
-  <object id="18" name="bot" type="TBC" x="416" y="320" width="32" height="48">
+  <object id="18" name="bot" type="TBC" x="416" y="336" width="32" height="48">
    <properties>
     <property name="direction" value="0"/>
-    <property name="hack_use" value="move to console @speed @dist; disable trigger tp_terminal; enable trigger tp_bot; enable trigger tp_top"/>
+    <property name="hack_move" value="move to console @speed @dist; disable trigger tp_terminal; enable trigger tp_bot; enable trigger tp_top"/>
     <property name="sprite" value="assets/toutrobots.png"/>
    </properties>
   </object>

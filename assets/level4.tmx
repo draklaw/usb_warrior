@@ -1,25 +1,124 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="30" height="76" tilewidth="16" tileheight="16" nextobjectid="5">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="30" height="76" tilewidth="16" tileheight="16" nextobjectid="33">
  <tileset firstgid="1" name="tilez" tilewidth="16" tileheight="16">
   <image source="tilez.png" width="1024" height="1024"/>
  </tileset>
  <layer name="Calque de Tile 1" width="30" height="76">
   <data encoding="base64" compression="zlib">
-   eJztmdFuwiAUhindnM5l+krqXGKde6fpprvR+Eo6nT6WfxMalVAFW0qL5+ILCS39cg60kNMfxtgUPApqlpmBX7AF/6AveNdgJ8bo3KsauwcB4GDJ9WmCF4P7T3mCq67pHUnXh+ADtNDfZsfWxNsBXUPvabyv7LzN02sjz1XyJvNb1XjHoMH1eAYTwzHy2MQbfwMGXI9Iak2Ix+wy5DkLl+Z3hI/JZ1C8dw7nwoHXVZ7Ja8/LAzuEQTnjJS95yavm0vvsY7zkJa9r77V91Ld4yUten7y2zs9l3n/lOpXv3ntaz0V7b6kD5+Uds/Palkxaf3JNro2pnnWtbhYpSOtX1c4irn6WXDdzlec81pVJnS3PdWVSZ3O9nu/x/XWZZ9UZ3XRPr0K8rvNM8foZbxZvFc/PtvKc9i+6iPlV/Yv2Nc9l9brK85c4P4eCB8vE5+dvsAJr0BO8WeYPbMABobEBRQ==
+   eJztmOtOwyAYhgtT53neksfE6rwnp3P+2eIteZyX5dsEkvmFFmihUMaPJ8ug9Mn39UTeeVEUL2BXsOeZBXgF3+AHXAtuDFiLNSbHqtb+AgY4eOPmHIFji+M3GcO1b+idkvk7cA8mGD/bmKP/m7zn4MLSK+s9wfgpmaP/u3h99HlIXnl9h1rvDBxwMw7Bk+UaulZ6q3fALTejJL82VGvWHfrchabrO8XL5IH1713CuQrgDdXn7PXn5UyNPL5uXseIxVmvq/Pqvv2+vKq9QMp9zt5+vEzzPKdWb/Zmbwxe2+/o0OvN3uxNydt2f9yEdMX6/aU5VereUH3eBm+bHNiVd1b8z7YodeNyjmZjqnPpcrNSQd24KjsrufpcNDcL1WcX95VNzubyvrLJ2ULfz9v4/Ibss4uszGRvH7re0H3O9aZZb1uvLqeKNb/y2WdVFt3X9aVZdMp9jtEbqs+PYv88Eux4pto/P4N38AEuBVee+QRf4A9/EP6j
   </data>
  </layer>
  <layer name="Calque 2" width="30" height="76">
   <data encoding="base64" compression="zlib">
-   eJztmUtOwzAQhu04ATY8dnCd8r4BXKfvLtnBdfrusfiyQIg0CXY7aaxofumT6jSaT6rqmdQ1Jt6ME2MmMIVZ8ve9PusBDGGU7K+bTOKMca563bT3mtc3J/BeFrx5rgK9vdSYe3iAxzTMX/c5P1HrGV7gtaRun2sDGMJI0Dum1gSmMCupO+faApawEvSuqbWBLexK6tqM+8FBmsl5M2qdwTlcBNZdsw83sIVdYU/OWS9gCatkf/1f6nqDRqOJO1W9IaXvZIEzrTj7Pw7oB4d48xw7g0O9UrM/1Js/C4TOfgnvT9TbTa+14bNfwisV9aq3i15nT+/WaDT+kf4N3HbPUW/3vbdw14L3Dd5b8H7CV8V9dedjsUTP2TSaOOPTz8t6zLHP9jHMEfX+Rnqm+nqlZ6qvt26mNuW1nnsm5H9o6e+V79mdetXbJa9kJM6iJfMNeOI/cQ==
+   eJztmEkOwjAMRa0EDg6U4VpMhWPxt1A1dHCUqH1P+guriycv7Kg2q5djMDspZ+USvr/tVO+Vg9KEbp2TEM1i7K/x4sVr9tQctspLef/M5FX1Tbkrj9Ct/5HaDQAwj43mf5tx9/Tthilej7d/ar9zdyVevGv3jn37vbwe4MW7JC8AlGXo7Hv/A69t1+HFW9Kbuo/VAnc2gDQ175kcO6bmfvHiLekdc4v27nfo7Q4v3iV5PfG4RXvyATsQLUs=
   </data>
  </layer>
  <objectgroup name="Calque d'objets 1">
-  <object id="4" name="Exit" type="trigger" x="32" y="80" width="64" height="64">
+  <object id="5" name="exit" type="trigger" x="32" y="80" width="64" height="64">
    <properties>
-    <property name="hit_point" value="echo Niveau suivant"/>
+    <property name="enabled" value="1"/>
+    <property name="hit_point" value="echo Game Over !"/>
     <property name="point_x" value="32"/>
     <property name="point_y" value="48"/>
     <property name="sprite" value="assets/exit.png"/>
+   </properties>
+  </object>
+  <object id="6" name="player" type="player" x="400" y="96" width="32" height="48"/>
+  <object id="7" name="tp_eq_top" x="160" y="32" width="32" height="112">
+   <properties>
+    <property name="enabled" value="0"/>
+    <property name="use" value="teleport tp_eq_bot"/>
+   </properties>
+  </object>
+  <object id="8" name="tp_sq_top" x="272" y="32" width="32" height="112">
+   <properties>
+    <property name="use" value="teleport tp_sq_bot"/>
+   </properties>
+  </object>
+  <object id="9" name="tp_nsq_top" x="336" y="32" width="32" height="112">
+   <properties>
+    <property name="use" value="teleport tp_nsq_bot"/>
+   </properties>
+  </object>
+  <object id="10" name="tp_o_top" x="48" y="176" width="32" height="112">
+   <properties>
+    <property name="enabled" value="0"/>
+    <property name="use" value="teleport tp_o_bot"/>
+   </properties>
+  </object>
+  <object id="11" name="tp_sq_bot" x="352" y="304" width="32" height="112">
+   <properties>
+    <property name="use" value="teleport tp_sq_top"/>
+   </properties>
+  </object>
+  <object id="12" name="tp_eq_bot" x="64" y="688" width="32" height="112">
+   <properties>
+    <property name="enabled" value="0"/>
+    <property name="use" value="teleport tp_eq_top"/>
+   </properties>
+  </object>
+  <object id="13" name="tp_o_bot" x="240" y="832" width="32" height="112">
+   <properties>
+    <property name="enabled" value="0"/>
+    <property name="use" value="teleport tp_o_top"/>
+   </properties>
+  </object>
+  <object id="14" name="tp_nsq_bot" x="400" y="1072" width="32" height="112">
+   <properties>
+    <property name="use" value="teleport tp_nsq_top"/>
+   </properties>
+  </object>
+  <object id="18" name="key3" x="64" y="512" width="32" height="32"/>
+  <object id="19" name="bot3a" x="288" y="624" width="32" height="48"/>
+  <object id="21" name="bot3b" x="128" y="624" width="32" height="48"/>
+  <object id="26" name="key2a" type="trigger" x="160" y="912" width="32" height="32">
+   <properties>
+    <property name="enabled" value="1"/>
+    <property name="hit_point" value="add_item move; disable object key2a"/>
+    <property name="point_x" value="16"/>
+    <property name="point_y" value="16"/>
+    <property name="sprite" value="assets/clef2.png"/>
+    <property name="tiles_x" value="1"/>
+    <property name="tiles_y" value="1"/>
+   </properties>
+  </object>
+  <object id="27" name="key2b" type="trigger" x="64" y="640" width="32" height="32">
+   <properties>
+    <property name="enabled" value="1"/>
+    <property name="hit_point" value="add_item move; disable object key2b"/>
+    <property name="point_x" value="16"/>
+    <property name="point_y" value="16"/>
+    <property name="sprite" value="assets/clef2.png"/>
+    <property name="tiles_x" value="1"/>
+    <property name="tiles_y" value="1"/>
+   </properties>
+  </object>
+  <object id="29" name="bot2a" type="TBC" x="336" y="1008" width="32" height="48">
+   <properties>
+    <property name="direction" value="0"/>
+    <property name="hack_move" value="move to console @speed @dist; disable trigger terminal_o; enable trigger tp_o_bot; enable trigger tp_o_top"/>
+    <property name="sprite" value="assets/toutrobots.png"/>
+   </properties>
+  </object>
+  <object id="30" name="bot2b" type="TBC" x="256" y="752" width="32" height="48">
+   <properties>
+    <property name="direction" value="0"/>
+    <property name="hack_move" value="move to console @speed @dist; disable trigger terminal_eq; enable trigger tp_eq_bot; enable trigger tp_eq_top"/>
+    <property name="sprite" value="assets/toutrobots.png"/>
+   </properties>
+  </object>
+  <object id="31" name="terminal_o" type="trigger" x="240" y="1008" width="32" height="48">
+   <properties>
+    <property name="sprite" value="assets/terminal.png"/>
+    <property name="tile_disable" value="0"/>
+    <property name="tile_enable" value="1"/>
+   </properties>
+  </object>
+  <object id="32" name="terminal_eq" type="trigger" x="416" y="752" width="32" height="48">
+   <properties>
+    <property name="sprite" value="assets/terminal.png"/>
+    <property name="tile_disable" value="0"/>
+    <property name="tile_enable" value="1"/>
    </properties>
   </object>
  </objectgroup>
