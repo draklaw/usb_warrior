@@ -22,9 +22,9 @@
 
 
 #include "game_state.h"
+#include "image_manager.h"
 
 
-class Image;
 
 class CreditState : public GameState {
 public:
