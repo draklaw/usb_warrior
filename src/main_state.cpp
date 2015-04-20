@@ -173,10 +173,12 @@ void MainState::initialize() {
 	_use   = _input.addInput("use");
 	_debug = _input.addInput("debug");
 
-	_input.mapScanCode(_left,  SDL_SCANCODE_LEFT);
-	_input.mapScanCode(_right, SDL_SCANCODE_RIGHT);
-	_input.mapScanCode(_jump,  SDL_SCANCODE_UP);
-	_input.mapScanCode(_use,   SDL_SCANCODE_SPACE);
+	_input.loadKeyBindingFile("assets/keymap.json");
+
+	_input.bindJsonKeys(_left,  "left",  SDL_SCANCODE_LEFT);
+	_input.bindJsonKeys(_right, "right", SDL_SCANCODE_RIGHT);
+	_input.bindJsonKeys(_jump,  "jump",  SDL_SCANCODE_UP);
+	_input.bindJsonKeys(_use,   "use",   SDL_SCANCODE_SPACE);
 	_input.mapScanCode(_debug, SDL_SCANCODE_F1);
 
 	_loader.addImage("assets/tilez.png");
