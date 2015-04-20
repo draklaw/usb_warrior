@@ -68,6 +68,16 @@ void Scene::addLogicComponent(GameObject* obj, unsigned id, LogicComponent* lcom
 }
 
 
+void Scene::clear() {
+	_objectCounter = 0;
+	_objects.clear();
+	_sprites.clear();
+	for(auto& logics: _logicMap) {
+		logics.clear();
+	}
+}
+
+
 void Scene::beginUpdate() {
 	for(GameObject& obj: _objects) {
 		obj._nextUpdate();

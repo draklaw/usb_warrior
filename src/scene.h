@@ -43,6 +43,8 @@ public:
 	                        unsigned index = 0);
 	void addLogicComponent(GameObject* obj, unsigned id, LogicComponent* lcomp);
 
+	void clear();
+
 	inline Level& level() { return _level; }
 
 	void beginUpdate();

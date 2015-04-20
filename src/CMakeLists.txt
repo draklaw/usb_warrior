@@ -37,6 +37,7 @@ add_executable(usb_warrior
 	game.cpp
 	game_state.cpp
 	main_state.cpp
+	test_state.cpp
 
 	input.cpp
 	image_manager.cpp
@@ -49,6 +50,7 @@ add_executable(usb_warrior
 	level.cpp
 	scene.cpp
 
+	components/player_controler_component.cpp
 	components/move_component.cpp
 )
 

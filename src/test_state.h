@@ -17,8 +17,8 @@
  *  along with usb_warrior.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _MAIN_STATE_H_
-#define _MAIN_STATE_H_
+#ifndef _TEST_STATE_H_
+#define _TEST_STATE_H_
 
 
 #include <Eigen/Geometry>
@@ -34,23 +34,12 @@
 #include "scene.h"
 
 
-class MainState : public GameState {
+class TestState : public GameState {
 public:
-	MainState(Game* game);
+	TestState(Game* game);
 
 	void update();
 	void frame(double interp);
-
-	void loadLevel(const char* filename);
-	void resetLevel();
-
-	GameObject* createPlayer   (const EntityData& data);
-	GameObject* createExit     (const EntityData& data);
-	GameObject* createTP       (const EntityData& data);
-
-	GameObject* createBotStatic(const EntityData& data);
-
-	inline InputManager& input() { return _input; }
 
 protected:
 	void initialize();
@@ -64,21 +53,21 @@ protected:
 
 	Loader        _loader;
 
-	// Inputs
 	InputManager  _input;
-
 	Input         _left;
 	Input         _right;
-	Input         _jump;
+	Input         _up;
+	Input         _down;
 	Input         _use;
 
-	// Objects
-	GameObject*   _player;
-	
-	// TileMaps
-	TileMap       _playerTileMap;
+	TileMap       _tilemap;
 
-	// Other
+	GameObject*   _obj;
+	const Sound*  _msound;
+	const Sound*  _jsound;
+	const Music*  _music;
+	int           _mchannel;
+	
 	Font          _font;
 };
 

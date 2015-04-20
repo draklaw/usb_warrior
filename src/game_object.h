@@ -39,6 +39,7 @@ class SoundComponent;
 class GameObject;
 
 enum {
+	PLAYER_CONTROLLER_COMPONENT_ID,
 	MOVE_COMPONENT_ID
 };
 

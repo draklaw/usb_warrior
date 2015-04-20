@@ -67,7 +67,7 @@ private:
 
 class Font {
 public:
-	Font(const FontImpl* font);
+	Font(const FontImpl* font = nullptr);
 
 	void setImage(const Image* image);
 

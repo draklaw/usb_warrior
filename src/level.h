@@ -32,7 +32,14 @@ class Scene;
 typedef int Tile;
 
 
+typedef std::unordered_map<std::string,std::string> EntityData;
+
 class Level {
+private:
+	typedef std::vector<EntityData>      EntityVector;
+public:
+	typedef EntityVector::const_iterator EntityIterator;
+
 public:
 	Level(Scene* scene);
 	
@@ -55,10 +62,12 @@ public:
 	Boxf tileBox(unsigned x, unsigned y) const;
 	bool collide(unsigned layer, const Boxf& box, CollisionInfo* info = nullptr) const;
 
+	inline EntityIterator entityBegin() const { return _entities.begin(); }
+	inline EntityIterator entityEnd()   const { return _entities.end();   }
+
 	// void dumpEntities();
 
 private:
-	typedef std::unordered_map<std::string,std::string> EntityData;
 	typedef std::vector<bool> BoolVector;
 
 private:
@@ -67,7 +76,7 @@ private:
 	std::vector<Tile> _map;
 	unsigned _width, _height, _layers;
 	
-	std::vector<EntityData> _entities;
+	EntityVector _entities;
 	
 	TileMap    _tileMap;
 	BoolVector _collisionTileSet;

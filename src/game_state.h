@@ -25,6 +25,9 @@
 #include <string>
 
 
+#define UPDATE_TIME (1./60.)
+
+
 typedef std::chrono::high_resolution_clock        Clock;
 typedef std::chrono::nanoseconds                  Duration;
 typedef std::chrono::time_point<Clock, Duration>  TimePoint;
@@ -50,7 +53,7 @@ public:
 	void pause();
 	void quit();
 
-
+	inline Game* game() { return _game; }
 	TimePoint now();
 
 protected:
