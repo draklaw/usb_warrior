@@ -58,6 +58,7 @@ public:
 	GameObject* createPlayer      (const EntityData& data);
 	GameObject* createTrigger     (const EntityData& data);
 	GameObject* createBotStatic   (const EntityData& data);
+	GameObject* createWall        (const EntityData& data);
 
 	void addCommand(const char* action, Command cmd);
 	void exec(const char* cmd);

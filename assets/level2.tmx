@@ -40,8 +40,8 @@
    <properties>
     <property name="direction" value="1"/>
     <property name="fov" value="20"/>
-    <property name="hack_disable" value="disable bot_static bot; disable trigger wall; disable trigger alarm"/>
-    <property name="see_player" value="enable trigger wall; enable trigger alarm"/>
+    <property name="hack_disable" value="disable bot_static bot; disable wall wall; disable trigger alarm"/>
+    <property name="see_player" value="enable wall wall; enable trigger alarm"/>
     <property name="sprite" value="assets/toutrobots.png"/>
    </properties>
   </object>

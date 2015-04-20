@@ -33,8 +33,8 @@ class MainState;
 PlayerControlerComponent::PlayerControlerComponent(
         MainState* state, GameObject* obj)
     : LogicComponent(obj),
-      _state(state),
       direction(P_FRONT),
+      _state(state),
       _animCounter(0) {
 }
 

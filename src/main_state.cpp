@@ -32,6 +32,7 @@
 #include "components/move_component.h"
 #include "components/trigger_component.h"
 #include "components/bot_component.h"
+#include "components/wall_component.h"
 
 #include "main_state.h"
 
@@ -124,6 +125,7 @@ void MainState::resetLevel() {
 		if     (type == "player")     obj = createPlayer   (*entity);
 		else if(type == "trigger")    obj = createTrigger  (*entity);
 		else if(type == "bot_static") obj = createBotStatic(*entity);
+		else if(type == "wall")       obj = createWall     (*entity);
 
 		if(obj) {
 			auto ri = _objects.emplace(obj->name(), obj);
@@ -226,6 +228,25 @@ GameObject* MainState::createBotStatic(const EntityData& data) {
 	bc->seePlayer   = getString(data, "see_player", "");
 	bc->hackDisable = getString(data, "hack_disable", "");
 	_scene.addLogicComponent(obj, BOT_COMPONENT_ID, bc);
+
+	return obj;
+}
+
+
+GameObject* MainState::createWall(const EntityData& data) {
+	const std::string& name = getString(data, "name", "");
+	GameObject* obj = _scene.addObject(name.empty()? nullptr: name.c_str());
+
+	float x = getInt(data, "x",      0);
+	float y = getInt(data, "y",      0);
+	float w = getInt(data, "width",  0);
+	float h = getInt(data, "height", 0);
+	obj->geom().pos = Vec2(x, y);
+	obj->geom().box = Boxf(Vec2(0, 0), Vec2(w, h));
+
+	auto wc = new WallComponent(this, obj);
+	wc->setEnabled(getInt(data, "enabled", true));
+	_scene.addLogicComponent(obj, WALL_COMPONENT_ID, wc);
 
 	return obj;
 }
@@ -334,6 +355,8 @@ void MainState::initialize() {
 		_scene.level().setTileCollision(10 + i * 64, true);
 		_scene.level().setTileCollision(11 + i * 64, true);
 	}
+	_scene.level().setTileCollision(774, true);
+	_scene.level().setTileCollision(838, true);
 
 	// ##### TileMaps
 	_playerTileMap = TileMap(_loader.getImage("assets/toutAMI.png"), 32, 48);
