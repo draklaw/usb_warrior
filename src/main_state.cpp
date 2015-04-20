@@ -199,11 +199,11 @@ GameObject* MainState::createTrigger(const EntityData& data) {
 	             TileMap(img, img->size.x() / tileX, img->size.y() / tileY));
 	auto ec = new TriggerComponent(this, obj);
 	ec->setEnabled(getInt(data, "enabled", true));
-	ec->tileEnable      = getInt(data, "tile_enable", 0);
-	ec->tileDisable     = getInt(data, "tile_disable", 1);
+	ec->tileEnable      = getInt   (data, "tile_enable", 0);
+	ec->tileDisable     = getInt   (data, "tile_disable", 1);
 	ec->hitPoint        = getString(data, "hit_point", "");
-	ec->pointCoords.x() = getInt(data, "point_x", 0);
-	ec->pointCoords.y() = getInt(data, "point_y", 0);
+	ec->pointCoords.x() = getInt   (data, "point_x", 0);
+	ec->pointCoords.y() = getInt   (data, "point_y", 0);
 	ec->hit             = getString(data, "hit", "");
 	ec->use             = getString(data, "use", "");
 
@@ -233,18 +233,27 @@ void MainState::exec(const char* cmd) {
 	auto c   = line.begin();
 	auto end = line.end();
 
+	std::vector<const char*> argv;
 	while (c != end) {
-		std::vector<const char*> argv;
+		argv.clear();
 		while(c != end && *c != ';') {
 			while(c != end && *c != ';' && std::isspace(*c)) ++c;
 			if(c == end || *c == ';') break;
 			argv.push_back(&*c);
 			while(c != end && *c != ';' && !std::isspace(*c)) ++c;
+			if(c == end || *c == ';') break;
 			if(c != end) *(c++) = '\0';
 		}
-		while(*c == ';') ++c;
+		if(c != end) *(c++) = '\0';
+		while(c != end && *c == ';' && std::isspace(*c)) ++c;
 
 		if(argv.size() == 0) continue;
+
+		_game->lognr("exec:");
+		for(unsigned i = 0; i < argv.size(); ++i) {
+			_game->lognr(" ", argv[i]);
+		}
+		_game->log();
 
 		auto pair = _commandMap.find(argv[0]);
 		if(pair == _commandMap.end()) {

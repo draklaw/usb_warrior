@@ -79,6 +79,11 @@ public:
 		write(args...);
 	}
 
+	template < typename... Args >
+	void lognr(Args... args) {
+		writenr(args...);
+	}
+
 	template < typename T, typename... Args >
 	inline void write(T first, Args... args) {
 		std::cout << first;
@@ -87,6 +92,15 @@ public:
 
 	inline void write() {
 		std::cout << "\n";
+	}
+
+	template < typename T, typename... Args >
+	inline void writenr(T first, Args... args) {
+		std::cout << first;
+		writenr(args...);
+	}
+
+	inline void writenr() {
 	}
 
 private:
