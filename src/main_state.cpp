@@ -120,6 +120,8 @@ GameObject* MainState::createPlayer(const EntityData& data) {
 	_scene.addLogicComponent(_player, MOVE_COMPONENT_ID,
 	                         new MoveComponent(_player));
 
+	_player->geom().pos = Vec2(getInt(data, "x", 0), getInt(data, "y", 0));
+
 	return _player;
 }
 

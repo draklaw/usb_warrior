@@ -33,6 +33,8 @@ typedef int Tile;
 
 
 typedef std::unordered_map<std::string,std::string> EntityData;
+int getInt(const EntityData& map, const char* key, int def);
+
 
 class Level {
 private:

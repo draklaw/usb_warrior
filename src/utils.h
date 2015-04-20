@@ -35,5 +35,4 @@ T lerp(double f, const T& a, const T& b) {
 	return (1.d - f) * a + f * b;
 }
 
-
 #endif

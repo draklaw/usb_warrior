@@ -39,6 +39,12 @@
 } while (false)
 
 
+int getInt(const EntityData& map, const char* key, int def) {
+	auto it = map.find(key);
+	return (it != map.end())? std::atoi(it->second.c_str()): def;
+}
+
+
 Level::Level(Scene* scene)
     : _scene(scene) {
 	_width = _height = _layers = 0;
