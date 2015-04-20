@@ -51,6 +51,8 @@ void MainState::update() {
 
 	_input.sync();
 
+	if(_input.justPressed(_debug)) _scene.setDebug(!_scene.debug());
+
 	_scene.updateLogic(PLAYER_CONTROLLER_COMPONENT_ID);
 	_scene.updateLogic(MOVE_COMPONENT_ID);
 }
@@ -82,8 +84,8 @@ void MainState::loadLevel(const char* filename) {
 
 
 void MainState::resetLevel() {
+	_objects.clear();
 	_scene.clear();
-
 	_player = nullptr;
 
 	for(Level::EntityIterator entity = _scene.level().entityBegin();
@@ -102,14 +104,38 @@ void MainState::resetLevel() {
 	}
 }
 
+
+GameObject* MainState::createSpriteObject(const EntityData& data,
+                                          const TileMap& tileMap) {
+	const std::string& name = getString(data, "name", "");
+	GameObject* obj = _scene.addObject(name.empty()? nullptr: name.c_str());
+	_scene.addSpriteComponent(obj, tileMap, 0);
+
+	obj->computeBoxFromSprite(Vec2(.5, .5));
+	float x = getInt(data, "x",      0);
+	float y = getInt(data, "y",      0);
+	float w = getInt(data, "width",  0);
+	float h = getInt(data, "height", 0);
+	obj->geom().pos = Vec2(x + w/2, y + h/2);
+
+	for(auto& kv: data) {
+		_game->log("  ", kv.first, ": ", kv.second);
+	}
+
+	_game->log("Exit: ", x, ", ", y, ", ", w, ", ", h);
+	_game->log("Exit pos: ", obj->geom().pos.transpose());
+
+	return obj;
+}
+
+
 GameObject* MainState::createPlayer(const EntityData& data) {
 	if(_player) {
 		_game->warning("Level has several player spawns");
 		return nullptr;
 	}
-	_player = _scene.addObject("player");
-	_scene.addSpriteComponent(_player, _playerTileMap, 0);
-	_player->computeBoxFromSprite(Vec2(.5, .5));
+
+	_player = createSpriteObject(data, _playerTileMap);
 
 	auto pcc = new PlayerControlerComponent(this, _player);
 	pcc->left  = _left;
@@ -119,13 +145,14 @@ GameObject* MainState::createPlayer(const EntityData& data) {
 	_scene.addLogicComponent(_player, MOVE_COMPONENT_ID,
 	                         new MoveComponent(_player));
 
-	_player->geom().pos = Vec2(getInt(data, "x", 0), getInt(data, "y", 0));
-
 	return _player;
 }
 
 
 GameObject* MainState::createExit(const EntityData& data) {
+	GameObject* obj = createSpriteObject(data, _exitTileMap);
+
+	return obj;
 }
 
 
@@ -144,14 +171,17 @@ void MainState::initialize() {
 	_right = _input.addInput("right");
 	_jump  = _input.addInput("jump");
 	_use   = _input.addInput("use");
+	_debug = _input.addInput("debug");
 
 	_input.mapScanCode(_left,  SDL_SCANCODE_LEFT);
 	_input.mapScanCode(_right, SDL_SCANCODE_RIGHT);
 	_input.mapScanCode(_jump,  SDL_SCANCODE_UP);
 	_input.mapScanCode(_use,   SDL_SCANCODE_SPACE);
+	_input.mapScanCode(_debug, SDL_SCANCODE_F1);
 
 	_loader.addImage("assets/tilez.png");
 	_loader.addImage("assets/test/character.png");
+	_loader.addImage("assets/exit.png");
 
 	_loader.loadAll();
 
@@ -172,6 +202,7 @@ void MainState::initialize() {
 
 	// ##### TileMaps
 	_playerTileMap = TileMap(_loader.getImage("assets/test/character.png"), 32, 64);
+	_exitTileMap   = TileMap(_loader.getImage("assets/exit.png"), 64, 64);
 
 	loadLevel("assets/level1.json");
 }

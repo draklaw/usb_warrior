@@ -30,8 +30,8 @@ int main(int argc, char** argv) {
 	Game game(argc, argv);
 	game.initialize();
 
-//	MainState state(&game);
-	TestState state(&game);
+	MainState state(&game);
+//	TestState state(&game);
 
 	return game.run(&state);
 }

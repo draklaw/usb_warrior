@@ -45,6 +45,36 @@ int getInt(const EntityData& map, const char* key, int def) {
 }
 
 
+const std::string& getString(const EntityData& map, const char* key, const std::string& def) {
+	auto it = map.find(key);
+	return (it != map.end())? it->second: def;
+}
+
+
+void extractEntityMap(EntityData& map, json_t* node) {
+	json_t* prop = node->child;
+	while(prop) {
+		switch(prop->child->type) {
+		case JSON_STRING:
+		case JSON_NUMBER:
+			map.emplace(prop->text, prop->child->text);
+			break;
+		case JSON_TRUE:
+			map.emplace(prop->text, "1");
+			break;
+		case JSON_FALSE:
+		case JSON_NULL:
+			map.emplace(prop->text, "0");
+			break;
+		case JSON_OBJECT:
+			extractEntityMap(map, prop->child);
+			break;
+		}
+		prop = prop->next;
+	}
+}
+
+
 Level::Level(Scene* scene)
     : _scene(scene) {
 	_width = _height = _layers = 0;
@@ -156,21 +186,8 @@ bool Level::loadFromJsonFile (const char* tiledMap)
 
 		while (iter != NULL)
 		{
-			json_t* prop = NULL;
 			EntityData e;
-			
-			e.emplace("name",json_find_first_label(iter,"name")->child->text);
-			e.emplace("type",json_find_first_label(iter,"type")->child->text);
-			e.emplace("x",json_find_first_label(iter,"x")->child->text);
-			e.emplace("y",json_find_first_label(iter,"y")->child->text);
-
-			// Pile up custom properties.
-			prop = json_find_first_label(iter,"properties")->child->child;
-			while (prop != NULL) {
-				e.emplace(prop->text,prop->child->text);
-				prop = prop->next;
-			}
-
+			extractEntityMap(e, iter);
 			_entities.push_back(e);
 
 			// Next object.
