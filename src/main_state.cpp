@@ -305,6 +305,7 @@ void MainState::initialize() {
 	_loader.addImage("assets/terminal.png");
 	_loader.addImage("assets/alarm.png");
 	_loader.addImage("assets/clef1.png");
+	_loader.addImage("assets/clef2.png");
 
 	_loader.loadAll();
 

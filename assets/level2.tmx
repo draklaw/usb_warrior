@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="60" height="34" tilewidth="16" tileheight="16" nextobjectid="27">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="60" height="34" tilewidth="16" tileheight="16" nextobjectid="28">
  <tileset firstgid="1" name="Tilez" tilewidth="16" tileheight="16">
   <image source="tilez.png" width="1024" height="1024"/>
  </tileset>
@@ -8,7 +8,7 @@
    eJzt10kOgjAUBuAWRN3onRxw53AlZ1fGKzm7Ea/kbwxJg1BLUmgpb/GlhDSv708JlDVjbAOBoCmMZQg0rSersYUdXOEGoWAkjGUINa0nq3GHB/SgDwfPXlPOWMTS7blajRbmtiuS96mhP8prL8rrdt5I8Z3kSt4O5aW8luWdedlnBpnXp7cC8nr8VzxXvOdrWFsnLulVVKXnWYe65+1izyeWPatF76+Oc4ytUvPS/jojmTfPv3MV1f39nPWdlolr/ZuX54zCFes3/Xy91n1/TfdDeSmvqjH/nhdFLudN+1+mvO6gvJTXdI9l5Z3DAnyDGonrIixhBUc4wcCgYeK6CGe4wBv2i9dY
   </data>
  </layer>
- <layer name="echelles" width="60" height="34">
+ <layer name="ladders" width="60" height="34">
   <data encoding="base64" compression="zlib">
    eJzt0YEJwDAMA0FDmv1X7goVxHJU/gYQ/qQKAAAA6PGsqr2mr/jmxK303ovemQ0Xemc2XOid2XBx9Ha/h7Lv+Jubeh3ozdpX0Zu1r6I3a19Fb9a+it6sffzPC4WCApU=
   </data>
@@ -35,7 +35,11 @@
     <property name="tiles_y" value="8"/>
    </properties>
   </object>
-  <object id="18" name="wall" type="wall" x="736" y="272" width="16" height="64"/>
+  <object id="18" name="wall" type="wall" x="736" y="272" width="16" height="64">
+   <properties>
+    <property name="enabled" value="0"/>
+   </properties>
+  </object>
   <object id="19" name="bot" type="bot_static" x="352" y="288" width="32" height="48">
    <properties>
     <property name="direction" value="1"/>
@@ -47,6 +51,7 @@
   </object>
   <object id="20" name="key1" type="trigger" x="48" y="160" width="32" height="32">
    <properties>
+    <property name="enabled" value="1"/>
     <property name="hit_point" value="add_item desactivate; disable object key1"/>
     <property name="point_x" value="16"/>
     <property name="point_y" value="16"/>
