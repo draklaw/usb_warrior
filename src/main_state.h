@@ -43,6 +43,8 @@ public:
 	void update();
 	void frame(double interp);
 
+	inline GameObject* player() { return _player; }
+
 	void loadLevel(const char* filename);
 	void resetLevel();
 
@@ -69,6 +71,8 @@ protected:
 	Scene         _scene;
 
 	Loader        _loader;
+
+	std::string   _nextLevel;
 
 	// Inputs
 	InputManager  _input;

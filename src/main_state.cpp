@@ -29,6 +29,7 @@
 #include "components/player_controler_component.h"
 #include "components/noclip_move_component.h"
 #include "components/move_component.h"
+#include "components/exit_component.h"
 
 #include "main_state.h"
 
@@ -37,6 +38,7 @@ MainState::MainState(Game* game)
 	: GameState(game, "Main", durationFromSeconds(UPDATE_TIME)),
 	  _scene(game),
 	  _loader(game),
+      _nextLevel(),
 	  _input(game),
 	  _left  (INVALID_INPUT),
 	  _right (INVALID_INPUT),
@@ -51,6 +53,12 @@ MainState::MainState(Game* game)
 
 
 void MainState::update() {
+	if(!_nextLevel.empty()) {
+		_scene.level().loadFromJsonFile(_nextLevel.c_str());
+		resetLevel();
+		_nextLevel.clear();
+	}
+
 	_scene.beginUpdate();
 
 	_input.sync();
@@ -89,8 +97,7 @@ void MainState::frame(double interp) {
 
 
 void MainState::loadLevel(const char* filename) {
-	_scene.level().loadFromJsonFile(filename);
-	resetLevel();
+	_nextLevel = filename;
 }
 
 
@@ -129,12 +136,9 @@ GameObject* MainState::createSpriteObject(const EntityData& data,
 	float h = getInt(data, "height", 0);
 	obj->geom().pos = Vec2(x + w/2, y + h/2);
 
-	for(auto& kv: data) {
-		_game->log("  ", kv.first, ": ", kv.second);
-	}
-
-	_game->log("Exit: ", x, ", ", y, ", ", w, ", ", h);
-	_game->log("Exit pos: ", obj->geom().pos.transpose());
+//	for(auto& kv: data) {
+//		_game->log("  ", kv.first, ": ", kv.second);
+//	}
 
 	return obj;
 }
@@ -153,6 +157,7 @@ GameObject* MainState::createPlayer(const EntityData& data) {
 	pcc->right = _right;
 	pcc->jump  = _jump;
 	_scene.addLogicComponent(_player, PLAYER_CONTROLLER_COMPONENT_ID, pcc);
+
 	_scene.addLogicComponent(_player, MOVE_COMPONENT_ID,
 	                         new MoveComponent(_player));
 
@@ -170,7 +175,9 @@ GameObject* MainState::createPlayer(const EntityData& data) {
 
 GameObject* MainState::createExit(const EntityData& data) {
 	GameObject* obj = createSpriteObject(data, _exitTileMap);
-
+	auto ec = new ExitComponent(this, obj);
+	ec->nextLevel = getString(data, "next_level", "");
+	_scene.addLogicComponent(obj, EXIT_COMPONENT_ID, ec);
 	return obj;
 }
 

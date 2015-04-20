@@ -55,7 +55,12 @@ void extractEntityMap(EntityData& map, json_t* node) {
 	json_t* prop = node->child;
 	while(prop) {
 		switch(prop->child->type) {
-		case JSON_STRING:
+		case JSON_STRING: {
+			char* str = json_unescape(prop->child->text);
+			map.emplace(prop->text, str);
+			free(str);
+			break;
+		}
 		case JSON_NUMBER:
 			map.emplace(prop->text, prop->child->text);
 			break;

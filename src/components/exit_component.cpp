@@ -17,29 +17,24 @@
  *  along with usb_warrior.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _UW_MATH_H_
-#define _UW_MATH_H_
 
-#include <algorithm>
-#include <ostream>
+#include "../game.h"
 
-#include <Eigen/Dense>
-#include <Eigen/Geometry>
+#include "exit_component.h"
 
 
-typedef Eigen::Vector2f Vec2;
-typedef Eigen::Vector2i Vec2i;
 
-//typedef Eigen::Transform<float, 2> Transform;
+class MainState;
 
-typedef Eigen::AlignedBox2f Boxf;
-typedef Eigen::AlignedBox2i Boxi;
-
-
-inline std::ostream& operator<<(std::ostream& out, const Boxf& box) {
-	out << "[ tl: " << box.min().transpose() << ", size: " << box.sizes().transpose() << "]";
-	return out;
+ExitComponent::ExitComponent(MainState* state, GameObject* obj)
+    : LogicComponent(obj),
+      _state(state) {
 }
 
-
-#endif
+void ExitComponent::update() {
+	Vec2 exit = _obj->worldBox().min() + Vec2(32, 48);
+	Boxf pBox = _state->player()->worldBox();
+	if(pBox.contains(exit)) {
+		_state->loadLevel(nextLevel.c_str());
+	}
+}
