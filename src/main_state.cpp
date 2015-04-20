@@ -97,6 +97,12 @@ void MainState::frame(double interp) {
 }
 
 
+GameObject* MainState::getObject(const std::string& name) {
+	auto it = _objects.find(name);
+	return (it == _objects.end())? nullptr: it->second;
+}
+
+
 void MainState::loadLevel(const char* filename) {
 	_nextLevel = filename;
 }
@@ -110,11 +116,21 @@ void MainState::resetLevel() {
 	for(Level::EntityIterator entity = _scene.level().entityBegin();
 	    entity != _scene.level().entityEnd(); ++entity) {
 
+		GameObject* obj = nullptr;
 		const std::string& type = entity->at("type");
-		if     (type == "player")     createPlayer   (*entity);
-		else if(type == "trigger")    createTrigger  (*entity);
-		else if(type == "tp")         createTP       (*entity);
-		else if(type == "bot_static") createBotStatic(*entity);
+		if     (type == "player")     obj = createPlayer   (*entity);
+		else if(type == "trigger")    obj = createTrigger  (*entity);
+//		else if(type == "tp")         obj = createTP       (*entity);
+//		else if(type == "bot_static") obj = createBotStatic(*entity);
+
+		if(obj) {
+			auto ri = _objects.emplace(obj->name(), obj);
+			if(!ri.second) {
+				_game->warning("Multiple objects with name \"", obj->name(), "\"");
+			}
+		} else {
+			_game->warning("Failed to create object \"", entity->at("name"), "\" of type \"", type, "\"");
+		}
 	}
 
 	if(!_player) {
@@ -261,6 +277,7 @@ void MainState::initialize() {
 	// Loading
 	_loader.addImage("assets/tilez.png");
 	_loader.addImage("assets/toutAMI.png");
+	_loader.addImage("assets/toutrobot.png");
 	_loader.addImage("assets/exit.png");
 
 	_loader.loadAll();
@@ -297,7 +314,9 @@ void MainState::initialize() {
 
 	// Action !
 	addCommand("load_level", loadLevelAction);
-	addCommand("echo", echoAction);
+	addCommand("echo",       echoAction);
+	addCommand("enable",     enableAction);
+	addCommand("disable",    disableAction);
 
 	loadLevel("assets/level1.json");
 }
