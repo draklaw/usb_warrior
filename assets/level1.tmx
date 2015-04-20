@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="60" height="34" tilewidth="16" tileheight="16" nextobjectid="10">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="60" height="34" tilewidth="16" tileheight="16" nextobjectid="13">
  <tileset firstgid="1" name="tilez" tilewidth="16" tileheight="16">
   <image source="tilez.png" width="1024" height="1024"/>
  </tileset>
@@ -120,28 +120,42 @@
  <objectgroup name="objects">
   <object id="3" name="exit" type="trigger" x="64" y="96" width="64" height="64">
    <properties>
-    <property name="enabled" value="1"/>
+    <property name="enabled" value="0"/>
     <property name="hit_point" value="load_level assets/level2.json"/>
     <property name="point_x" value="32"/>
     <property name="point_y" value="48"/>
     <property name="sprite" value="assets/exit.png"/>
    </properties>
   </object>
-  <object id="5" name="player" type="player" x="80" y="336" width="32" height="48"/>
   <object id="7" name="magnet" type="magnet" x="864" y="112" width="32" height="272">
    <properties>
     <property name="dest" value="tp_right_b"/>
    </properties>
   </object>
-  <object id="8" name="bot_exit" type="bot_static" x="640" y="112" width="32" height="48">
+  <object id="8" name="exit_terminal" type="trigger" x="640" y="112" width="32" height="48">
    <properties>
-    <property name="hack" value="exit"/>
+    <property name="sprite" value="assets/terminal.png"/>
+    <property name="tile_disable" value="0"/>
+    <property name="tile_enable" value="1"/>
+    <property name="use" value="enable trigger exit; disable trigger exit_terminal"/>
    </properties>
   </object>
   <object id="9" name="bot_tp" type="bot_static" x="384" y="464" width="32" height="48">
    <properties>
     <property name="target0" value="tp_right_a"/>
     <property name="target1" value="tp_right_b"/>
+   </properties>
+  </object>
+  <object id="10" name="player" type="player" x="80" y="336" width="32" height="48"/>
+  <object id="11" name="test" type="trigger" x="160" y="224" width="16" height="16">
+   <properties>
+    <property name="anim_count" value="2"/>
+    <property name="anim_speed" value="20"/>
+    <property name="sprite" value="assets/alarm.png"/>
+    <property name="tile_disable" value="0"/>
+    <property name="tile_enable" value="0"/>
+    <property name="tiles_x" value="2"/>
+    <property name="tiles_y" value="8"/>
    </properties>
   </object>
  </objectgroup>

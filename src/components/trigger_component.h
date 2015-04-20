@@ -34,6 +34,10 @@ public:
 
 public:
 	std::string hitPoint;
+	int         tileEnable;
+	int         tileDisable;
+	int         animCount;
+	int         animSpeed;
 	Vec2        pointCoords;
 	std::string hit;
 	std::string use;
@@ -41,6 +45,7 @@ public:
 protected:
 	MainState* _state;
 
+	unsigned  _animCounter;
 };
 
 #endif

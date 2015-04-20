@@ -49,6 +49,8 @@ public:
 	inline GameObject* player()   { return _player; }
 	inline Input       useInput() { return _use; }
 
+	GameObject* getObject(const std::string& name);
+
 	void loadLevel(const char* filename);
 	void resetLevel();
 

@@ -32,7 +32,8 @@ TriggerComponent::TriggerComponent(MainState* state, GameObject* obj)
 }
 
 void TriggerComponent::update() {
-	_obj->sprite->setTileIndex(0);
+	_obj->sprite->setTileIndex(
+	            tileEnable + (_animCounter / animSpeed) % animCount);
 
 	Boxf pBox = _state->player()->worldBox();
 	Boxf wBox = _obj->worldBox();
@@ -52,12 +53,14 @@ void TriggerComponent::update() {
 	bool doUse = _state->input().justPressed(_state->useInput());
 	if(!use.empty() && doUse) {
 		Vec2 usePoint = pBox.center();
-		if(!wBox.contains(usePoint)) {
+		if(wBox.contains(usePoint)) {
 			_state->exec(use.c_str());
 		}
 	}
+
+	++_animCounter;
 }
 
 void TriggerComponent::updateDisabled() {
-	_obj->sprite->setTileIndex(1);
+	_obj->sprite->setTileIndex(tileDisable);
 }
