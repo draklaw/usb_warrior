@@ -3,7 +3,6 @@
 ## Code
 
 ### Game core
-- Font rendering [ drax ]
 - Animation (component or part of SpriteComponent)
 - Keymap config file
 - [Partly done] Allow to destroy/desactive game objects/components [ drak ]

@@ -45,6 +45,9 @@ public:
 
 	void clear();
 
+	inline bool debug() const { return _debugView; }
+	void setDebug(bool debug);
+
 	inline Level& level() { return _level; }
 
 	void beginUpdate();
@@ -58,8 +61,11 @@ public:
 	inline Game* game() const { return _game; }
 
 private:
-	typedef std::vector<GameObject>      ObjectVector;
-	typedef std::vector<SpriteComponent> SpriteVector;
+	typedef std::unique_ptr<GameObject>      ObjectPtr;
+	typedef std::vector<ObjectPtr>           ObjectVector;
+
+	typedef std::unique_ptr<SpriteComponent> SpritePtr;
+	typedef std::vector<SpritePtr>           SpriteVector;
 
 	typedef std::unique_ptr<LogicComponent>  LogicPtr;
 	typedef std::vector<LogicPtr>            LogicVector;
@@ -67,6 +73,8 @@ private:
 
 private:
 	Game*         _game;
+
+	bool          _debugView;
 
 	Level         _level;
 

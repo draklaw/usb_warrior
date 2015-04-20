@@ -21,6 +21,8 @@
 #define _MAIN_STATE_H_
 
 
+#include <unordered_map>
+
 #include <Eigen/Geometry>
 
 #include <SDL2/SDL_render.h>
@@ -44,13 +46,17 @@ public:
 	void loadLevel(const char* filename);
 	void resetLevel();
 
-	GameObject* createPlayer   (const EntityData& data);
-	GameObject* createExit     (const EntityData& data);
-	GameObject* createTP       (const EntityData& data);
+	GameObject* createSpriteObject(const EntityData& data, const TileMap& tileMap);
+	GameObject* createPlayer      (const EntityData& data);
+	GameObject* createExit        (const EntityData& data);
+	GameObject* createTP          (const EntityData& data);
 
 	GameObject* createBotStatic(const EntityData& data);
 
 	inline InputManager& input() { return _input; }
+
+protected:
+	typedef std::unordered_map<std::string, GameObject*> ObjectMap;
 
 protected:
 	void initialize();
@@ -71,12 +77,15 @@ protected:
 	Input         _right;
 	Input         _jump;
 	Input         _use;
+	Input         _debug;
 
 	// Objects
+	ObjectMap     _objects;
 	GameObject*   _player;
 	
 	// TileMaps
 	TileMap       _playerTileMap;
+	TileMap       _exitTileMap;
 
 	// Other
 	Font          _font;
