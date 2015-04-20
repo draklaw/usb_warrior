@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="30" height="76" tilewidth="16" tileheight="16" nextobjectid="5">
+ <tileset firstgid="1" name="tilez" tilewidth="16" tileheight="16">
+  <image source="tilez.png" width="1024" height="1024"/>
+ </tileset>
+ <layer name="Calque de Tile 1" width="30" height="76">
+  <data encoding="base64" compression="zlib">
+   eJztmdFuwiAUhindnM5l+krqXGKde6fpprvR+Eo6nT6WfxMalVAFW0qL5+ILCS39cg60kNMfxtgUPApqlpmBX7AF/6AveNdgJ8bo3KsauwcB4GDJ9WmCF4P7T3mCq67pHUnXh+ADtNDfZsfWxNsBXUPvabyv7LzN02sjz1XyJvNb1XjHoMH1eAYTwzHy2MQbfwMGXI9Iak2Ix+wy5DkLl+Z3hI/JZ1C8dw7nwoHXVZ7Ja8/LAzuEQTnjJS95yavm0vvsY7zkJa9r77V91Ld4yUten7y2zs9l3n/lOpXv3ntaz0V7b6kD5+Uds/Palkxaf3JNro2pnnWtbhYpSOtX1c4irn6WXDdzlec81pVJnS3PdWVSZ3O9nu/x/XWZZ9UZ3XRPr0K8rvNM8foZbxZvFc/PtvKc9i+6iPlV/Yv2Nc9l9brK85c4P4eCB8vE5+dvsAJr0BO8WeYPbMABobEBRQ==
+  </data>
+ </layer>
+ <layer name="Calque 2" width="30" height="76">
+  <data encoding="base64" compression="zlib">
+   eJztmUtOwzAQhu04ATY8dnCd8r4BXKfvLtnBdfrusfiyQIg0CXY7aaxofumT6jSaT6rqmdQ1Jt6ME2MmMIVZ8ve9PusBDGGU7K+bTOKMca563bT3mtc3J/BeFrx5rgK9vdSYe3iAxzTMX/c5P1HrGV7gtaRun2sDGMJI0Dum1gSmMCupO+faApawEvSuqbWBLexK6tqM+8FBmsl5M2qdwTlcBNZdsw83sIVdYU/OWS9gCatkf/1f6nqDRqOJO1W9IaXvZIEzrTj7Pw7oB4d48xw7g0O9UrM/1Js/C4TOfgnvT9TbTa+14bNfwisV9aq3i15nT+/WaDT+kf4N3HbPUW/3vbdw14L3Dd5b8H7CV8V9dedjsUTP2TSaOOPTz8t6zLHP9jHMEfX+Rnqm+nqlZ6qvt26mNuW1nnsm5H9o6e+V79mdetXbJa9kJM6iJfMNeOI/cQ==
+  </data>
+ </layer>
+ <objectgroup name="Calque d'objets 1">
+  <object id="4" name="Exit" type="trigger" x="32" y="80" width="64" height="64">
+   <properties>
+    <property name="hit_point" value="echo Niveau suivant"/>
+    <property name="point_x" value="32"/>
+    <property name="point_y" value="48"/>
+    <property name="sprite" value="assets/exit.png"/>
+   </properties>
+  </object>
+ </objectgroup>
+</map>

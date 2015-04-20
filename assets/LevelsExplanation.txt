@@ -4,8 +4,4 @@ A mettre : le perso, le robot immobile, la herse, l'alarme quand elle se déclen
 Level 3 : introduction de la clef 2 qui permet de ne pas juste désactiver le robot mais lui faire utiliser les ordinateurs =>
 1 vieille clef à côté du TARDIS d'entrée et une autre au bout de la plateforme avec le robot QUI BOUGE. Si on met la vieille clef => perdu. Sinon, autre clef => robot active l'ordi, le TP s'active et POUF magie !
 
-Level 4 : 
-
-Level 5 :
-
-Level 6 :
+Level 4 : les TP bleus sont déjà activés et sont à lier en fonction du symbole. En théorie, on prend le "carré manqué", là on monte à l'échelle, on récupère une clef ordi, on hack le robot qui est lsur la plateforme du dessous, il active l'ordi, l'ordi allume le TP "rond bicolore", là il faut descendre à l'échelle récupérer une clef BASTON, sauter sur la plateforme du bas pour hacker un des deux robots, les regarder s'entretuer, récupérer la dernière clef HACK de l'étage, descendre d'un cran, hacker le robot qui s'occupera d'allumer l'ordi puis activer le TP jusqu'à l'écran de crédits. 
