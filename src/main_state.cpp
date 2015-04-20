@@ -119,7 +119,8 @@ void MainState::frame(double interp) {
 		_scene.renderLevelLayer(layer, viewBox, screenBox);
 	}
 
-	_font.render(_game, 100, 400, "La chaine de test a afficher.", 250);
+	_font.render(_game, 100, 400, "Hello World !", 1337);
+	_font.render(_game, 100, 432, "A quite long string in a box too small.", 200);
 
 	_scene.endRender();
 }
