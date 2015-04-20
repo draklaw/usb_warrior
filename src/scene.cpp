@@ -29,6 +29,7 @@
 
 Scene::Scene(Game* game)
     : _game(game),
+      _debugView(false),
       _level(this),
       _objectCounter(0),
       _objects() {
@@ -41,9 +42,9 @@ GameObject* Scene::addObject(const char* name) {
 		return addObject(out.str().c_str());
 	} else {
 		_game->log("Create object \"", name, "\"");
-		_objects.emplace_back(this, name);
+		_objects.emplace_back(new GameObject(this, name));
 		++_objectCounter;
-		return &_objects.back();
+		return _objects.back().get();
 	}
 }
 
@@ -53,8 +54,8 @@ void Scene::addSpriteComponent(GameObject* obj, const TileMap& tilemap,
 		_game->warning("Object \"", obj->name(), "\" has already a SpriteComponent. Do nothing.");
 		return;
 	}
-	_sprites.emplace_back(obj, tilemap, index);
-	obj->sprite = &_sprites.back();
+	_sprites.emplace_back(new SpriteComponent(obj, tilemap, index));
+	obj->sprite = _sprites.back().get();
 }
 
 
@@ -78,23 +79,32 @@ void Scene::clear() {
 }
 
 
+void Scene::setDebug(bool debug) {
+	_debugView = debug;
+}
+
+
 void Scene::beginUpdate() {
-	for(GameObject& obj: _objects) {
-		obj._nextUpdate();
+	for(ObjectPtr& obj: _objects) {
+		obj->_nextUpdate();
 	}
 }
 
 
 void Scene::updateLogic(unsigned id) {
+	if(_logicMap.size() <= id) return;
 	for (LogicPtr& lcomp: _logicMap[id]) {
 		if(lcomp->object()->isEnabled() && lcomp->isEnabled()) {
 			lcomp->update();
+		} else {
+			lcomp->updateDisabled();
 		}
 	}
 }
 
 
 void Scene::beginRender() {
+	SDL_SetRenderDrawColor(_game->renderer(), 0, 0, 0, 255);
 	SDL_TRY(SDL_RenderClear(_game->renderer()));
 }
 
@@ -105,19 +115,22 @@ void Scene::endRender() {
 
 
 void Scene::render(double interp, Boxf viewBox, Boxf screenBox) {
+	SDL_SetRenderDrawBlendMode(_game->renderer(), SDL_BLENDMODE_BLEND);
+	SDL_SetRenderDrawColor(_game->renderer(), 0, 255, 0, 64);
+
 	Vec2 scale = (  screenBox.sizes().array().template cast<float>()
 	              / viewBox.  sizes().array().template cast<float>()).matrix();
 //	_game->log("view: ", viewBox.min().transpose(), ", ", viewBox.sizes().transpose());
 //	_game->log("screen: ", screenBox.min().transpose(), ", ", screenBox.sizes().transpose());
 //	_game->log("scale: ", scale.transpose());
 
-	for(SpriteComponent& sprite: _sprites) {
-		unsigned index = std::min(sprite.tileIndex(), sprite.tilemap().nTiles() - 1);
-		GameObject* obj = sprite.object();
-		if(!sprite.isVisible() || !obj || !obj->isEnabled() || obj->isDestroyed()) {
+	for(SpritePtr& sprite: _sprites) {
+		unsigned index = std::min(sprite->tileIndex(), sprite->tilemap().nTiles() - 1);
+		GameObject* obj = sprite->object();
+		if(!sprite->isVisible() || !obj || !obj->isEnabled() || obj->isDestroyed()) {
 			if(!obj || obj->isDestroyed()) {
 				_game->log("Try to display a sprite linked to an invalid/destroyed game object");
-				sprite.setVisible(false);
+				sprite->setVisible(false);
 			}
 			continue;
 		}
@@ -127,7 +140,7 @@ void Scene::render(double interp, Boxf viewBox, Boxf screenBox) {
 		Boxf box     = obj->worldBoxInterp(interp);
 //		_game->log("box: ", box.min().transpose(), ", ", box.sizes().transpose());
 
-		SDL_Rect tileRect = sprite.tilemap().tileRect(index);
+		SDL_Rect tileRect = sprite->tilemap().tileRect(index);
 		SDL_Rect destRect;
 		destRect.x = (box.min().x() - viewBox.min().x()) * scale.x()
 		           + screenBox.min().x() - epsilon;
@@ -139,13 +152,19 @@ void Scene::render(double interp, Boxf viewBox, Boxf screenBox) {
 
 		// TODO: rotation / flips
 		SDL_TRY(SDL_RenderCopy(_game->renderer(),
-		                       sprite.tilemap().image()->texture,
+		                       sprite->tilemap().image()->texture,
 		                       &tileRect, &destRect));
+
+		if(_debugView) {
+			SDL_RenderFillRect(_game->renderer(), &destRect);
+		}
 	}
 }
 
 
 void Scene::renderLevelLayer(unsigned layer, Boxf viewBox, Boxf screenBox) {
+	SDL_SetRenderDrawBlendMode(_game->renderer(), SDL_BLENDMODE_BLEND);
+	SDL_SetRenderDrawColor(_game->renderer(), 255, 0, 0, 64);
 
 	Vec2 scale = screenBox.sizes().array() / viewBox.sizes().array();
 
@@ -177,6 +196,10 @@ void Scene::renderLevelLayer(unsigned layer, Boxf viewBox, Boxf screenBox) {
 			SDL_TRY(SDL_RenderCopy(_game->renderer(),
 								   _level.tileMap().image()->texture,
 								   &tileRect, &destRect));
+
+			if(_debugView && _level.tileCollision(tile)) {
+				SDL_RenderFillRect(_game->renderer(), &destRect);
+			}
 		}
 	}
 }

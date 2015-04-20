@@ -20,15 +20,11 @@
 #ifndef _COLLISION_H_
 #define _COLLISION_H_
 
+#include <vector>
 
 #include "math.h"
 #include "utils.h"
 
-
-struct CollisionInfo {
-	unsigned flags;
-	Vec2     penetration;
-};
-
+typedef std::vector<Boxf> CollisionList;
 
 #endif

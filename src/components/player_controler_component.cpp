@@ -25,19 +25,59 @@
 #include "player_controler_component.h"
 
 
+#define PLAYER_ANIM_FRAMES 20
+
+
 class MainState;
 
 PlayerControlerComponent::PlayerControlerComponent(
         MainState* state, GameObject* obj)
     : LogicComponent(obj),
-      _state(state) {
+      _state(state),
+      _direction(P_FRONT),
+      _animCounter(0) {
 }
 
 void PlayerControlerComponent::update() {
 	MoveComponent* ppm = static_cast<MoveComponent*>(
 					_obj->getComponent(MOVE_COMPONENT_ID));
 	assert(ppm);
-	if(_state->input().isPressed(left))  ppm->walk(LEFT);
-	if(_state->input().isPressed(right)) ppm->walk(RIGHT);
+
+	bool goLeft  = _state->input().isPressed(left);
+	bool goRight = _state->input().isPressed(right);
+	if(goLeft) {
+		_direction = P_LEFT;
+		ppm->walk(LEFT);
+	}
+	if(goRight) {
+		_direction = P_RIGHT;
+		ppm->walk(RIGHT);
+	}
 	if(_state->input().isPressed(jump))  ppm->jump();
+
+	if(goLeft || goRight) {
+		++_animCounter;
+	}
+	else {
+		_animCounter = 0;
+	}
+
+	switch(_direction) {
+	case P_FRONT:
+		_obj->sprite->setTileIndex(0);
+		break;
+	case P_BACK:
+		_obj->sprite->setTileIndex(1);
+		break;
+	case P_LEFT:
+		_obj->sprite->setTileIndex(goLeft?
+		            2 + (_animCounter / PLAYER_ANIM_FRAMES) % 2:
+		            5);
+		break;
+	case P_RIGHT:
+		_obj->sprite->setTileIndex(goRight?
+		            6 + (_animCounter / PLAYER_ANIM_FRAMES) % 2:
+		            9);
+		break;
+	}
 }

@@ -30,18 +30,55 @@
 #include "level.h"
 
 
-#define PANIC(test) do {		            \
-	if (test) {	                            \
-		printf (#test ": %i\n", __LINE__);  \
-		json_free_value(&root);             \
-		return false;                       \
-	}	                                    \
-} while (false)
+#define PANIC(test) do {            			\
+		if (test) {                         	\
+			printf (#test ": %i\n", __LINE__);  \
+			json_free_value(&root);             \
+			return false;                       \
+		}                                   	\
+	} while (false)
 
 
 int getInt(const EntityData& map, const char* key, int def) {
 	auto it = map.find(key);
 	return (it != map.end())? std::atoi(it->second.c_str()): def;
+}
+
+
+const std::string& getString(const EntityData& map, const char* key, const std::string& def) {
+	auto it = map.find(key);
+	return (it != map.end())? it->second: def;
+}
+
+
+void extractEntityMap(EntityData& map, json_t* node) {
+	json_t* prop = node->child;
+	while(prop) {
+		switch(prop->child->type) {
+		case JSON_STRING: {
+			char* str = json_unescape(prop->child->text);
+			map.emplace(prop->text, str);
+			free(str);
+			break;
+		}
+		case JSON_NUMBER:
+			map.emplace(prop->text, prop->child->text);
+			break;
+		case JSON_TRUE:
+			map.emplace(prop->text, "1");
+			break;
+		case JSON_FALSE:
+		case JSON_NULL:
+			map.emplace(prop->text, "0");
+			break;
+		case JSON_OBJECT:
+			extractEntityMap(map, prop->child);
+			break;
+		case JSON_ARRAY:
+			break;
+		}
+		prop = prop->next;
+	}
 }
 
 
@@ -156,21 +193,8 @@ bool Level::loadFromJsonFile (const char* tiledMap)
 
 		while (iter != NULL)
 		{
-			json_t* prop = NULL;
 			EntityData e;
-			
-			e.emplace("name",json_find_first_label(iter,"name")->child->text);
-			e.emplace("type",json_find_first_label(iter,"type")->child->text);
-			e.emplace("x",json_find_first_label(iter,"x")->child->text);
-			e.emplace("y",json_find_first_label(iter,"y")->child->text);
-
-			// Pile up custom properties.
-			prop = json_find_first_label(iter,"properties")->child->child;
-			while (prop != NULL) {
-				e.emplace(prop->text,prop->child->text);
-				prop = prop->next;
-			}
-
+			extractEntityMap(e, iter);
 			_entities.push_back(e);
 
 			// Next object.
@@ -209,7 +233,7 @@ void Level::setTile (unsigned x, unsigned y, unsigned layer, Tile val)
 
 
 bool Level::tileCollision(Tile tile) const {
-	return tile > 0 && unsigned(tile) < _collisionTileSet.size() && _collisionTileSet[tile];
+	return tile >= 0 && unsigned(tile) < _collisionTileSet.size() && _collisionTileSet[tile];
 }
 
 
@@ -242,49 +266,20 @@ Boxf Level::tileBox(unsigned x, unsigned y) const {
 }
 
 
-bool Level::collide(unsigned layer, const Boxf& box, CollisionInfo* info) const {
-	if(info) {
-		info->flags = 0;
-		info->penetration = Vec2(0, 0);
-	}
+CollisionList Level::collide(unsigned layer, const Boxf& box) const {
+	CollisionList inters;
+	
 	Boxi boundBox = tileBounds(box);
 	for(int y = boundBox.min().y(); y < boundBox.max().y(); ++y) {
 		for(int x = boundBox.min().x(); x < boundBox.max().x(); ++x) {
 			if(!tileCollision(getTile(x, y, layer))) continue;
-			if(!info) return true;
+			// if(!info) return true;
 
 			Boxf tBox = tileBox(x, y);
-			Boxf inter = box.intersection(tBox);
-
-//			_scene->game()->log("box: ", box.min().transpose(), ", ", box.sizes().transpose());
-//			_scene->game()->log("tBox: ", tBox.min().transpose(), ", ", tBox.sizes().transpose());
-//			_scene->game()->log("inter: ", inter.min().transpose(), ", ", inter.sizes().transpose());
-
-			assert(!inter.isEmpty());
-
-			if(inter.sizes().x() < inter.sizes().y()) {
-				if(box.center().x() < tBox.center().x()) {
-					info->flags |= RIGHT;
-					info->penetration.x() = std::min(-inter.sizes().x(), info->penetration.x());
-				} else {
-					info->flags |= LEFT;
-					info->penetration.x() = std::max( inter.sizes().x(), info->penetration.x());
-				}
-			} else {
-				if(box.center().y() < tBox.center().y()) {
-					info->flags |= DOWN;
-					info->penetration.y() = std::min(-inter.sizes().y(), info->penetration.y());
-				} else {
-					info->flags |= UP;
-					info->penetration.y() = std::max( inter.sizes().y(), info->penetration.y());
-				}
-			}
+			inters.push_back(box.intersection(tBox));
 		}
 	}
-	if(info) {
-		return info->flags;
-	}
-	return false;
+	return inters;
 }
 
 

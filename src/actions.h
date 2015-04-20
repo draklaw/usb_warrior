@@ -17,38 +17,16 @@
  *  along with usb_warrior.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _UW_PLAYER_CONTROLER_COMPONENT_H_
-#define _UW_PLAYER_CONTROLER_COMPONENT_H_
+#ifndef _UW_ACTIONS_H_
+#define _UW_ACTIONS_H_
 
 
-#include "../main_state.h"
-#include "../input.h"
-#include "../game_object.h"
+class MainState;
 
+void loadLevelAction(MainState* state, unsigned argc, const char** argv);
+void echoAction(MainState* state, unsigned argc, const char** argv);
+void enableAction(MainState* state, unsigned argc, const char** argv);
+void disableAction(MainState* state, unsigned argc, const char** argv);
 
-class PlayerControlerComponent : public LogicComponent {
-public:
-	PlayerControlerComponent(MainState* state, GameObject* obj);
-
-	void update();
-
-public:
-	Input left;
-	Input right;
-	Input jump;
-
-protected:
-	enum {
-		P_FRONT,
-		P_BACK,
-		P_LEFT,
-		P_RIGHT
-	};
-protected:
-	MainState* _state;
-
-	int _direction;
-	int _animCounter;
-};
 
 #endif

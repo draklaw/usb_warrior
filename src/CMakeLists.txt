@@ -49,9 +49,12 @@ add_executable(usb_warrior
 	sprite_component.cpp
 	level.cpp
 	scene.cpp
+	actions.cpp
 
 	components/player_controler_component.cpp
+	components/noclip_move_component.cpp
 	components/move_component.cpp
+	components/trigger_component.cpp
 )
 
 target_link_libraries(usb_warrior

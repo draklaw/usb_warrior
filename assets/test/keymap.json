@@ -1,0 +1,6 @@
+{
+	"left"  :[ "A",     "Keypad 4", "Left"  ],
+	"right" :[ "D",     "Keypad 6", "Right" ],
+	"jump"  :[ "W",     "Keypad 8", "Up"    ],
+	"use"   :[ "Sapce", "Return"            ]
+}

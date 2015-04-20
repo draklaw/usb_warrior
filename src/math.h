@@ -21,6 +21,7 @@
 #define _UW_MATH_H_
 
 #include <algorithm>
+#include <ostream>
 
 #include <Eigen/Dense>
 #include <Eigen/Geometry>
@@ -33,6 +34,12 @@ typedef Eigen::Vector2i Vec2i;
 
 typedef Eigen::AlignedBox2f Boxf;
 typedef Eigen::AlignedBox2i Boxi;
+
+
+inline std::ostream& operator<<(std::ostream& out, const Boxf& box) {
+	out << "[ tl: " << box.min().transpose() << ", size: " << box.sizes().transpose() << "]";
+	return out;
+}
 
 
 #endif
