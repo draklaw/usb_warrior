@@ -217,7 +217,7 @@ void MoveComponent::collide() {
 			{
 				if (crash.sizes().y() > crash.sizes().x() * Y_X_VERTICALITY_FACTOR)
 				{ // vertical crashbox, horizontal collision
-					if (crash.center().x() > _puppet->box.center().x())
+					if (crash.center().x() > _puppet->worldBox().center().x())
 						_puppet->pos.x() -= crash.sizes().x()/2.0 - COLLISION_DELTA/2.0;
 					else
 						_puppet->pos.x() += crash.sizes().x()/2.0 - COLLISION_DELTA/2.0;
@@ -226,7 +226,7 @@ void MoveComponent::collide() {
 				}
 				else // horizontal crashbox, vertical collision
 				{
-					if (crash.center().y() > _puppet->box.center().y())
+					if (crash.center().y() > _puppet->worldBox().center().y())
 					{
 						_puppet->pos.y() -= crash.sizes().y()/2.0 - COLLISION_DELTA/2.0;
 						
