@@ -41,3 +41,37 @@ void echoAction(MainState* state, unsigned argc, const char** argv) {
 		printf(",%s", argv[i]);
 	printf(">\n");
 }
+
+
+void _enableHelper(MainState* state, const std::string& compName,
+                   const std::string& objName, bool enable) {
+	unsigned comp = 0;
+	if(compName == "trigger") comp = TRIGGER_COMPONENT_ID;
+	else {
+		state->game()->warning("En/Disable action: Invalid component ", compName);
+		return;
+	}
+
+	GameObject* obj = state->getObject(objName);
+	if(!obj) {
+		state->game()->warning("En/Disable action: Invalid object ", objName);
+		return;
+	}
+
+	obj->getComponent(comp)->setEnabled(enable);
+}
+
+void enableAction(MainState* state, unsigned argc, const char** argv) {
+	if(argc < 3) {
+		state->game()->warning("Enable action: Invalid call");
+	}
+	_enableHelper(state, argv[1], argv[2], true);
+}
+
+
+void disableAction(MainState* state, unsigned argc, const char** argv) {
+	if(argc < 3) {
+		state->game()->warning("Disable action: Invalid call");
+	}
+	_enableHelper(state, argv[1], argv[2], false);
+}
