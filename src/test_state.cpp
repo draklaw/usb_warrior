@@ -119,8 +119,9 @@ void TestState::frame(double interp) {
 		_scene.renderLevelLayer(layer, viewBox, screenBox);
 	}
 
-	_font.render(_game, 100, 400, "Hello World !", 1337);
-	_font.render(_game, 100, 432, "A quite long string in a box too small.", 200);
+	_font.render(_game, 100, 400, "Hello World !");
+	_font.render(_game, 100, 432,
+	             "A quite long string in a box a bit too small.", 200);
 
 	_scene.endRender();
 }
