@@ -27,6 +27,7 @@
 #include "game.h"
 
 #include "components/player_controler_component.h"
+#include "components/noclip_move_component.h"
 #include "components/move_component.h"
 
 #include "main_state.h"
@@ -37,10 +38,13 @@ MainState::MainState(Game* game)
 	  _scene(game),
 	  _loader(game),
 	  _input(game),
-	  _left (INVALID_INPUT),
-	  _right(INVALID_INPUT),
-	  _jump (INVALID_INPUT),
-	  _use  (INVALID_INPUT),
+	  _left  (INVALID_INPUT),
+	  _right (INVALID_INPUT),
+	  _jump  (INVALID_INPUT),
+      _down  (INVALID_INPUT),
+      _use   (INVALID_INPUT),
+      _debug0(INVALID_INPUT),
+      _debug1(INVALID_INPUT),
       _player(nullptr),
       _font() {
 }
@@ -51,10 +55,17 @@ void MainState::update() {
 
 	_input.sync();
 
-	if(_input.justPressed(_debug)) _scene.setDebug(!_scene.debug());
+	if(_input.justPressed(_debug0)) _scene.setDebug(!_scene.debug());
+	if(_input.justPressed(_debug1)) {
+		auto mc = _player->getComponent(MOVE_COMPONENT_ID);
+		auto nmc = _player->getComponent(NOCLIP_MOVE_COMPONENT_ID);
+		mc->setEnabled(!mc->isEnabled());
+		nmc->setEnabled(!mc->isEnabled());
+	}
 
-	_scene.updateLogic(PLAYER_CONTROLLER_COMPONENT_ID);
-	_scene.updateLogic(MOVE_COMPONENT_ID);
+	for(unsigned compId = 0; compId < COMPONENT_COUNT; ++compId) {
+		_scene.updateLogic(compId);
+	}
 }
 
 
@@ -145,6 +156,14 @@ GameObject* MainState::createPlayer(const EntityData& data) {
 	_scene.addLogicComponent(_player, MOVE_COMPONENT_ID,
 	                         new MoveComponent(_player));
 
+	auto nmc = new NoclipMoveComponent(this, _player);
+	nmc->left  = _left;
+	nmc->right = _right;
+	nmc->up    = _jump;
+	nmc->down  = _down;
+	nmc->setEnabled(false);
+	_scene.addLogicComponent(_player, NOCLIP_MOVE_COMPONENT_ID, nmc);
+
 	return _player;
 }
 
@@ -167,17 +186,21 @@ GameObject* MainState::createBotStatic(const EntityData& data) {
 void MainState::initialize() {
 	_game->log("Initialize MainState...");
 
-	_left  = _input.addInput("left");
-	_right = _input.addInput("right");
-	_jump  = _input.addInput("jump");
-	_use   = _input.addInput("use");
-	_debug = _input.addInput("debug");
+	_left   = _input.addInput("left");
+	_right  = _input.addInput("right");
+	_jump   = _input.addInput("jump");
+	_down   = _input.addInput("down");
+	_use    = _input.addInput("use");
+	_debug0 = _input.addInput("debug0");
+	_debug1 = _input.addInput("debug1");
 
-	_input.mapScanCode(_left,  SDL_SCANCODE_LEFT);
-	_input.mapScanCode(_right, SDL_SCANCODE_RIGHT);
-	_input.mapScanCode(_jump,  SDL_SCANCODE_UP);
-	_input.mapScanCode(_use,   SDL_SCANCODE_SPACE);
-	_input.mapScanCode(_debug, SDL_SCANCODE_F1);
+	_input.mapScanCode(_left,   SDL_SCANCODE_LEFT);
+	_input.mapScanCode(_right,  SDL_SCANCODE_RIGHT);
+	_input.mapScanCode(_jump,   SDL_SCANCODE_UP);
+	_input.mapScanCode(_down,   SDL_SCANCODE_DOWN);
+	_input.mapScanCode(_use,    SDL_SCANCODE_SPACE);
+	_input.mapScanCode(_debug0, SDL_SCANCODE_F1);
+	_input.mapScanCode(_debug1, SDL_SCANCODE_F2);
 
 	_loader.addImage("assets/tilez.png");
 	_loader.addImage("assets/toutAMI.png");

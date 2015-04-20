@@ -76,8 +76,11 @@ protected:
 	Input         _left;
 	Input         _right;
 	Input         _jump;
+	Input         _down;
 	Input         _use;
-	Input         _debug;
+
+	Input         _debug0;
+	Input         _debug1;
 
 	// Objects
 	ObjectMap     _objects;

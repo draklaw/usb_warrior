@@ -69,6 +69,8 @@ void extractEntityMap(EntityData& map, json_t* node) {
 		case JSON_OBJECT:
 			extractEntityMap(map, prop->child);
 			break;
+		case JSON_ARRAY:
+			break;
 		}
 		prop = prop->next;
 	}

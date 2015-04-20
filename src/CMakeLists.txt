@@ -51,6 +51,7 @@ add_executable(usb_warrior
 	scene.cpp
 
 	components/player_controler_component.cpp
+	components/noclip_move_component.cpp
 	components/move_component.cpp
 )
 
