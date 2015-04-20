@@ -43,7 +43,7 @@ public:
 	const Image* getImage(const std::string& filename);
 	const Sound* getSound(const std::string& filename);
 	const Music* getMusic(const std::string& filename);
-	const Font*  getFont(const std::string& filename);
+	      Font   getFont (const std::string& filename);
 
 	unsigned loadAll();
 	void releaseAll();
@@ -52,7 +52,7 @@ private:
 	typedef std::unordered_map<std::string, const Image*> ImageMap;
 	typedef std::unordered_map<std::string, const Sound*> SoundMap;
 	typedef std::unordered_map<std::string, const Music*> MusicMap;
-	typedef std::unordered_map<std::string, const Font*>  FontMap;
+	typedef std::unordered_map<std::string, const FontImpl*>  FontMap;
 
 private:
 	Game*    _game;

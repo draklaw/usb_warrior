@@ -52,26 +52,26 @@ protected:
 	void stop();
 
 protected:
-	Scene _scene;
+	Scene         _scene;
 
-	Loader _loader;
+	Loader        _loader;
 
-	InputManager _input;
-	Input        _left;
-	Input        _right;
-	Input        _up;
-	Input        _down;
-	Input        _use;
+	InputManager  _input;
+	Input         _left;
+	Input         _right;
+	Input         _up;
+	Input         _down;
+	Input         _use;
 
-	GameObject*  _obj;
-	TileMap      _tilemap;
+	GameObject*   _obj;
+	TileMap       _tilemap;
 
-	const Sound* _msound;
-	const Sound* _jsound;
-	const Music* _music;
-	int _mchannel;
+	const Sound*  _msound;
+	const Sound*  _jsound;
+	const Music*  _music;
+	int           _mchannel;
 	
-	const Font* _font;
+	Font          _font;
 };
 
 

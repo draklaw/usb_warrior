@@ -17,8 +17,8 @@
  *  along with usb_warrior.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _MATH_H_
-#define _MATH_H_
+#ifndef _UW_MATH_H_
+#define _UW_MATH_H_
 
 
 #include <Eigen/Dense>
