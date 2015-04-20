@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="60" height="34" tilewidth="16" tileheight="16" nextobjectid="1">
+ <tileset firstgid="1" name="tilez" tilewidth="16" tileheight="16">
+  <image source="tilez.png" width="1024" height="1024"/>
+ </tileset>
+ <layer name="Calque de Tile 1" width="60" height="34">
+  <data encoding="base64" compression="zlib">
+   eJzt2MluwjAQBmDH7JQKXom90L5U2S9IvBI7J+CR+kfgA1Ya23EQsZnDJ+Uwg/wrTsJ4yhibQSFlRelaRbcuqTksYA8H6KasJ12r6NYldYQTBMBhxfV9Bmb1WVBCxjLlpbyUly3RdGaPXp3nmXldlIW8PHi8fiaRtwktur/eobx+o7x+o7x+6yPjl0N5K1hoFSr8pmpojIwTh/IOsNAhDPjN0JDNvP8KH1BL2Htx8P+kTd46//99ldXZzibvKiZvVqnyhnv2GnMOIefVnatEf1pzWtTvxeWVzxmEcM823uj+huLOmXx8X1Feyvtuz6/vecV3ysf9XI84FxffKdfyfsOPRb+YB39hBLm7vIJuXVSfTc1YWqcJ0R/Og2vYQPuuo6BbF9VnU7OV1mlC9O/gDxz9tzQ=
+  </data>
+ </layer>
+ <layer name="Calque 2" width="60" height="34" opacity="0.46">
+  <data encoding="base64" compression="zlib">
+   eJztzsEJgEAMAMGkCu1MO9NyTQ9CcnAzsP+NAAB2kTl9AAAAAAD8dVTn9ESjq7qnJxo91Ts9wbI+o6oCEA==
+  </data>
+ </layer>
+ <layer name="Calque 3" width="60" height="34">
+  <data encoding="base64" compression="zlib">
+   eJztmDkSgjAYRhMS1NJOr+PuDfQ67la2eh0XhEbP5FdYOI6DErMR/jfzKoYkb6JDgDGCIAh7DCRjQziCY+l6NeZZoXENN3Cb05t37V+a3NzY7yTouMIUZo7292ZxrjhmrAbrsBFbnPiFor38+XuQAusX2pdjHNX9pd5yQL2/Qb166OA51YU92DfwzPKtd4bGOVzAZQV6j2g8wTO8VKCX4xwSQQGlgTOJq94kwtkSpjCL1Mcpim/7a5oy9rZgW/HeMvZO4BTeFdwpvg+67N3Dg+U5ff//6l7fp/GExW8H3/B9P3RDvWFDvWFDvWFTtV6TuHq3C5kHKGctvw==
+  </data>
+ </layer>
+</map>
