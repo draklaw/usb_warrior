@@ -240,11 +240,13 @@ void MainState::initialize() {
 	_debug0 = _input.addInput("debug0");
 	_debug1 = _input.addInput("debug1");
 
-	_input.mapScanCode(_left,   SDL_SCANCODE_LEFT);
-	_input.mapScanCode(_right,  SDL_SCANCODE_RIGHT);
-	_input.mapScanCode(_jump,   SDL_SCANCODE_UP);
-	_input.mapScanCode(_down,   SDL_SCANCODE_DOWN);
-	_input.mapScanCode(_use,    SDL_SCANCODE_SPACE);
+	_input.loadKeyBindingFile("assets/keymap.json");
+
+	_input.bindJsonKeys(_left,  "left",  SDL_SCANCODE_LEFT);
+	_input.bindJsonKeys(_right, "right", SDL_SCANCODE_RIGHT);
+	_input.bindJsonKeys(_jump,  "jump",  SDL_SCANCODE_UP);
+	_input.bindJsonKeys(_down,  "down",  SDL_SCANCODE_DOWN);
+	_input.bindJsonKeys(_use,   "use",   SDL_SCANCODE_SPACE);
 	_input.mapScanCode(_debug0, SDL_SCANCODE_F1);
 	_input.mapScanCode(_debug1, SDL_SCANCODE_F2);
 

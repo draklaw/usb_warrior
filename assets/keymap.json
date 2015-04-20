@@ -1,0 +1,7 @@
+{
+	"left"  :[ "A", "Left"  ],
+	"right" :[ "D", "Right" ],
+	"jump"  :[ "W", "Up"    ],
+	"down"  :[ "S", "Down"  ],
+	"use"   :[ "Sapce"      ]
+}
