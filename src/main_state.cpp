@@ -113,6 +113,7 @@ void MainState::resetLevel() {
 	_objects.clear();
 	_scene.clear();
 	_player = nullptr;
+	hasDeactivateKey = false;
 
 	for(Level::EntityIterator entity = _scene.level().entityBegin();
 	    entity != _scene.level().entityEnd(); ++entity) {
