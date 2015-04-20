@@ -192,11 +192,15 @@ GameObject* MainState::createPlayer(const EntityData& data) {
 
 GameObject* MainState::createTrigger(const EntityData& data) {
 	const Image* img = _loader.getImage(getString(data, "sprite", ""));
+	int tileX = getInt(data, "tiles_x", 2);
+	int tileY = getInt(data, "tiles_y", 1);
 
 	GameObject* obj = createSpriteObject(data,
-	             TileMap(img, img->size.x() / 2, img->size.y()));
+	             TileMap(img, img->size.x() / tileX, img->size.y() / tileY));
 	auto ec = new TriggerComponent(this, obj);
 	ec->setEnabled(getInt(data, "enabled", true));
+	ec->tileEnable      = getInt(data, "tile_enable", 0);
+	ec->tileDisable     = getInt(data, "tile_disable", 1);
 	ec->hitPoint        = getString(data, "hit_point", "");
 	ec->pointCoords.x() = getInt(data, "point_x", 0);
 	ec->pointCoords.y() = getInt(data, "point_y", 0);
@@ -279,6 +283,7 @@ void MainState::initialize() {
 	_loader.addImage("assets/toutAMI.png");
 	_loader.addImage("assets/toutrobot.png");
 	_loader.addImage("assets/exit.png");
+	_loader.addImage("assets/terminal.png");
 
 	_loader.loadAll();
 

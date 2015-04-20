@@ -134,8 +134,10 @@
   </object>
   <object id="8" name="exit_terminal" type="trigger" x="640" y="112" width="32" height="48">
    <properties>
-    <property name="sprite" value="assets/toutrobot.png"/>
-    <property name="use" value="enable trigger exit"/>
+    <property name="sprite" value="assets/terminal.png"/>
+    <property name="tile_disable" value="0"/>
+    <property name="tile_enable" value="1"/>
+    <property name="use" value="enable trigger exit; disable trigger exit_terminal"/>
    </properties>
   </object>
   <object id="9" name="bot_tp" type="bot_static" x="384" y="464" width="32" height="48">

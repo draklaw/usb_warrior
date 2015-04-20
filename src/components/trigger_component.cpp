@@ -32,7 +32,7 @@ TriggerComponent::TriggerComponent(MainState* state, GameObject* obj)
 }
 
 void TriggerComponent::update() {
-	_obj->sprite->setTileIndex(0);
+	_obj->sprite->setTileIndex(tileEnable);
 
 	Boxf pBox = _state->player()->worldBox();
 	Boxf wBox = _obj->worldBox();
@@ -59,5 +59,5 @@ void TriggerComponent::update() {
 }
 
 void TriggerComponent::updateDisabled() {
-	_obj->sprite->setTileIndex(1);
+	_obj->sprite->setTileIndex(tileDisable);
 }

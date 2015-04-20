@@ -78,8 +78,10 @@
                  "name":"exit_terminal",
                  "properties":
                     {
-                     "sprite":"assets\/toutrobot.png",
-                     "use":"enable trigger exit"
+                     "sprite":"assets\/terminal.png",
+                     "tile_disable":"0",
+                     "tile_enable":"1",
+                     "use":"enable trigger exit; disable trigger exit_terminal"
                     },
                  "rotation":0,
                  "type":"trigger",

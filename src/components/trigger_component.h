@@ -34,6 +34,8 @@ public:
 
 public:
 	std::string hitPoint;
+	int         tileEnable;
+	int         tileDisable;
 	Vec2        pointCoords;
 	std::string hit;
 	std::string use;
