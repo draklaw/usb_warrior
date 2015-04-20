@@ -56,7 +56,7 @@ void Font::setImage(const Image* image) {
 
 
 void Font::render(Game* game, unsigned x, unsigned y, const char* text,
-                  unsigned maxWidth) const {
+                  unsigned maxWidth /* = 0xffffffff */) const {
 	_font->render(game, _image, x, y, text, maxWidth);
 }
 
@@ -89,9 +89,9 @@ fail:
 
 
 void FontImpl::render(Game* game, const Image* image, unsigned x, unsigned y,
-                      const char* text, unsigned maxWidth) const {
+                      const char* text, unsigned maxWidth /* = 0xffffffff */) const {
 	unsigned xOrig = x;
-	unsigned len = strlen(text);
+	unsigned len = std::strlen(text);
 	const Character* chars[len];
 	
 	unsigned i = 0;
@@ -104,7 +104,7 @@ void FontImpl::render(Game* game, const Image* image, unsigned x, unsigned y,
 		auto chrIt = _charMap.find(text[i]);
 		if(chrIt == _charMap.end()) { chrIt = _charMap.find('?'); }
 		chars[i] = &(chrIt->second);
-		if(x + chars[i]->_xadv > xOrig + maxWidth) {
+		if(maxWidth < 0xffffffff && x + chars[i]->_xadv > xOrig + maxWidth) {
 			if(lastSpace == firstCol) { lastSpace = i; }
 			renderLine(game, image, xOrig, y, chars, firstCol, lastSpace);
 			if(i != lastSpace) { i = lastSpace + 1; }
