@@ -115,6 +115,9 @@ void Scene::endRender() {
 
 
 void Scene::render(double interp, Boxf viewBox, Boxf screenBox) {
+	SDL_SetRenderDrawBlendMode(_game->renderer(), SDL_BLENDMODE_BLEND);
+	SDL_SetRenderDrawColor(_game->renderer(), 0, 255, 0, 64);
+
 	Vec2 scale = (  screenBox.sizes().array().template cast<float>()
 	              / viewBox.  sizes().array().template cast<float>()).matrix();
 //	_game->log("view: ", viewBox.min().transpose(), ", ", viewBox.sizes().transpose());
@@ -153,14 +156,15 @@ void Scene::render(double interp, Boxf viewBox, Boxf screenBox) {
 		                       &tileRect, &destRect));
 
 		if(_debugView) {
-			SDL_SetRenderDrawColor(_game->renderer(), 0, 255, 0, 255);
-			SDL_RenderDrawRect(_game->renderer(), &destRect);
+			SDL_RenderFillRect(_game->renderer(), &destRect);
 		}
 	}
 }
 
 
 void Scene::renderLevelLayer(unsigned layer, Boxf viewBox, Boxf screenBox) {
+	SDL_SetRenderDrawBlendMode(_game->renderer(), SDL_BLENDMODE_BLEND);
+	SDL_SetRenderDrawColor(_game->renderer(), 255, 0, 0, 64);
 
 	Vec2 scale = screenBox.sizes().array() / viewBox.sizes().array();
 
@@ -192,6 +196,10 @@ void Scene::renderLevelLayer(unsigned layer, Boxf viewBox, Boxf screenBox) {
 			SDL_TRY(SDL_RenderCopy(_game->renderer(),
 								   _level.tileMap().image()->texture,
 								   &tileRect, &destRect));
+
+			if(_debugView && _level.tileCollision(tile)) {
+				SDL_RenderFillRect(_game->renderer(), &destRect);
+			}
 		}
 	}
 }

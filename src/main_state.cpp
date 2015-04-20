@@ -271,6 +271,12 @@ void MainState::initialize() {
 	for(unsigned i = 0; i < 3; ++i) {
 		_scene.level().setTileCollision(256 + i, true);
 	}
+	for(unsigned i = 0; i < 12; ++i) {
+		_scene.level().setTileCollision( 8 + i * 64, true);
+		_scene.level().setTileCollision( 9 + i * 64, true);
+		_scene.level().setTileCollision(10 + i * 64, true);
+		_scene.level().setTileCollision(11 + i * 64, true);
+	}
 
 	// ##### TileMaps
 	_playerTileMap = TileMap(_loader.getImage("assets/toutAMI.png"), 32, 48);

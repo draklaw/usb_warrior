@@ -233,7 +233,7 @@ void Level::setTile (unsigned x, unsigned y, unsigned layer, Tile val)
 
 
 bool Level::tileCollision(Tile tile) const {
-	return tile > 0 && unsigned(tile) < _collisionTileSet.size() && _collisionTileSet[tile];
+	return tile >= 0 && unsigned(tile) < _collisionTileSet.size() && _collisionTileSet[tile];
 }
 
 
