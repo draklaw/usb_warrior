@@ -34,7 +34,7 @@
                  "properties":
                     {
                      "enabled":"1",
-                     "hit_point":"load_level assets\/level3.json",
+                     "hit_point":"set_state credits",
                      "point_x":"32",
                      "point_y":"48",
                      "sprite":"assets\/exit.png"
@@ -69,7 +69,7 @@
                  "y":192
                 }, 
                 {
-                 "height":64,
+                 "height":112,
                  "id":18,
                  "name":"wall",
                  "properties":
@@ -81,7 +81,7 @@
                  "visible":true,
                  "width":16,
                  "x":736,
-                 "y":272
+                 "y":224
                 }, 
                 {
                  "height":48,

@@ -20,6 +20,7 @@
 
 #include "game.h"
 #include "main_state.h"
+#include "credit_state.h"
 
 #include "actions.h"
 
@@ -97,5 +98,17 @@ void addItemAction(MainState* state, unsigned argc, const char** argv) {
 		state->hasDeactivateKey = true;
 	} else {
 		state->game()->warning("add_item action: invalid key type");
+	}
+}
+
+void setStateAction(MainState* state, unsigned argc, const char** argv) {
+	if(argc != 2) {
+		state->game()->warning("set_state action: Invalid call");
+	}
+	std::string next = argv[1];
+	if(next == "credits") {
+		// FIXME: introduce a memory leak
+		state->game()->changeState(new CreditState(state->game()));
+		state->quit();
 	}
 }

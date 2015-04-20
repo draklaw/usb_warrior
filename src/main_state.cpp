@@ -375,6 +375,7 @@ void MainState::initialize() {
 	addCommand("enable",     enableAction);
 	addCommand("disable",    disableAction);
 	addCommand("add_item",   addItemAction);
+	addCommand("set_state",  setStateAction);
 
 	loadLevel("assets/level2.json");
 }

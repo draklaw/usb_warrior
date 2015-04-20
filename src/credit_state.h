@@ -17,18 +17,29 @@
  *  along with usb_warrior.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _UW_ACTIONS_H_
-#define _UW_ACTIONS_H_
+#ifndef _UW_CREDIT_STATE_H_
+#define _UW_CREDIT_STATE_H_
 
 
-class MainState;
+#include "game_state.h"
 
-void loadLevelAction(MainState* state, unsigned argc, const char** argv);
-void echoAction(MainState* state, unsigned argc, const char** argv);
-void enableAction(MainState* state, unsigned argc, const char** argv);
-void disableAction(MainState* state, unsigned argc, const char** argv);
-void addItemAction(MainState* state, unsigned argc, const char** argv);
-void setStateAction(MainState* state, unsigned argc, const char** argv);
+
+class Image;
+
+class CreditState : public GameState {
+public:
+	CreditState(Game* game);
+
+	void update();
+	void frame(double interp);
+
+protected:
+	void initialize();
+	void shutdown();
+
+protected:
+	const Image* _splash;
+};
 
 
 #endif
