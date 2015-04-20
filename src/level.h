@@ -62,10 +62,11 @@ public:
 	bool tileCollision(Tile tile) const;
 	void setTileCollision(Tile tile, bool collision);
 
+	bool isClimbable (Tile t) const;
+
 	Boxi tileBounds(const Boxf& box) const;
 	Boxf tileBox(unsigned x, unsigned y) const;
-	//bool collide(unsigned layer, const Boxf& box, CollisionInfo* info = nullptr) const;
-	CollisionList collide(unsigned layer, const Boxf& box) const;
+	CollisionList collide(unsigned layer, const Boxf& box, bool ladder = false) const;
 
 	inline EntityIterator entityBegin() const { return _entities.begin(); }
 	inline EntityIterator entityEnd()   const { return _entities.end();   }
