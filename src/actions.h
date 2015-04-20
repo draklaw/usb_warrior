@@ -24,6 +24,7 @@
 class MainState;
 
 void loadLevelAction(MainState* state, unsigned argc, const char** argv);
+void echoAction(MainState* state, unsigned argc, const char** argv);
 
 
 #endif

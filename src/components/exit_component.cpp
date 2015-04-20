@@ -17,6 +17,7 @@
  *  along with usb_warrior.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+ #include <cstdio>
 
 #include "../game.h"
 
