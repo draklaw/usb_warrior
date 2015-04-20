@@ -107,7 +107,7 @@ void MainState::frame(double interp) {
 	SDL_SetRenderDrawColor(dali,200,200,200,255);
 	SDL_RenderFillRect(dali,&r1);
 	
-	r1.x = screenSize.x() - 300;
+	r1.x = screenSize.x() - 300 + ((50-32)/2);
 	r1.y = screenSize.y() - 50 + ((50-32)/2);
 	r1.w = 32;
 	r1.h = 32;
