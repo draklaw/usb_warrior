@@ -242,24 +242,31 @@ Boxf Level::tileBox(unsigned x, unsigned y) const {
 }
 
 
-bool Level::collide(unsigned layer, const Boxf& box, CollisionInfo* info) const {
+CollisionList Level::collide(unsigned layer, const Boxf& box) const {
+	/*
 	if(info) {
 		info->flags = 0;
 		info->penetration = Vec2(0, 0);
-	}
+		info->intersection = Boxf();
+	}*/
+	CollisionList inters;
+	
 	Boxi boundBox = tileBounds(box);
 	for(int y = boundBox.min().y(); y < boundBox.max().y(); ++y) {
 		for(int x = boundBox.min().x(); x < boundBox.max().x(); ++x) {
 			if(!tileCollision(getTile(x, y, layer))) continue;
-			if(!info) return true;
+			// if(!info) return true;
 
 			Boxf tBox = tileBox(x, y);
-			Boxf inter = box.intersection(tBox);
+			inters.push_back(box.intersection(tBox));
+		}
+	}
+	return inters;
 
 //			_scene->game()->log("box: ", box.min().transpose(), ", ", box.sizes().transpose());
 //			_scene->game()->log("tBox: ", tBox.min().transpose(), ", ", tBox.sizes().transpose());
 //			_scene->game()->log("inter: ", inter.min().transpose(), ", ", inter.sizes().transpose());
-
+/*
 			assert(!inter.isEmpty());
 
 			if(inter.sizes().x() < inter.sizes().y()) {
@@ -285,6 +292,7 @@ bool Level::collide(unsigned layer, const Boxf& box, CollisionInfo* info) const 
 		return info->flags;
 	}
 	return false;
+	*/
 }
 
 

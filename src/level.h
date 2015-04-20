@@ -62,7 +62,8 @@ public:
 
 	Boxi tileBounds(const Boxf& box) const;
 	Boxf tileBox(unsigned x, unsigned y) const;
-	bool collide(unsigned layer, const Boxf& box, CollisionInfo* info = nullptr) const;
+	//bool collide(unsigned layer, const Boxf& box, CollisionInfo* info = nullptr) const;
+	CollisionList collide(unsigned layer, const Boxf& box) const;
 
 	inline EntityIterator entityBegin() const { return _entities.begin(); }
 	inline EntityIterator entityEnd()   const { return _entities.end();   }
