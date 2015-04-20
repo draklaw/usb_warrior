@@ -9,6 +9,10 @@
 
 #include "json.h"
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
 
 /**
 Renders the tree structure where root is the tree's root, which can also be a tree branch. This function is used recursively by json_render_tree()
@@ -23,5 +27,7 @@ Renders the tree structure where root is the tree's root, which can also be a tr
  **/
 void json_render_tree (json_t * root);
 
-
+#ifdef __cplusplus
+}
+#endif
 #endif

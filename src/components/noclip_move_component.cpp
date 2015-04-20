@@ -17,38 +17,26 @@
  *  along with usb_warrior.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _UW_PLAYER_CONTROLER_COMPONENT_H_
-#define _UW_PLAYER_CONTROLER_COMPONENT_H_
+
+#include "../game.h"
+
+#include "noclip_move_component.h"
 
 
-#include "../main_state.h"
-#include "../input.h"
-#include "../game_object.h"
+#define NOCLIP_SPEED 4
 
 
-class PlayerControlerComponent : public LogicComponent {
-public:
-	PlayerControlerComponent(MainState* state, GameObject* obj);
+class MainState;
 
-	void update();
+NoclipMoveComponent::NoclipMoveComponent(MainState* state, GameObject* obj)
+    : LogicComponent(obj),
+      _state(state) {
+}
 
-public:
-	Input left;
-	Input right;
-	Input jump;
-
-protected:
-	enum {
-		P_FRONT,
-		P_BACK,
-		P_LEFT,
-		P_RIGHT
-	};
-protected:
-	MainState* _state;
-
-	int _direction;
-	int _animCounter;
-};
-
-#endif
+void NoclipMoveComponent::update() {
+	Vec2& pos = _obj->geom().pos;
+	if(_state->input().isPressed(left))  pos.x() -= NOCLIP_SPEED;
+	if(_state->input().isPressed(right)) pos.x() += NOCLIP_SPEED;
+	if(_state->input().isPressed(up))    pos.y() -= NOCLIP_SPEED;
+	if(_state->input().isPressed(down))  pos.y() += NOCLIP_SPEED;
+}

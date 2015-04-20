@@ -25,9 +25,12 @@
 
 #include "utils.h"
 #include "game.h"
+#include "actions.h"
 
 #include "components/player_controler_component.h"
+#include "components/noclip_move_component.h"
 #include "components/move_component.h"
+#include "components/exit_component.h"
 
 #include "main_state.h"
 
@@ -36,23 +39,42 @@ MainState::MainState(Game* game)
 	: GameState(game, "Main", durationFromSeconds(UPDATE_TIME)),
 	  _scene(game),
 	  _loader(game),
+      _nextLevel(),
 	  _input(game),
-	  _left (INVALID_INPUT),
-	  _right(INVALID_INPUT),
-	  _jump (INVALID_INPUT),
-	  _use  (INVALID_INPUT),
+	  _left  (INVALID_INPUT),
+	  _right (INVALID_INPUT),
+	  _jump  (INVALID_INPUT),
+      _down  (INVALID_INPUT),
+      _use   (INVALID_INPUT),
+      _debug0(INVALID_INPUT),
+      _debug1(INVALID_INPUT),
       _player(nullptr),
       _font() {
 }
 
 
 void MainState::update() {
+	if(!_nextLevel.empty()) {
+		_scene.level().loadFromJsonFile(_nextLevel.c_str());
+		resetLevel();
+		_nextLevel.clear();
+	}
+
 	_scene.beginUpdate();
 
 	_input.sync();
 
-	_scene.updateLogic(PLAYER_CONTROLLER_COMPONENT_ID);
-	_scene.updateLogic(MOVE_COMPONENT_ID);
+	if(_input.justPressed(_debug0)) _scene.setDebug(!_scene.debug());
+	if(_input.justPressed(_debug1)) {
+		auto mc = _player->getComponent(MOVE_COMPONENT_ID);
+		auto nmc = _player->getComponent(NOCLIP_MOVE_COMPONENT_ID);
+		mc->setEnabled(!mc->isEnabled());
+		nmc->setEnabled(!mc->isEnabled());
+	}
+
+	for(unsigned compId = 0; compId < COMPONENT_COUNT; ++compId) {
+		_scene.updateLogic(compId);
+	}
 }
 
 
@@ -65,8 +87,8 @@ void MainState::frame(double interp) {
 
 	_scene.beginRender();
 
-	if(_scene.level().nLayers() > 0) {
-		_scene.renderLevelLayer(0, viewBox, screenBox);
+	for(unsigned layer = 0; layer < _scene.level().nLayers(); ++layer) {
+		_scene.renderLevelLayer(layer, viewBox, screenBox);
 	}
 
 	_scene.render(interp, viewBox, screenBox);
@@ -76,14 +98,13 @@ void MainState::frame(double interp) {
 
 
 void MainState::loadLevel(const char* filename) {
-	_scene.level().loadFromJsonFile(filename);
-	resetLevel();
+	_nextLevel = filename;
 }
 
 
 void MainState::resetLevel() {
+	_objects.clear();
 	_scene.clear();
-
 	_player = nullptr;
 
 	for(Level::EntityIterator entity = _scene.level().entityBegin();
@@ -102,30 +123,63 @@ void MainState::resetLevel() {
 	}
 }
 
+
+GameObject* MainState::createSpriteObject(const EntityData& data,
+                                          const TileMap& tileMap) {
+	const std::string& name = getString(data, "name", "");
+	GameObject* obj = _scene.addObject(name.empty()? nullptr: name.c_str());
+	_scene.addSpriteComponent(obj, tileMap, 0);
+
+	obj->computeBoxFromSprite(Vec2(.5, .5));
+	float x = getInt(data, "x",      0);
+	float y = getInt(data, "y",      0);
+	float w = getInt(data, "width",  0);
+	float h = getInt(data, "height", 0);
+	obj->geom().pos = Vec2(x + w/2, y + h/2);
+
+//	for(auto& kv: data) {
+//		_game->log("  ", kv.first, ": ", kv.second);
+//	}
+
+	return obj;
+}
+
+
 GameObject* MainState::createPlayer(const EntityData& data) {
 	if(_player) {
 		_game->warning("Level has several player spawns");
 		return nullptr;
 	}
-	_player = _scene.addObject("player");
-	_scene.addSpriteComponent(_player, _playerTileMap, 0);
-	_player->computeBoxFromSprite(Vec2(.5, .5));
+
+	_player = createSpriteObject(data, _playerTileMap);
 
 	auto pcc = new PlayerControlerComponent(this, _player);
 	pcc->left  = _left;
 	pcc->right = _right;
 	pcc->jump  = _jump;
 	_scene.addLogicComponent(_player, PLAYER_CONTROLLER_COMPONENT_ID, pcc);
+
 	_scene.addLogicComponent(_player, MOVE_COMPONENT_ID,
 	                         new MoveComponent(_player));
 
-	_player->geom().pos = Vec2(getInt(data, "x", 0), getInt(data, "y", 0));
+	auto nmc = new NoclipMoveComponent(this, _player);
+	nmc->left  = _left;
+	nmc->right = _right;
+	nmc->up    = _jump;
+	nmc->down  = _down;
+	nmc->setEnabled(false);
+	_scene.addLogicComponent(_player, NOCLIP_MOVE_COMPONENT_ID, nmc);
 
 	return _player;
 }
 
 
 GameObject* MainState::createExit(const EntityData& data) {
+	GameObject* obj = createSpriteObject(data, _exitTileMap);
+	auto ec = new ExitComponent(this, obj);
+	ec->hitCenter = getString(data, "hit_center", "");
+	_scene.addLogicComponent(obj, EXIT_COMPONENT_ID, ec);
+	return obj;
 }
 
 
@@ -137,21 +191,61 @@ GameObject* MainState::createBotStatic(const EntityData& data) {
 }
 
 
+void MainState::addCommand(const char* action, Command cmd) {
+	_commandMap.emplace(action, cmd);
+}
+
+
+void MainState::exec(const char* cmd) {
+	_game->log("exec: ", cmd);
+
+	std::string line(cmd);
+	std::vector<const char*> argv;
+
+	auto c   = line.begin();
+	auto end = line.end();
+	while(c != end) {
+		while(c != end && std::isspace(*c)) ++c;
+		if(c == end) break;
+		argv.push_back(&*c);
+		while(c != end && !std::isspace(*c)) ++c;
+		if(c != end) *(c++) = '\0';
+	}
+
+	if(argv.size() == 0) return;
+
+	auto pair = _commandMap.find(argv[0]);
+	if(pair == _commandMap.end()) {
+		_game->warning("Action not found: ", argv[0]);
+		return;
+	}
+
+	pair->second(this, argv.size(), argv.data());
+}
+
+
 void MainState::initialize() {
 	_game->log("Initialize MainState...");
 
-	_left  = _input.addInput("left");
-	_right = _input.addInput("right");
-	_jump  = _input.addInput("jump");
-	_use   = _input.addInput("use");
+	_left   = _input.addInput("left");
+	_right  = _input.addInput("right");
+	_jump   = _input.addInput("jump");
+	_down   = _input.addInput("down");
+	_use    = _input.addInput("use");
+	_debug0 = _input.addInput("debug0");
+	_debug1 = _input.addInput("debug1");
 
-	_input.mapScanCode(_left,  SDL_SCANCODE_LEFT);
-	_input.mapScanCode(_right, SDL_SCANCODE_RIGHT);
-	_input.mapScanCode(_jump,  SDL_SCANCODE_UP);
-	_input.mapScanCode(_use,   SDL_SCANCODE_SPACE);
+	_input.mapScanCode(_left,   SDL_SCANCODE_LEFT);
+	_input.mapScanCode(_right,  SDL_SCANCODE_RIGHT);
+	_input.mapScanCode(_jump,   SDL_SCANCODE_UP);
+	_input.mapScanCode(_down,   SDL_SCANCODE_DOWN);
+	_input.mapScanCode(_use,    SDL_SCANCODE_SPACE);
+	_input.mapScanCode(_debug0, SDL_SCANCODE_F1);
+	_input.mapScanCode(_debug1, SDL_SCANCODE_F2);
 
 	_loader.addImage("assets/tilez.png");
-	_loader.addImage("assets/test/character.png");
+	_loader.addImage("assets/toutAMI.png");
+	_loader.addImage("assets/exit.png");
 
 	_loader.loadAll();
 
@@ -171,7 +265,11 @@ void MainState::initialize() {
 	}
 
 	// ##### TileMaps
-	_playerTileMap = TileMap(_loader.getImage("assets/test/character.png"), 32, 64);
+	_playerTileMap = TileMap(_loader.getImage("assets/toutAMI.png"), 32, 48);
+	_exitTileMap   = TileMap(_loader.getImage("assets/exit.png"), 64, 64);
+
+	// Action !
+	addCommand("load_level", loadLevelAction);
 
 	loadLevel("assets/level1.json");
 }

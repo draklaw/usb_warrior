@@ -17,38 +17,26 @@
  *  along with usb_warrior.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _UW_PLAYER_CONTROLER_COMPONENT_H_
-#define _UW_PLAYER_CONTROLER_COMPONENT_H_
+#ifndef _EXIT_COMPONENT_H_
+#define _EXIT_COMPONENT_H_
 
 
 #include "../main_state.h"
-#include "../input.h"
 #include "../game_object.h"
 
 
-class PlayerControlerComponent : public LogicComponent {
+class ExitComponent : public LogicComponent {
 public:
-	PlayerControlerComponent(MainState* state, GameObject* obj);
+	ExitComponent(MainState* state, GameObject* obj);
 
 	void update();
 
 public:
-	Input left;
-	Input right;
-	Input jump;
+	std::string hitCenter;
 
-protected:
-	enum {
-		P_FRONT,
-		P_BACK,
-		P_LEFT,
-		P_RIGHT
-	};
 protected:
 	MainState* _state;
 
-	int _direction;
-	int _animCounter;
 };
 
 #endif

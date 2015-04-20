@@ -20,13 +20,30 @@
 
 #include <cassert>
 
+#include "json.h"
+#include "game.h"
+
 #include "input.h"
+
+
+#define FAIL(test) do {			           \
+		if (test) {	                       \
+			mapScanCode(input, scanCode);  \
+			return;                        \
+		}	                               \
+	} while (false)
 
 
 InputManager::InputManager(Game* game)
     : _game(game),
+	  _bindings(NULL),
       _inputMap(),
       _scanCodeMap() {
+}
+
+
+InputManager::~InputManager() {
+	if(_bindings) { json_free_value(&_bindings); }
 }
 
 
@@ -38,6 +55,40 @@ Input InputManager::addInput(const char* name) {
 
 void  InputManager::mapScanCode(Input input, ScanCode scanCode) {
 	_scanCodeMap.emplace(scanCode, input);
+}
+
+
+void InputManager::bindJsonKeys(Input input, const char* name, ScanCode scanCode) {
+	FAIL(_bindings == NULL);
+	// get the array of keys corresponding to 'name'
+	json_t* item = json_find_first_label(_bindings, name);
+	FAIL(item == NULL || item->child == NULL || item->child->type != JSON_ARRAY);
+
+	// get the first key of that array
+	item = item->child->child;
+	FAIL(item == NULL);
+
+	do {
+		FAIL(item->type != JSON_STRING);
+		SDL_Scancode code = SDL_GetScancodeFromName(item->text);
+		FAIL(code == SDL_SCANCODE_UNKNOWN);
+		mapScanCode(input, code);
+		item = item->next;
+	} while (item != NULL);
+}
+
+
+void InputManager::loadKeyBindingFile(const char* filename) {
+	FILE* jsonFile = fopen(filename, "r");
+	if(jsonFile == NULL) { _game->log("Failed to open: ", filename); }
+
+	if(json_stream_parse(jsonFile, &_bindings) == JSON_OK) {
+		_game->log("Load keys  \"", filename, "\"...");
+	} else {
+		_game->log("Failed to parse: \"", filename, "\"");
+		_bindings = NULL;
+	}
+	fclose(jsonFile);
 }
 
 

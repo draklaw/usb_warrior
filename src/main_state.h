@@ -21,6 +21,8 @@
 #define _MAIN_STATE_H_
 
 
+#include <unordered_map>
+
 #include <Eigen/Geometry>
 
 #include <SDL2/SDL_render.h>
@@ -36,21 +38,34 @@
 
 class MainState : public GameState {
 public:
+	typedef void (*Command)(MainState*, unsigned, const char**);
+
+public:
 	MainState(Game* game);
 
 	void update();
 	void frame(double interp);
 
+	inline GameObject* player() { return _player; }
+
 	void loadLevel(const char* filename);
 	void resetLevel();
 
-	GameObject* createPlayer   (const EntityData& data);
-	GameObject* createExit     (const EntityData& data);
-	GameObject* createTP       (const EntityData& data);
+	GameObject* createSpriteObject(const EntityData& data, const TileMap& tileMap);
+	GameObject* createPlayer      (const EntityData& data);
+	GameObject* createExit        (const EntityData& data);
+	GameObject* createTP          (const EntityData& data);
 
 	GameObject* createBotStatic(const EntityData& data);
 
+	void addCommand(const char* action, Command cmd);
+	void exec(const char* cmd);
+
 	inline InputManager& input() { return _input; }
+
+protected:
+	typedef std::unordered_map<std::string, GameObject*> ObjectMap;
+	typedef std::unordered_map<std::string, Command>     CommandMap;
 
 protected:
 	void initialize();
@@ -64,19 +79,28 @@ protected:
 
 	Loader        _loader;
 
+	CommandMap    _commandMap;
+	std::string   _nextLevel;
+
 	// Inputs
 	InputManager  _input;
 
 	Input         _left;
 	Input         _right;
 	Input         _jump;
+	Input         _down;
 	Input         _use;
 
+	Input         _debug0;
+	Input         _debug1;
+
 	// Objects
+	ObjectMap     _objects;
 	GameObject*   _player;
 	
 	// TileMaps
 	TileMap       _playerTileMap;
+	TileMap       _exitTileMap;
 
 	// Other
 	Font          _font;

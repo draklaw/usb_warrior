@@ -17,38 +17,19 @@
  *  along with usb_warrior.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _UW_PLAYER_CONTROLER_COMPONENT_H_
-#define _UW_PLAYER_CONTROLER_COMPONENT_H_
+
+#include "game.h"
+#include "main_state.h"
+
+#include "actions.h"
 
 
-#include "../main_state.h"
-#include "../input.h"
-#include "../game_object.h"
+void loadLevelAction(MainState* state, unsigned argc, const char** argv) {
+	if(argc < 2) {
+		state->game()->warning("Invalid loadLevel call");
+	}
 
+	state->game()->warning("loadLevelAction: ", argc, ", ", argv[1]);
+	state->loadLevel(argv[1]);
+}
 
-class PlayerControlerComponent : public LogicComponent {
-public:
-	PlayerControlerComponent(MainState* state, GameObject* obj);
-
-	void update();
-
-public:
-	Input left;
-	Input right;
-	Input jump;
-
-protected:
-	enum {
-		P_FRONT,
-		P_BACK,
-		P_LEFT,
-		P_RIGHT
-	};
-protected:
-	MainState* _state;
-
-	int _direction;
-	int _animCounter;
-};
-
-#endif
