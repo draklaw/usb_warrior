@@ -61,7 +61,7 @@ void PlayerControlerComponent::update() {
 	MoveComponent* pmc = static_cast<MoveComponent*>(_obj->getComponent(MOVE_COMPONENT_ID));
 	if (pmc->_ladder)
 		direction = P_BACK;
-	
+
 	if(goLeft || goRight) {
 		++_animCounter;
 	}

@@ -85,8 +85,9 @@ protected:
 
 public:
 	bool          hasDeactivateKey;
-//	bool          hasDeactivateKey;
-//	bool          hasDeactivateKey;
+	bool          hasComputerKey;
+	bool          hasFightClubKey;
+	bool          hasMysteryKey;
 
 protected:
 	// Inputs

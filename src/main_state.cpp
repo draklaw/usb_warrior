@@ -119,21 +119,28 @@ void MainState::frame(double interp) {
 	SDL_SetTextureAlphaMod(key1,255);
 	
 	r1.x = r1.x + 32 + 20;
-	r1.y = screenSize.y() - 50 + ((50-32)/2);
-	r1.w = 32;
-	r1.h = 32;
 	
-// 	SDL_Texture* key2 = _loader.getImage("assets/clef2.png")->texture;
-// 	SDL_RenderCopy(dali, key2, NULL, &r1);
+	SDL_Texture* key2 = _loader.getImage("assets/clef2.png")->texture;
+	if (!hasComputerKey)
+		SDL_SetTextureAlphaMod(key2,64);
+	SDL_RenderCopy(dali, key2, NULL, &r1);
+	SDL_SetTextureAlphaMod(key2,255);
 	
 	r1.x = r1.x + 32 + 20;
-	r1.y = screenSize.y() - 50 + ((50-32)/2);
-	r1.w = 32;
-	r1.h = 32;
 	
-// 	SDL_Texture* key3 = _loader.getImage("assets/clef3.png")->texture;
-// 	SDL_RenderCopy(dali, key3, NULL, &r1);
-
+	SDL_Texture* key3 = _loader.getImage("assets/clef3.png")->texture;
+	if (!hasFightClubKey)
+		SDL_SetTextureAlphaMod(key3,64);
+	SDL_RenderCopy(dali, key3, NULL, &r1);
+	SDL_SetTextureAlphaMod(key3,255);
+	
+	r1.x = r1.x + 32 + 20;
+	
+	SDL_Texture* key4 = _loader.getImage("assets/clef4.png")->texture;
+	if (!hasMysteryKey)
+		SDL_SetTextureAlphaMod(key4,64);
+	SDL_RenderCopy(dali, key4, NULL, &r1);
+	SDL_SetTextureAlphaMod(key4,255);
 
 	_scene.endRender();
 }
@@ -155,6 +162,9 @@ void MainState::resetLevel() {
 	_scene.clear();
 	_player = nullptr;
 	hasDeactivateKey = false;
+	hasComputerKey = false;
+	hasFightClubKey = false;
+	hasMysteryKey = false;
 
 	for(Level::EntityIterator entity = _scene.level().entityBegin();
 	    entity != _scene.level().entityEnd(); ++entity) {
@@ -351,6 +361,9 @@ void MainState::initialize() {
 	_loader.addImage("assets/terminal.png");
 	_loader.addImage("assets/alarm.png");
 	_loader.addImage("assets/clef1.png");
+	_loader.addImage("assets/clef2.png");
+	_loader.addImage("assets/clef3.png");
+	_loader.addImage("assets/clef4.png");
 
 	_loader.loadAll();
 
