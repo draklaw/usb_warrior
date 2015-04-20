@@ -20,6 +20,7 @@
 #ifndef _MATH_H_
 #define _MATH_H_
 
+#include <algorithm>
 
 #include <Eigen/Dense>
 #include <Eigen/Geometry>

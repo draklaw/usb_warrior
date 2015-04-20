@@ -28,6 +28,10 @@ class GeometryComponent {
 public:
 	GeometryComponent() : pos(0, 0), box(), rot(0) {}
 
+	inline Boxf worldBox() const {
+		return Boxf(pos + box.min(), pos + box.max());
+	}
+
 	Vec2  pos;
 	Boxf  box;
 	float rot;

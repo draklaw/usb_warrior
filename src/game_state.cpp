@@ -45,7 +45,8 @@ GameState::GameState(Game* game, const std::string& name, Duration updateTime)
       _updateTime(updateTime),
       _frameTime(durationFromSeconds(1.01d / game->getRefreshRate())),
       _enabled(false),
-      _running(false) {
+      _running(false),
+      _updateCount(0) {
 }
 
 
@@ -75,6 +76,7 @@ void GameState::run() {
 		} else if(next_event == _nextUpdate) {
 			// Update !
 			update();
+			++_updateCount;
 			_nextUpdate += _updateTime;
 		} else {
 			// Frame ! (Everything is more funny with bangs !)

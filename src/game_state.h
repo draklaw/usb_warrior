@@ -72,6 +72,8 @@ protected:
 
 	TimePoint    _nextUpdate;
 	TimePoint    _nextFrame;
+
+	unsigned     _updateCount;
 };
 
 
