@@ -31,6 +31,7 @@
 #include "components/noclip_move_component.h"
 #include "components/move_component.h"
 #include "components/trigger_component.h"
+#include "components/bot_component.h"
 
 #include "main_state.h"
 
@@ -120,8 +121,7 @@ void MainState::resetLevel() {
 		const std::string& type = entity->at("type");
 		if     (type == "player")     obj = createPlayer   (*entity);
 		else if(type == "trigger")    obj = createTrigger  (*entity);
-//		else if(type == "tp")         obj = createTP       (*entity);
-//		else if(type == "bot_static") obj = createBotStatic(*entity);
+		else if(type == "bot_static") obj = createBotStatic(*entity);
 
 		if(obj) {
 			auto ri = _objects.emplace(obj->name(), obj);
@@ -214,11 +214,18 @@ GameObject* MainState::createTrigger(const EntityData& data) {
 }
 
 
-GameObject* MainState::createTP(const EntityData& data) {
-}
-
-
 GameObject* MainState::createBotStatic(const EntityData& data) {
+	const Image* img = _loader.getImage("assets/toutrobot.png");
+	GameObject* obj = createSpriteObject(data, TileMap(img, 32, 48));
+
+	auto bc = new BotComponent(this, obj);
+	bc->direction   = getInt   (data, "direction", 0);
+	bc->fov         = getInt   (data, "fov", 30);
+	bc->seePlayer   = getString(data, "see_player", "");
+	bc->hackDisable = getString(data, "hack_disable", "");
+	_scene.addLogicComponent(obj, BOT_COMPONENT_ID, bc);
+
+	return obj;
 }
 
 
@@ -228,7 +235,7 @@ void MainState::addCommand(const char* action, Command cmd) {
 
 
 void MainState::exec(const char* cmd) {
-	_game->log("exec: ", cmd);
+//	_game->log("exec: ", cmd);
 
 	std::string line(cmd);
 
