@@ -113,6 +113,7 @@ void MainState::resetLevel() {
 	_objects.clear();
 	_scene.clear();
 	_player = nullptr;
+	hasDeactivateKey = false;
 
 	for(Level::EntityIterator entity = _scene.level().entityBegin();
 	    entity != _scene.level().entityEnd(); ++entity) {
@@ -344,6 +345,7 @@ void MainState::initialize() {
 	addCommand("echo",       echoAction);
 	addCommand("enable",     enableAction);
 	addCommand("disable",    disableAction);
+	addCommand("add_item",   addItemAction);
 
 	loadLevel("assets/level2.json");
 }

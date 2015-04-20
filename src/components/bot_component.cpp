@@ -64,8 +64,15 @@ void BotComponent::update() {
 		Boxf box = _obj->worldBox();
 		if(box.contains(pPos + pLookDir)) {
 			if(!hackDisable.empty()) {
-				_state->exec(hackDisable.c_str());
+				if(_state->hasDeactivateKey) {
+					_state->exec(hackDisable.c_str());
+					_state->hasDeactivateKey = false;
+				}
 			}
 		}
 	}
+}
+
+void BotComponent::updateDisabled() {
+	_obj->sprite->setTileIndex(direction + 2);
 }

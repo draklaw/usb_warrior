@@ -27,6 +27,7 @@ void loadLevelAction(MainState* state, unsigned argc, const char** argv);
 void echoAction(MainState* state, unsigned argc, const char** argv);
 void enableAction(MainState* state, unsigned argc, const char** argv);
 void disableAction(MainState* state, unsigned argc, const char** argv);
+void addItemAction(MainState* state, unsigned argc, const char** argv);
 
 
 #endif

@@ -30,6 +30,7 @@ public:
 	BotComponent(MainState* state, GameObject* obj);
 
 	void update();
+	void updateDisabled();
 
 public:
 	unsigned     direction;

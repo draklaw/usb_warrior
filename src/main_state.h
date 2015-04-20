@@ -83,6 +83,12 @@ protected:
 	CommandMap    _commandMap;
 	std::string   _nextLevel;
 
+public:
+	bool          hasDeactivateKey;
+//	bool          hasDeactivateKey;
+//	bool          hasDeactivateKey;
+
+protected:
 	// Inputs
 	InputManager  _input;
 

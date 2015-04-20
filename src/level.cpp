@@ -99,6 +99,12 @@ static inline bool isTileLayer (json_t* layer)
 
 bool Level::loadFromJsonFile (const char* tiledMap)
 {
+	_entities.clear();
+	_map.clear();
+	_width = 0;
+	_height = 0;
+	_layers = 0;
+
 	_scene->game()->log("Load level \"", tiledMap, "\"...");
 	json_t* root = NULL;
 	json_t* item = NULL;
