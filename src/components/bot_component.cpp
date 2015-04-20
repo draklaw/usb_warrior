@@ -30,7 +30,8 @@ class MainState;
 
 BotComponent::BotComponent(MainState* state, GameObject* obj)
     : LogicComponent(obj),
-      _state(state) {
+      _state(state),
+	  _channel(-1)  {
 }
 
 void BotComponent::update() {
@@ -48,6 +49,10 @@ void BotComponent::update() {
 
 		if(alpha < fov) {
 			_state->exec(seePlayer.c_str());
+			if(_channel == -1) {
+				const Sound* alarmSnd = _state->getLoader().getSound("assets/alarm.wav");
+				_channel = _state->game()->sounds()->playSound(alarmSnd, -1);
+			}
 		}
 	}
 
@@ -67,6 +72,9 @@ void BotComponent::update() {
 				if(_state->hasDeactivateKey) {
 					_state->exec(hackDisable.c_str());
 					_state->hasDeactivateKey = false;
+					const Sound* useSnd = _state->getLoader().getSound("assets/use.wav");
+					_state->game()->sounds()->playSound(useSnd, 0);
+					 _state->game()->sounds()->haltSound(_channel);
 				}
 			}
 		}

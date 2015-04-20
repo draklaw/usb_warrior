@@ -89,6 +89,8 @@ void addItemAction(MainState* state, unsigned argc, const char** argv) {
 	std::string type = argv[1];
 	if(type == "deactivate") {
 		state->hasDeactivateKey = true;
+		const Sound* snd = state->getLoader().getSound("assets/loot.wav");
+		state->game()->sounds()->playSound(snd, 0);
 	} else {
 		state->game()->warning("add_item action: invalid key type");
 	}

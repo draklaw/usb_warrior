@@ -40,7 +40,7 @@ public:
 
 protected:
 	MainState* _state;
-
+	int        _channel;
 };
 
 #endif

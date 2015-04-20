@@ -353,6 +353,10 @@ void MainState::initialize() {
 	_loader.addImage("assets/clef1.png");
 	_loader.addImage("assets/clef2.png");
 
+	_loader.addSound("assets/use.wav");
+	_loader.addSound("assets/loot.wav");
+	_loader.addSound("assets/alarm.wav");
+
 	_loader.loadAll();
 
 	// ##### Level
