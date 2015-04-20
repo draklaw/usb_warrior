@@ -201,6 +201,8 @@ GameObject* MainState::createTrigger(const EntityData& data) {
 	ec->setEnabled(getInt(data, "enabled", true));
 	ec->tileEnable      = getInt   (data, "tile_enable", 0);
 	ec->tileDisable     = getInt   (data, "tile_disable", 1);
+	ec->animCount       = getInt   (data, "anim_count", 1);
+	ec->animSpeed       = getInt   (data, "anim_speed", 60);
 	ec->hitPoint        = getString(data, "hit_point", "");
 	ec->pointCoords.x() = getInt   (data, "point_x", 0);
 	ec->pointCoords.y() = getInt   (data, "point_y", 0);
@@ -293,6 +295,7 @@ void MainState::initialize() {
 	_loader.addImage("assets/toutrobot.png");
 	_loader.addImage("assets/exit.png");
 	_loader.addImage("assets/terminal.png");
+	_loader.addImage("assets/alarm.png");
 
 	_loader.loadAll();
 
