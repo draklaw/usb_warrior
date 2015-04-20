@@ -78,6 +78,7 @@ protected:
 	TimePoint    _nextFrame;
 
 	double       _uptime;
+	unsigned     _updateCount;
 };
 
 

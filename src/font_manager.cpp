@@ -91,20 +91,43 @@ fail:
 void FontImpl::render(Game* game, const Image* image, unsigned x, unsigned y,
                       const char* text, unsigned maxWidth) const {
 	unsigned xOrig = x;
-	for(int i = 0; text[i] != '\0'; i++) {
+	unsigned len = strlen(text);
+	const Character* chars[len];
+	
+	unsigned i = 0;
+	while(text[i] == ' ') { i++; }
+	unsigned firstCol = i;
+	unsigned lastSpace = i;
+
+	while(i < len) {
+		if(text[i] == ' ') { lastSpace = i; }
 		auto chrIt = _charMap.find(text[i]);
-		if(chrIt == _charMap.end()) {
-			chrIt = _charMap.find('?');
-		}
-		const Character& chr = chrIt->second;
-		if(x + chr._xadv > xOrig + maxWidth) {
-			y += _baseLine;
+		if(chrIt == _charMap.end()) { chrIt = _charMap.find('?'); }
+		chars[i] = &(chrIt->second);
+		if(x + chars[i]->_xadv > xOrig + maxWidth) {
+			if(lastSpace == firstCol) { lastSpace = i; }
+			renderLine(game, image, xOrig, y, chars, firstCol, lastSpace);
+			if(i != lastSpace) { i = lastSpace + 1; }
+			while(text[i] == ' ') { i++; }
+			lastSpace = firstCol = i;
 			x = xOrig;
+			y += _baseLine;
+			continue;
 		}
-		SDL_Rect charRect = chr.charRect();
-		SDL_Rect destRect = chr.destRect(x, y);
+		x += chars[i]->_xadv;
+		i++;
+	}
+	renderLine(game, image, xOrig, y, chars, firstCol, len);
+}
+
+
+void FontImpl::renderLine(Game* game, const Image* image, unsigned x, unsigned y,
+	                      const Character** chars, unsigned from, unsigned to) const {
+	for(unsigned i = from; i < to; i++) {
+		SDL_Rect charRect = chars[i]->charRect();
+		SDL_Rect destRect = chars[i]->destRect(x, y);
 		SDL_RenderCopy(game->renderer(), image->texture, &charRect, &destRect);
-		x += chr._xadv;
+		x += chars[i]->_xadv;
 	}
 }
 

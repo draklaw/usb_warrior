@@ -20,6 +20,7 @@
 #ifndef _UW_MATH_H_
 #define _UW_MATH_H_
 
+#include <algorithm>
 
 #include <Eigen/Dense>
 #include <Eigen/Geometry>

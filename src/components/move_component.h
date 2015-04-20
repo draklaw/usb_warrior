@@ -33,13 +33,17 @@ public:
 	void update();
 	void jump();
 	void walk(Direction d);
-	void sprint(Direction d);
+	void sprint();
 
 protected:
 	GeometryComponent* _puppet;
 	
 	Vec2 _mSpeed;
-	bool _ground;
+	unsigned _momentum;
+	unsigned _airTime;
+	Direction _walking;
+	bool _running;
+	bool _jumping;
 };
 
 

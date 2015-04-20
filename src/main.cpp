@@ -23,13 +23,15 @@
 
 #include "game.h"
 #include "main_state.h"
+#include "test_state.h"
 
 
 int main(int argc, char** argv) {
 	Game game(argc, argv);
 	game.initialize();
 
-	MainState state(&game);
+//	MainState state(&game);
+	TestState state(&game);
 
 	return game.run(&state);
 }

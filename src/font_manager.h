@@ -55,6 +55,10 @@ public:
 	unsigned     useCount;
 
 private:
+	void renderLine(Game* game, const Image* image, unsigned x, unsigned y,
+	                const Character** chars, unsigned from, unsigned to) const;
+
+private:
 	typedef std::unordered_map<unsigned, Character> CharMap;
 
 private:

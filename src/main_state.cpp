@@ -102,7 +102,6 @@ void MainState::resetLevel() {
 	}
 }
 
-
 GameObject* MainState::createPlayer(const EntityData& data) {
 	if(_player) {
 		_game->warning("Level has several player spawns");
