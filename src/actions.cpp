@@ -25,7 +25,7 @@
 
 
 void loadLevelAction(MainState* state, unsigned argc, const char** argv) {
-	if(argc < 2) {
+	if(argc != 2) {
 		state->game()->warning("Invalid loadLevel call");
 	}
 
@@ -62,7 +62,7 @@ void _enableHelper(MainState* state, const std::string& compName,
 }
 
 void enableAction(MainState* state, unsigned argc, const char** argv) {
-	if(argc < 3) {
+	if(argc != 3) {
 		state->game()->warning("Enable action: Invalid call");
 	}
 	_enableHelper(state, argv[1], argv[2], true);
@@ -70,7 +70,7 @@ void enableAction(MainState* state, unsigned argc, const char** argv) {
 
 
 void disableAction(MainState* state, unsigned argc, const char** argv) {
-	if(argc < 3) {
+	if(argc != 3) {
 		state->game()->warning("Disable action: Invalid call");
 	}
 	_enableHelper(state, argv[1], argv[2], false);
