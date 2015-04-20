@@ -249,10 +249,10 @@ void Level::setTileCollision(Tile tile, bool collision) {
 Boxi Level::tileBounds(const Boxf& box) const {
 	const Vec2i& tileSize = _tileMap.tileSize();
 	Boxi tileBox(
-			Vec2i( box.min().x()    / tileSize.x(),
-				   box.min().y()    / tileSize.y()),
-			Vec2i((box.max().x()-1) / tileSize.x() + 1,
-				  (box.max().y()-1) / tileSize.y() + 1)
+			Vec2i( box.min().x()  / tileSize.x(),
+			       box.min().y()  / tileSize.y()),
+			Vec2i((box.max().x()) / tileSize.x() + 1,
+			      (box.max().y()) / tileSize.y() + 1)
 	);
 	Boxi maxBox = Boxi(Vec2i::Zero(), Vec2i(_width - 1, _height - 1));
 	return tileBox.intersection(maxBox);
@@ -272,9 +272,9 @@ CollisionList Level::collide(unsigned layer, const Boxf& box) const {
 	Boxi boundBox = tileBounds(box);
 	for(int y = boundBox.min().y(); y < boundBox.max().y(); ++y) {
 		for(int x = boundBox.min().x(); x < boundBox.max().x(); ++x) {
-			if(!tileCollision(getTile(x, y, layer))) continue;
-			// if(!info) return true;
-
+			if(!tileCollision(getTile(x, y, layer)))
+				continue;
+			
 			Boxf tBox = tileBox(x, y);
 			inters.push_back(box.intersection(tBox));
 		}

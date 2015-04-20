@@ -67,7 +67,7 @@
 #define AIR_CONTROL_FACTOR 1.0/5.0
 #define GRAVITY_ACCEL 0.6
 #define AIR_DRAG_FACTOR 0.99
-#define TERMINAL_VELOCITY 20.0
+#define TERMINAL_VELOCITY TILESIZE
 
 /* control switches are reset
 
@@ -218,22 +218,21 @@ void MoveComponent::collide() {
 		for (Boxf crash:intersections)
 			if (crash.volume() >= SIGNIFICANT_COLLISION)
 			{
-// 				printf ("%.2f | %.2f - %i\n",crash.center().x(), _puppet->worldBox().center().x());
 				if (crash.sizes().y() > crash.sizes().x() * Y_X_VERTICALITY_FACTOR)
 				{ // vertical crashbox, horizontal collision
 					if (crash.center().x() > _puppet->worldBox().center().x())
-						_puppet->pos.x() -= crash.sizes().x()/2.0 - COLLISION_DELTA/2.0;
+						_puppet->pos.x() -= crash.sizes().x() - COLLISION_DELTA/2.0;
 					else
-						_puppet->pos.x() += crash.sizes().x()/2.0 - COLLISION_DELTA/2.0;
+						_puppet->pos.x() += crash.sizes().x() - COLLISION_DELTA/2.0;
 					
 					_mSpeed.x() = 0;
 				}
 				else // horizontal crashbox, vertical collision
 				{
 					if (crash.center().y() > _puppet->worldBox().center().y())
-						_puppet->pos.y() -= crash.sizes().y()/2.0 - COLLISION_DELTA/2.0;
+						_puppet->pos.y() -= crash.sizes().y() - COLLISION_DELTA/2.0;
 					else
-						_puppet->pos.y() += crash.sizes().y()/2.0 - COLLISION_DELTA/2.0;
+						_puppet->pos.y() += crash.sizes().y() - COLLISION_DELTA/2.0;
 					
 					_mSpeed.y() = 0;
 				}
@@ -242,7 +241,6 @@ void MoveComponent::collide() {
 				break;
 			}
 	}
-// 	printf ("Done %i passes.\n", nbPasses);
 }
 
 void MoveComponent::update() {
