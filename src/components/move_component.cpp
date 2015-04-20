@@ -47,17 +47,29 @@
 #define DASH_FACTOR  3.0
 #define DASH_BUILDUP 5u
 
+/* climbing a ladder :
+- nullifies momentum and airtime
+- strongly limits movement speed
+- gives vertical control speed according to direction (if any)
+
+for lack of a ladder :
+- climbing is disabled
+- airtime starts
+*/
+#define MAX_LADDER_SPEED 1.5
+#define CLIMB_SPEED 0.4
+
 /* on the ground :
 - movement speed slows exponentially
 - // TODO: if mspeed is below some threshold, stop now
-- jumping gives control speed a kick up and starts _airTime
+- jumping gives control speed a kick up, starts airtime and dismounts ladders
 */
 #define GROUND_DRAG_FACTOR 0.8
 #define BASE_JUMP_SPEED 5.0
 
 /* in the air :
 - _airTime increases (duh)
-- jumping gives further impulsion (quickly vanishes as _airTime increases)
+- jumping gives further impulsion (quickly vanishes as airtime increases)
 - (lack of) air control impedes horizontal control speed
 - gravity accelerates down
 - movement speed is slowed and capped to terminal velocity
@@ -85,7 +97,7 @@ for each intersection with a solid tile
 #define MAX_PASSES 20u
 
 /* instersection is !reasonable (> 1/2 tile) :
-- backtrack by a factor of current _mSpeed
+- backtrack by a factor of current movement speed
 - mark bouncing and unstable
 - immediately start another pass
 */
@@ -121,8 +133,28 @@ MoveComponent::MoveComponent(GameObject* obj)
 	_momentum = 0;
 	_airTime = 0;
 	_walking = DOWN;
+	_climbing = LEFT;
+	_ladder = false;
 	_running = false;
 	_jumping = false;
+}
+
+bool MoveComponent::onLadder() {
+	Boxf characterFeet = Boxf(
+	  Vec2(_puppet->worldBox().min().x() + TILESIZE / 3.0,
+	       _puppet->worldBox().max().y() - 1.9 * COLLISION_DELTA),
+	  Vec2(_puppet->worldBox().max().x() - TILESIZE / 3.0,
+	       _puppet->worldBox().max().y() - 1.1 * COLLISION_DELTA));
+	
+	CollisionList intersections = _obj->scene()->level().collide(1, characterFeet, true);
+	float amount = 0.0;
+	
+	for (Boxf collision: intersections)
+		amount += collision.volume();
+	
+	if (amount > 0.6 * characterFeet.volume())
+		return true;
+	return false;
 }
 
 void MoveComponent::setSpeed() {
@@ -150,6 +182,22 @@ void MoveComponent::setSpeed() {
 	}
 	_momentum = std::min(_momentum,MAX_MOMENTUM);
 	
+	if (_climbing == UP || _climbing == DOWN)
+	{
+		if (_ladder)
+		{
+			_mSpeed = _mSpeed.cwiseMin(Vec2(MAX_LADDER_SPEED,MAX_LADDER_SPEED));
+			_momentum = 0;
+			_airTime = 0;
+			if (_climbing == UP)
+				cs = Vec2(0,-CLIMB_SPEED);
+			else
+				cs = Vec2(0,CLIMB_SPEED);
+		}
+		else if (onLadder())
+			_ladder = true;
+	}
+	
 	if (!_airTime)
 	{
 		_mSpeed *= GROUND_DRAG_FACTOR;
@@ -157,14 +205,15 @@ void MoveComponent::setSpeed() {
 		if (_jumping)
 		{
 			cs += Vec2(0,-BASE_JUMP_SPEED);
-			_airTime++;
+			_airTime = 1;
+			_climbing = LEFT;
 		}
 	}
 	else
 	{
 		_airTime++;
 		
-		if (_jumping && _airTime < MAX_JUMP_AIRTIME)
+		if (_jumping)
 			cs += Vec2(0,-BONUS_JUMP_SPEED(_airTime));
 		
 		cs.x() *= AIR_CONTROL_FACTOR;
@@ -178,6 +227,7 @@ void MoveComponent::setSpeed() {
 			_mSpeed *= 0.8;
 	}
 	
+	_climbing = LEFT;
 	_walking = DOWN;
 	_running = false;
 	_jumping = false;
@@ -185,7 +235,6 @@ void MoveComponent::setSpeed() {
 	_mSpeed += cs;
 	_puppet->pos += _mSpeed;
 }
-
 
 void MoveComponent::collide() {
 	bool bounce = false, stable = false;
@@ -262,12 +311,16 @@ void MoveComponent::update() {
 	
 	if (amount > 0.9 * characterFeet.volume())
 		_airTime = 0;
-	else if (!_airTime)
+	else if (!_airTime && !_ladder)
 		_airTime = 1;
+	
+	// Check ladder.
+	if (!onLadder())
+		_ladder = false;
 }
 
-void MoveComponent::jump() {
-	_jumping = true;
+void MoveComponent::climb(Direction d) {
+	_climbing = d;
 }
 
 void MoveComponent::walk(Direction d) {
@@ -276,4 +329,9 @@ void MoveComponent::walk(Direction d) {
 
 void MoveComponent::sprint() {
 	_running = true;
+}
+
+void MoveComponent::jump() {
+	if (_airTime < MAX_JUMP_AIRTIME)
+		_jumping = true;
 }

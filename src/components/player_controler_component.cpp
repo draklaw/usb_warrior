@@ -53,7 +53,9 @@ void PlayerControlerComponent::update() {
 		direction = P_RIGHT;
 		ppm->walk(RIGHT);
 	}
-	if(_state->input().isPressed(jump))  ppm->jump();
+	if(_state->input().isPressed(jump)) ppm->jump();
+	if(_state->input().isPressed(up))   ppm->climb(UP);
+	if(_state->input().isPressed(down)) ppm->climb(DOWN);
 
 	if(goLeft || goRight) {
 		++_animCounter;

@@ -38,19 +38,20 @@
 
 MainState::MainState(Game* game)
 	: GameState(game, "Main", durationFromSeconds(UPDATE_TIME)),
-	  _scene(game),
-	  _loader(game),
-      _nextLevel(),
-	  _input(game),
-	  _left  (INVALID_INPUT),
-	  _right (INVALID_INPUT),
-	  _jump  (INVALID_INPUT),
-      _down  (INVALID_INPUT),
-      _use   (INVALID_INPUT),
-      _debug0(INVALID_INPUT),
-      _debug1(INVALID_INPUT),
-      _player(nullptr),
-      _font() {
+		_scene(game),
+		_loader(game),
+		_nextLevel(),
+		_input(game),
+		_left  (INVALID_INPUT),
+		_right (INVALID_INPUT),
+		_jump  (INVALID_INPUT),
+		_up    (INVALID_INPUT),
+		_down  (INVALID_INPUT),
+		_use   (INVALID_INPUT),
+		_debug0(INVALID_INPUT),
+		_debug1(INVALID_INPUT),
+		_player(nullptr),
+		_font() {
 }
 
 
@@ -174,6 +175,8 @@ GameObject* MainState::createPlayer(const EntityData& data) {
 	auto pcc = new PlayerControlerComponent(this, _player);
 	pcc->left  = _left;
 	pcc->right = _right;
+	pcc->up    = _up;
+	pcc->down  = _down;
 	pcc->jump  = _jump;
 	_scene.addLogicComponent(_player, PLAYER_CONTROLLER_COMPONENT_ID, pcc);
 
@@ -183,7 +186,7 @@ GameObject* MainState::createPlayer(const EntityData& data) {
 	auto nmc = new NoclipMoveComponent(this, _player);
 	nmc->left  = _left;
 	nmc->right = _right;
-	nmc->up    = _jump;
+	nmc->up    = _up;
 	nmc->down  = _down;
 	nmc->setEnabled(false);
 	_scene.addLogicComponent(_player, NOCLIP_MOVE_COMPONENT_ID, nmc);
@@ -283,6 +286,7 @@ void MainState::initialize() {
 	_left   = _input.addInput("left");
 	_right  = _input.addInput("right");
 	_jump   = _input.addInput("jump");
+	_up     = _input.addInput("up");
 	_down   = _input.addInput("down");
 	_use    = _input.addInput("use");
 	_debug0 = _input.addInput("debug0");
@@ -292,7 +296,8 @@ void MainState::initialize() {
 
 	_input.bindJsonKeys(_left,  "left",  SDL_SCANCODE_LEFT);
 	_input.bindJsonKeys(_right, "right", SDL_SCANCODE_RIGHT);
-	_input.bindJsonKeys(_jump,  "jump",  SDL_SCANCODE_UP);
+	_input.bindJsonKeys(_jump,  "jump",  SDL_SCANCODE_E);
+	_input.bindJsonKeys(_up,    "up",    SDL_SCANCODE_UP);
 	_input.bindJsonKeys(_down,  "down",  SDL_SCANCODE_DOWN);
 	_input.bindJsonKeys(_use,   "use",   SDL_SCANCODE_SPACE);
 	_input.mapScanCode(_debug0, SDL_SCANCODE_F1);
