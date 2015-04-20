@@ -75,7 +75,7 @@ remaining movement speed is supplemented with control speed
 the resulting movement speed takes you further
 */
 
-// THE COLLISION ALGORITHM (draft) :
+// THE COLLISION ALGORITHM :
 //TODO: Check if collision occurs in two opposite directions simultaneously.
 // If so, panic in an appropriate fashion.
 
@@ -94,9 +94,6 @@ compute intersection surface
 #define UNREASONABLE_COLLISION ((TILESIZE * TILESIZE) / 2.0)
 #define BACKTRACK_FACTOR 0.8
 
-/* collision (any amount) occured below :
-*/
-
 /* intersection is !negligible :
 - check collision axis
 - horizontal collision :
@@ -104,13 +101,13 @@ compute intersection surface
 > - neutralize horizontal mspeed
 - vertical collision :
 > - bump along y axis by half the vertical amount minus half a delta
+> - if collision is below, reset _airTime and unflag dropping
 > - neutralize vertical mspeed
-> - reset _airTime and unflag dropping
 - mark unstability
 - start another pass
 */
 #define SIGNIFICANT_COLLISION (0.5 * TILESIZE)
-#define Y_X_VERTICALITY_FACTOR 2.0
+#define Y_X_VERTICALITY_FACTOR 1.2
 #define COLLISION_DELTA (SIGNIFICANT_COLLISION / TILESIZE)
 
 /* finally if backtracking :
@@ -193,6 +190,7 @@ void MoveComponent::setSpeed() {
 	_puppet->pos += _mSpeed;
 }
 
+
 void MoveComponent::collide() {
 	bool backtrack = false, stable = false, dropping = true;
 	unsigned nbPasses = 0;
@@ -219,22 +217,26 @@ void MoveComponent::collide() {
 			{
 				if (crash.sizes().y() > crash.sizes().x() * Y_X_VERTICALITY_FACTOR)
 				{ // vertical crashbox, horizontal collision
-					if ((crash.min().x()+crash.max().x())/2.0 > _puppet->pos.x())
+					if (crash.center().x() > _puppet->box.center().x())
 						_puppet->pos.x() -= crash.sizes().x()/2.0 - COLLISION_DELTA/2.0;
 					else
 						_puppet->pos.x() += crash.sizes().x()/2.0 - COLLISION_DELTA/2.0;
+					
 					_mSpeed.x() = 0;
 				}
 				else // horizontal crashbox, vertical collision
 				{
-					if ((crash.min().y()+crash.max().y())/2.0 > _puppet->pos.y())
+					if (crash.center().y() > _puppet->box.center().y())
+					{
 						_puppet->pos.y() -= crash.sizes().y()/2.0 - COLLISION_DELTA/2.0;
+						
+						_airTime = 0;
+						dropping = false;
+					}
 					else
 						_puppet->pos.y() += crash.sizes().y()/2.0 - COLLISION_DELTA/2.0;
-					_mSpeed.y() = 0;
 					
-					_airTime = 0;
-					dropping = false;
+					_mSpeed.y() = 0;
 				}
 				
 				stable = false;
