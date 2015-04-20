@@ -31,11 +31,14 @@ public:
 	MoveComponent(GameObject* obj);
 	
 	void update();
-	void jump();
+	
+	void climb(Direction d);
 	void walk(Direction d);
 	void sprint();
+	void jump();
 
 protected:
+	bool onLadder();
 	void setSpeed();
 	void collide();
 
@@ -46,6 +49,8 @@ protected:
 	unsigned _momentum;
 	unsigned _airTime;
 	Direction _walking;
+	Direction _climbing;
+	bool _ladder;
 	bool _running;
 	bool _jumping;
 };

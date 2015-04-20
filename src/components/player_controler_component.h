@@ -36,6 +36,8 @@ public:
 	Input left;
 	Input right;
 	Input jump;
+	Input up;
+	Input down;
 
 protected:
 	enum {

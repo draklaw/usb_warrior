@@ -232,6 +232,11 @@ void Level::setTile (unsigned x, unsigned y, unsigned layer, Tile val)
 }
 
 
+bool Level::isClimbable (Tile t) const {
+	return t == 771 || t == 772;
+}
+
+
 bool Level::tileCollision(Tile tile) const {
 	return tile >= 0 && unsigned(tile) < _collisionTileSet.size() && _collisionTileSet[tile];
 }
@@ -266,13 +271,14 @@ Boxf Level::tileBox(unsigned x, unsigned y) const {
 }
 
 
-CollisionList Level::collide(unsigned layer, const Boxf& box) const {
+CollisionList Level::collide(unsigned layer, const Boxf& box, bool ladder) const {
 	CollisionList inters;
 	
 	Boxi boundBox = tileBounds(box);
 	for(int y = boundBox.min().y(); y < boundBox.max().y(); ++y) {
 		for(int x = boundBox.min().x(); x < boundBox.max().x(); ++x) {
-			if(!tileCollision(getTile(x, y, layer)))
+			if(!ladder && !tileCollision(getTile(x, y, layer))
+			 || ladder && !isClimbable(getTile(x, y, layer)))
 				continue;
 			
 			Boxf tBox = tileBox(x, y);

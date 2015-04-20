@@ -91,6 +91,7 @@ protected:
 	Input         _left;
 	Input         _right;
 	Input         _jump;
+	Input         _up;
 	Input         _down;
 	Input         _use;
 
