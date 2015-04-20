@@ -79,7 +79,7 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
- <layer name="magnet" width="60" height="34" visible="0">
+ <layer name="magnet" width="60" height="34">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -121,7 +121,9 @@
   <object id="3" name="exit" type="trigger" x="64" y="96" width="64" height="64">
    <properties>
     <property name="enabled" value="1"/>
-    <property name="hit_center" value="load_level assets/level2.json"/>
+    <property name="hit_point" value="load_level assets/level2.json"/>
+    <property name="point_x" value="32"/>
+    <property name="point_y" value="48"/>
     <property name="sprite" value="assets/exit.png"/>
    </properties>
   </object>

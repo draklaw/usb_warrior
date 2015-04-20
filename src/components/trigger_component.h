@@ -33,7 +33,10 @@ public:
 	void updateDisabled();
 
 public:
-	std::string hitCenter;
+	std::string hitPoint;
+	Vec2        pointCoords;
+	std::string hit;
+	std::string use;
 
 protected:
 	MainState* _state;

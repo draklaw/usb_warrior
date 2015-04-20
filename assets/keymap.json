@@ -3,5 +3,5 @@
 	"right" :[ "D", "Right" ],
 	"jump"  :[ "W", "Up"    ],
 	"down"  :[ "S", "Down"  ],
-	"use"   :[ "Sapce"      ]
+	"use"   :[ "Space"      ]
 }

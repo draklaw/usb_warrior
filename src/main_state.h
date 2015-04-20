@@ -46,7 +46,8 @@ public:
 	void update();
 	void frame(double interp);
 
-	inline GameObject* player() { return _player; }
+	inline GameObject* player()   { return _player; }
+	inline Input       useInput() { return _use; }
 
 	void loadLevel(const char* filename);
 	void resetLevel();

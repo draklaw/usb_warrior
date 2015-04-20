@@ -34,10 +34,25 @@ void TriggerComponent::update() {
 	_obj->sprite->setTileIndex(0);
 
 	Boxf pBox = _state->player()->worldBox();
-	if(!hitCenter.empty()) {
-		Vec2 exit = _obj->worldBox().min() + Vec2(32, 48);
-		if(pBox.contains(exit)) {
-			_state->exec(hitCenter.c_str());
+	Boxf wBox = _obj->worldBox();
+	if(!hitPoint.empty()) {
+		Vec2 point = wBox.min() + pointCoords;
+		if(pBox.contains(point)) {
+			_state->exec(hitPoint.c_str());
+		}
+	}
+
+	if(!hit.empty()) {
+		if(!pBox.intersection(wBox).isEmpty()) {
+			_state->exec(hit.c_str());
+		}
+	}
+
+	bool doUse = _state->input().justPressed(_state->useInput());
+	if(!use.empty() && doUse) {
+		Vec2 usePoint = pBox.center();
+		if(!wBox.contains(usePoint)) {
+			_state->exec(use.c_str());
 		}
 	}
 }

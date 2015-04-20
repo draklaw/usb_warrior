@@ -28,7 +28,7 @@
          "name":"magnet",
          "opacity":1,
          "type":"tilelayer",
-         "visible":false,
+         "visible":true,
          "width":60,
          "x":0,
          "y":0
@@ -45,7 +45,9 @@
                  "properties":
                     {
                      "enabled":"1",
-                     "hit_center":"load_level assets\/level2.json",
+                     "hit_point":"load_level assets\/level2.json",
+                     "point_x":"32",
+                     "point_y":"48",
                      "sprite":"assets\/exit.png"
                     },
                  "rotation":0,

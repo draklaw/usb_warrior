@@ -181,7 +181,11 @@ GameObject* MainState::createTrigger(const EntityData& data) {
 	             TileMap(img, img->size.x() / 2, img->size.y()));
 	auto ec = new TriggerComponent(this, obj);
 	ec->setEnabled(getInt(data, "enabled", true));
-	ec->hitCenter     = getString(data, "hit_center", "");
+	ec->hitPoint        = getString(data, "hit_point", "");
+	ec->pointCoords.x() = getInt(data, "point_x", 0);
+	ec->pointCoords.y() = getInt(data, "point_y", 0);
+	ec->hit             = getString(data, "hit", "");
+	ec->use             = getString(data, "use", "");
 
 	_scene.addLogicComponent(obj, TRIGGER_COMPONENT_ID, ec);
 	return obj;
@@ -266,6 +270,11 @@ void MainState::initialize() {
 		_scene.level().setTileCollision(64  + i, true);
 		_scene.level().setTileCollision(128 + i, true);
 		_scene.level().setTileCollision(192 + i, true);
+		_scene.level().setTileCollision(320 + i, true);
+		_scene.level().setTileCollision(384 + i, true);
+		_scene.level().setTileCollision(448 + i, true);
+		_scene.level().setTileCollision(512 + i, true);
+		_scene.level().setTileCollision(576 + i, true);
 	}
 	// Platforms
 	for(unsigned i = 0; i < 3; ++i) {
