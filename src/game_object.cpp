@@ -28,6 +28,10 @@ LogicComponent::LogicComponent(GameObject* obj)
 }
 
 
+void LogicComponent::updateDisabled() {
+}
+
+
 void LogicComponent::setEnabled(bool enabled) {
 	if(enabled) _flags |=  COMP_ENABLED;
 	else        _flags &= !COMP_ENABLED;

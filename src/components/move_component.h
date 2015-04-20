@@ -36,6 +36,10 @@ public:
 	void sprint();
 
 protected:
+	void setSpeed();
+	void collide();
+
+protected:
 	GeometryComponent* _puppet;
 	
 	Vec2 _mSpeed;

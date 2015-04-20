@@ -27,11 +27,4 @@
 
 typedef std::vector<Boxf> CollisionList;
 
-struct CollisionInfo {
-	unsigned flags;
-	Vec2     penetration;
-	Boxf     intersection;
-};
-
-
 #endif
