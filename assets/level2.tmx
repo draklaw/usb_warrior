@@ -47,7 +47,7 @@
   </object>
   <object id="20" name="key1" type="trigger" x="48" y="160" width="32" height="32">
    <properties>
-    <property name="hit_point" value="add_item desactivate; disable object key1"/>
+    <property name="hit_point" value="add_item deactivate; disable object key1"/>
     <property name="point_x" value="16"/>
     <property name="point_y" value="16"/>
     <property name="sprite" value="assets/clef1.png"/>

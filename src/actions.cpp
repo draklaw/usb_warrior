@@ -46,8 +46,9 @@ void echoAction(MainState* state, unsigned argc, const char** argv) {
 void _enableHelper(MainState* state, const std::string& compName,
                    const std::string& objName, bool enable) {
 	int comp = -1;
-	if(compName == "object")  comp = -1;
-	if(compName == "trigger") comp = TRIGGER_COMPONENT_ID;
+	if(compName == "object")          comp = -1;
+	else if(compName == "trigger")    comp = TRIGGER_COMPONENT_ID;
+	else if(compName == "bot_static") comp = BOT_COMPONENT_ID;
 	else {
 		state->game()->warning("En/Disable action: Invalid component ", compName);
 		return;

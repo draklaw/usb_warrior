@@ -24,7 +24,7 @@
         }, 
         {
          "draworder":"topdown",
-         "height":34,
+         "height":0,
          "name":"Calque d'objets 1",
          "objects":[
                 {
@@ -108,7 +108,7 @@
                  "name":"key1",
                  "properties":
                     {
-                     "hit_point":"add_item desactivate; disable object key1",
+                     "hit_point":"add_item deactivate; disable object key1",
                      "point_x":"16",
                      "point_y":"16",
                      "sprite":"assets\/clef1.png",
@@ -140,7 +140,7 @@
          "opacity":1,
          "type":"objectgroup",
          "visible":true,
-         "width":60,
+         "width":0,
          "x":0,
          "y":0
         }],
@@ -155,7 +155,7 @@
  "tilesets":[
         {
          "firstgid":1,
-         "image":"tilez.png",
+         "image":"..\/..\/..\/draklaw-shared\/projects\/usb_warrior\/assets\/tilez.png",
          "imageheight":1024,
          "imagewidth":1024,
          "margin":0,

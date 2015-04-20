@@ -344,6 +344,7 @@ void MainState::initialize() {
 	addCommand("echo",       echoAction);
 	addCommand("enable",     enableAction);
 	addCommand("disable",    disableAction);
+	addCommand("add_item",   addItemAction);
 
 	loadLevel("assets/level2.json");
 }

@@ -72,3 +72,7 @@ void BotComponent::update() {
 		}
 	}
 }
+
+void BotComponent::updateDisabled() {
+	_obj->sprite->setTileIndex(direction + 2);
+}
