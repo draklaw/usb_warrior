@@ -33,3 +33,11 @@ void loadLevelAction(MainState* state, unsigned argc, const char** argv) {
 	state->loadLevel(argv[1]);
 }
 
+
+void echoAction(MainState* state, unsigned argc, const char** argv) {
+	printf("Echo: <");
+	if(argc > 1) printf("%s", argv[1]);
+	for(unsigned i = 2; i < argc; i++)
+		printf(",%s", argv[i]);
+	printf(">\n");
+}

@@ -209,27 +209,31 @@ void MainState::exec(const char* cmd) {
 	_game->log("exec: ", cmd);
 
 	std::string line(cmd);
-	std::vector<const char*> argv;
 
 	auto c   = line.begin();
 	auto end = line.end();
-	while(c != end) {
-		while(c != end && std::isspace(*c)) ++c;
-		if(c == end) break;
-		argv.push_back(&*c);
-		while(c != end && !std::isspace(*c)) ++c;
-		if(c != end) *(c++) = '\0';
+
+	while (c != end) {
+		std::vector<const char*> argv;
+		while(c != end && *c != ';') {
+			while(c != end && *c != ';' && std::isspace(*c)) ++c;
+			if(c == end || *c == ';') break;
+			argv.push_back(&*c);
+			while(c != end && *c != ';' && !std::isspace(*c)) ++c;
+			if(c != end) *(c++) = '\0';
+		}
+		while(*c == ';') ++c;
+
+		if(argv.size() == 0) continue;
+
+		auto pair = _commandMap.find(argv[0]);
+		if(pair == _commandMap.end()) {
+			_game->warning("Action not found: ", argv[0]);
+			continue;
+		}
+
+		pair->second(this, argv.size(), argv.data());
 	}
-
-	if(argv.size() == 0) return;
-
-	auto pair = _commandMap.find(argv[0]);
-	if(pair == _commandMap.end()) {
-		_game->warning("Action not found: ", argv[0]);
-		return;
-	}
-
-	pair->second(this, argv.size(), argv.data());
 }
 
 
@@ -293,6 +297,7 @@ void MainState::initialize() {
 
 	// Action !
 	addCommand("load_level", loadLevelAction);
+	addCommand("echo", echoAction);
 
 	loadLevel("assets/level1.json");
 }
