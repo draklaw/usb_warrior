@@ -96,6 +96,8 @@ void Scene::updateLogic(unsigned id) {
 	for (LogicPtr& lcomp: _logicMap[id]) {
 		if(lcomp->object()->isEnabled() && lcomp->isEnabled()) {
 			lcomp->update();
+		} else {
+			lcomp->updateDisabled();
 		}
 	}
 }

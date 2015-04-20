@@ -44,10 +44,12 @@
                  "name":"exit",
                  "properties":
                     {
-                     "hit_center":"load_level assets\/level2.json"
+                     "enabled":"1",
+                     "hit_center":"load_level assets\/level2.json",
+                     "sprite":"assets\/exit.png"
                     },
                  "rotation":0,
-                 "type":"exit",
+                 "type":"trigger",
                  "visible":true,
                  "width":64,
                  "x":64,

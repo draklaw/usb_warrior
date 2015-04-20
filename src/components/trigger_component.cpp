@@ -20,18 +20,19 @@
 
 #include "../game.h"
 
-#include "exit_component.h"
-
+#include "trigger_component.h"
 
 
 class MainState;
 
-ExitComponent::ExitComponent(MainState* state, GameObject* obj)
+TriggerComponent::TriggerComponent(MainState* state, GameObject* obj)
     : LogicComponent(obj),
       _state(state) {
 }
 
-void ExitComponent::update() {
+void TriggerComponent::update() {
+	_obj->sprite->setTileIndex(0);
+
 	Boxf pBox = _state->player()->worldBox();
 	if(!hitCenter.empty()) {
 		Vec2 exit = _obj->worldBox().min() + Vec2(32, 48);
@@ -39,4 +40,8 @@ void ExitComponent::update() {
 			_state->exec(hitCenter.c_str());
 		}
 	}
+}
+
+void TriggerComponent::updateDisabled() {
+	_obj->sprite->setTileIndex(1);
 }

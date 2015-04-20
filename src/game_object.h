@@ -42,7 +42,7 @@ enum {
 	PLAYER_CONTROLLER_COMPONENT_ID,
 	NOCLIP_MOVE_COMPONENT_ID,
 	MOVE_COMPONENT_ID,
-	EXIT_COMPONENT_ID,
+	TRIGGER_COMPONENT_ID,
 
 	// Must be the last.
 	COMPONENT_COUNT
@@ -59,6 +59,7 @@ public:
 	LogicComponent(GameObject* obj);
 	
 	virtual void update() = 0;
+	virtual void updateDisabled();
 
 	GameObject* object() const { return _obj; }
 	bool isEnabled() const { return _flags & COMP_ENABLED; }

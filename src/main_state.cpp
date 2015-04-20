@@ -30,7 +30,7 @@
 #include "components/player_controler_component.h"
 #include "components/noclip_move_component.h"
 #include "components/move_component.h"
-#include "components/exit_component.h"
+#include "components/trigger_component.h"
 
 #include "main_state.h"
 
@@ -112,7 +112,7 @@ void MainState::resetLevel() {
 
 		const std::string& type = entity->at("type");
 		if     (type == "player")     createPlayer   (*entity);
-		else if(type == "exit")       createExit     (*entity);
+		else if(type == "trigger")    createTrigger  (*entity);
 		else if(type == "tp")         createTP       (*entity);
 		else if(type == "bot_static") createBotStatic(*entity);
 	}
@@ -174,11 +174,16 @@ GameObject* MainState::createPlayer(const EntityData& data) {
 }
 
 
-GameObject* MainState::createExit(const EntityData& data) {
-	GameObject* obj = createSpriteObject(data, _exitTileMap);
-	auto ec = new ExitComponent(this, obj);
-	ec->hitCenter = getString(data, "hit_center", "");
-	_scene.addLogicComponent(obj, EXIT_COMPONENT_ID, ec);
+GameObject* MainState::createTrigger(const EntityData& data) {
+	const Image* img = _loader.getImage(getString(data, "sprite", ""));
+
+	GameObject* obj = createSpriteObject(data,
+	             TileMap(img, img->size.x() / 2, img->size.y()));
+	auto ec = new TriggerComponent(this, obj);
+	ec->setEnabled(getInt(data, "enabled", true));
+	ec->hitCenter     = getString(data, "hit_center", "");
+
+	_scene.addLogicComponent(obj, TRIGGER_COMPONENT_ID, ec);
 	return obj;
 }
 
@@ -243,6 +248,7 @@ void MainState::initialize() {
 	_input.mapScanCode(_debug0, SDL_SCANCODE_F1);
 	_input.mapScanCode(_debug1, SDL_SCANCODE_F2);
 
+	// Loading
 	_loader.addImage("assets/tilez.png");
 	_loader.addImage("assets/toutAMI.png");
 	_loader.addImage("assets/exit.png");

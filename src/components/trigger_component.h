@@ -17,19 +17,20 @@
  *  along with usb_warrior.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _EXIT_COMPONENT_H_
-#define _EXIT_COMPONENT_H_
+#ifndef _TRIGGER_COMPONENT_H_
+#define _TRIGGER_COMPONENT_H_
 
 
 #include "../main_state.h"
 #include "../game_object.h"
 
 
-class ExitComponent : public LogicComponent {
+class TriggerComponent : public LogicComponent {
 public:
-	ExitComponent(MainState* state, GameObject* obj);
+	TriggerComponent(MainState* state, GameObject* obj);
 
 	void update();
+	void updateDisabled();
 
 public:
 	std::string hitCenter;
