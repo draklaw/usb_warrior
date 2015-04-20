@@ -80,19 +80,22 @@ the resulting movement speed takes you further
 // If so, panic in an appropriate fashion.
 
 /* iterate until stability up to some limit :
-for each intersection with a solid tile :
-compute intersection surface
+for each intersection with a solid tile
 */
 #define MAX_PASSES 20u
 
-//FIXME: Backtracking should occur immediately if ANY intersection is too big.
 /* instersection is !reasonable (> 1/2 tile) :
-- mark backtracking
 - backtrack by a factor of current _mSpeed
+- mark bouncing and unstable
 - immediately start another pass
 */
 #define UNREASONABLE_COLLISION ((TILESIZE * TILESIZE) / 2.0)
 #define BACKTRACK_FACTOR 0.8
+
+/* bouncing :
+- invert and cut down movement speed
+*/
+#define BOUNCE_FACTOR -0.3
 
 /* intersection is !negligible :
 - check collision axis
@@ -101,7 +104,6 @@ compute intersection surface
 > - neutralize horizontal mspeed
 - vertical collision :
 > - bump along y axis by half the vertical amount minus half a delta
-> - if collision is below, reset _airTime and unflag dropping
 > - neutralize vertical mspeed
 - mark unstability
 - start another pass
@@ -110,13 +112,7 @@ compute intersection surface
 #define Y_X_VERTICALITY_FACTOR 1.2
 #define COLLISION_DELTA (SIGNIFICANT_COLLISION / TILESIZE)
 
-/* finally if backtracking :
-- bounce (invert and cut down movement speed)
-- stop backtracking
-*/
-#define BOUNCE_FACTOR -0.3
-
-// if dropping from the ground, start _airTime
+// finally, if character is on the ground, reset _airTime
 
 MoveComponent::MoveComponent(GameObject* obj)
     : LogicComponent(obj) {
@@ -192,29 +188,37 @@ void MoveComponent::setSpeed() {
 
 
 void MoveComponent::collide() {
-	bool backtrack = false, stable = false, dropping = true;
+	bool bounce = false, stable = false;
 	unsigned nbPasses = 0;
 	
-	while (!stable && nbPasses < MAX_PASSES) {
+	while (!stable && nbPasses < MAX_PASSES)
+	{
 		//TODO: replace 0 with i in l->nLayers and merge lists
 		CollisionList intersections = _obj->scene()->level().collide(0, _puppet->worldBox());
 		
 		stable = true;
+		nbPasses++;
 		
 		for (Boxf crash:intersections)
-		{
-			float amount = crash.volume();
-			
-			if (amount >= UNREASONABLE_COLLISION)
+			if (crash.volume() >= UNREASONABLE_COLLISION)
 			{
-				backtrack = true;
 				_puppet->pos -= _mSpeed * BACKTRACK_FACTOR;
-				nbPasses++;
+				stable = false;
+				bounce = true;
 				break;
 			}
-			
-			if (amount >= SIGNIFICANT_COLLISION)
+		
+		if (!stable && bounce)
+			continue;
+		
+		if (bounce)
+			_mSpeed *= BOUNCE_FACTOR;
+		bounce = false;
+		
+		for (Boxf crash:intersections)
+			if (crash.volume() >= SIGNIFICANT_COLLISION)
 			{
+// 				printf ("%.2f | %.2f - %i\n",crash.center().x(), _puppet->worldBox().center().x());
 				if (crash.sizes().y() > crash.sizes().x() * Y_X_VERTICALITY_FACTOR)
 				{ // vertical crashbox, horizontal collision
 					if (crash.center().x() > _puppet->worldBox().center().x())
@@ -227,12 +231,7 @@ void MoveComponent::collide() {
 				else // horizontal crashbox, vertical collision
 				{
 					if (crash.center().y() > _puppet->worldBox().center().y())
-					{
 						_puppet->pos.y() -= crash.sizes().y()/2.0 - COLLISION_DELTA/2.0;
-						
-						_airTime = 0;
-						dropping = false;
-					}
 					else
 						_puppet->pos.y() += crash.sizes().y()/2.0 - COLLISION_DELTA/2.0;
 					
@@ -242,25 +241,31 @@ void MoveComponent::collide() {
 				stable = false;
 				break;
 			}
-		}
-		
-		if (backtrack)
-		{
-			_mSpeed *= BOUNCE_FACTOR;
-			backtrack = false;
-		}
-		
-		nbPasses++;
 	}
-	
-	if (!_airTime && dropping)
-		_airTime = 1;
+// 	printf ("Done %i passes.\n", nbPasses);
 }
-
 
 void MoveComponent::update() {
 	setSpeed();
 	collide();
+	
+	// Stamp on the ground.
+	Boxf characterFeet = Boxf(
+	  Vec2(_puppet->worldBox().min().x() + TILESIZE / 3.0,
+	       _puppet->worldBox().max().y() + 0.1 * COLLISION_DELTA),
+	  Vec2(_puppet->worldBox().max().x() - TILESIZE / 3.0,
+	       _puppet->worldBox().max().y() + 0.9 * COLLISION_DELTA));
+	
+	CollisionList intersections = _obj->scene()->level().collide(0, characterFeet);
+	float amount = 0.0;
+	
+	for (Boxf collision: intersections)
+		amount += collision.volume();
+	
+	if (amount > 0.9 * characterFeet.volume())
+		_airTime = 0;
+	else if (!_airTime)
+		_airTime = 1;
 }
 
 void MoveComponent::jump() {
