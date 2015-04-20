@@ -120,7 +120,7 @@
  <objectgroup name="objects">
   <object id="3" name="exit" type="exit" x="64" y="96" width="64" height="64">
    <properties>
-    <property name="next_level" value="assets/level2.json"/>
+    <property name="hit_center" value="load_level assets/level2.json"/>
    </properties>
   </object>
   <object id="5" name="player" type="player" x="80" y="336" width="32" height="48"/>

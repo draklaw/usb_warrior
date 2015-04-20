@@ -44,7 +44,7 @@
                  "name":"exit",
                  "properties":
                     {
-                     "next_level":"assets\/level2.json"
+                     "hit_center":"load_level assets\/level2.json"
                     },
                  "rotation":0,
                  "type":"exit",

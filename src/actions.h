@@ -17,26 +17,13 @@
  *  along with usb_warrior.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-#include "../game.h"
-
-#include "exit_component.h"
-
+#ifndef _UW_ACTIONS_H_
+#define _UW_ACTIONS_H_
 
 
 class MainState;
 
-ExitComponent::ExitComponent(MainState* state, GameObject* obj)
-    : LogicComponent(obj),
-      _state(state) {
-}
+void loadLevelAction(MainState* state, unsigned argc, const char** argv);
 
-void ExitComponent::update() {
-	Boxf pBox = _state->player()->worldBox();
-	if(!hitCenter.empty()) {
-		Vec2 exit = _obj->worldBox().min() + Vec2(32, 48);
-		if(pBox.contains(exit)) {
-			_state->exec(hitCenter.c_str());
-		}
-	}
-}
+
+#endif

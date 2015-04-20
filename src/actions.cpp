@@ -18,25 +18,18 @@
  */
 
 
-#include "../game.h"
+#include "game.h"
+#include "main_state.h"
 
-#include "exit_component.h"
+#include "actions.h"
 
 
-
-class MainState;
-
-ExitComponent::ExitComponent(MainState* state, GameObject* obj)
-    : LogicComponent(obj),
-      _state(state) {
-}
-
-void ExitComponent::update() {
-	Boxf pBox = _state->player()->worldBox();
-	if(!hitCenter.empty()) {
-		Vec2 exit = _obj->worldBox().min() + Vec2(32, 48);
-		if(pBox.contains(exit)) {
-			_state->exec(hitCenter.c_str());
-		}
+void loadLevelAction(MainState* state, unsigned argc, const char** argv) {
+	if(argc < 2) {
+		state->game()->warning("Invalid loadLevel call");
 	}
+
+	state->game()->warning("loadLevelAction: ", argc, ", ", argv[1]);
+	state->loadLevel(argv[1]);
 }
+

@@ -32,7 +32,7 @@ public:
 	void update();
 
 public:
-	std::string nextLevel;
+	std::string hitCenter;
 
 protected:
 	MainState* _state;

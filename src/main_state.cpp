@@ -25,6 +25,7 @@
 
 #include "utils.h"
 #include "game.h"
+#include "actions.h"
 
 #include "components/player_controler_component.h"
 #include "components/noclip_move_component.h"
@@ -86,8 +87,8 @@ void MainState::frame(double interp) {
 
 	_scene.beginRender();
 
-	if(_scene.level().nLayers() > 0) {
-		_scene.renderLevelLayer(0, viewBox, screenBox);
+	for(unsigned layer = 0; layer < _scene.level().nLayers(); ++layer) {
+		_scene.renderLevelLayer(layer, viewBox, screenBox);
 	}
 
 	_scene.render(interp, viewBox, screenBox);
@@ -176,7 +177,7 @@ GameObject* MainState::createPlayer(const EntityData& data) {
 GameObject* MainState::createExit(const EntityData& data) {
 	GameObject* obj = createSpriteObject(data, _exitTileMap);
 	auto ec = new ExitComponent(this, obj);
-	ec->nextLevel = getString(data, "next_level", "");
+	ec->hitCenter = getString(data, "hit_center", "");
 	_scene.addLogicComponent(obj, EXIT_COMPONENT_ID, ec);
 	return obj;
 }
@@ -187,6 +188,39 @@ GameObject* MainState::createTP(const EntityData& data) {
 
 
 GameObject* MainState::createBotStatic(const EntityData& data) {
+}
+
+
+void MainState::addCommand(const char* action, Command cmd) {
+	_commandMap.emplace(action, cmd);
+}
+
+
+void MainState::exec(const char* cmd) {
+	_game->log("exec: ", cmd);
+
+	std::string line(cmd);
+	std::vector<const char*> argv;
+
+	auto c   = line.begin();
+	auto end = line.end();
+	while(c != end) {
+		while(c != end && std::isspace(*c)) ++c;
+		if(c == end) break;
+		argv.push_back(&*c);
+		while(c != end && !std::isspace(*c)) ++c;
+		if(c != end) *(c++) = '\0';
+	}
+
+	if(argv.size() == 0) return;
+
+	auto pair = _commandMap.find(argv[0]);
+	if(pair == _commandMap.end()) {
+		_game->warning("Action not found: ", argv[0]);
+		return;
+	}
+
+	pair->second(this, argv.size(), argv.data());
 }
 
 
@@ -233,6 +267,9 @@ void MainState::initialize() {
 	// ##### TileMaps
 	_playerTileMap = TileMap(_loader.getImage("assets/toutAMI.png"), 32, 48);
 	_exitTileMap   = TileMap(_loader.getImage("assets/exit.png"), 64, 64);
+
+	// Action !
+	addCommand("load_level", loadLevelAction);
 
 	loadLevel("assets/level1.json");
 }

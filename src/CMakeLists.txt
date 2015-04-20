@@ -49,6 +49,7 @@ add_executable(usb_warrior
 	sprite_component.cpp
 	level.cpp
 	scene.cpp
+	actions.cpp
 
 	components/player_controler_component.cpp
 	components/noclip_move_component.cpp
