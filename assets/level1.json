@@ -96,8 +96,8 @@
                  "name":"bot_tp",
                  "properties":
                     {
-                     "target0":"tp_right_a",
-                     "target1":"tp_right_b"
+                     "fov":"20",
+                     "hack_disable":"echo disable bot"
                     },
                  "rotation":0,
                  "type":"bot_static",

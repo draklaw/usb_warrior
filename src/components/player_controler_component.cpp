@@ -34,7 +34,7 @@ PlayerControlerComponent::PlayerControlerComponent(
         MainState* state, GameObject* obj)
     : LogicComponent(obj),
       _state(state),
-      _direction(P_FRONT),
+      direction(P_FRONT),
       _animCounter(0) {
 }
 
@@ -46,11 +46,11 @@ void PlayerControlerComponent::update() {
 	bool goLeft  = _state->input().isPressed(left);
 	bool goRight = _state->input().isPressed(right);
 	if(goLeft) {
-		_direction = P_LEFT;
+		direction = P_LEFT;
 		ppm->walk(LEFT);
 	}
 	if(goRight) {
-		_direction = P_RIGHT;
+		direction = P_RIGHT;
 		ppm->walk(RIGHT);
 	}
 	if(_state->input().isPressed(jump))  ppm->jump();
@@ -62,7 +62,7 @@ void PlayerControlerComponent::update() {
 		_animCounter = 0;
 	}
 
-	switch(_direction) {
+	switch(direction) {
 	case P_FRONT:
 		_obj->sprite->setTileIndex(0);
 		break;
