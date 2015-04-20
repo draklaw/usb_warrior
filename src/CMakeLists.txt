@@ -55,6 +55,7 @@ add_executable(usb_warrior
 	components/noclip_move_component.cpp
 	components/move_component.cpp
 	components/trigger_component.cpp
+	components/bot_component.cpp
 )
 
 target_link_libraries(usb_warrior

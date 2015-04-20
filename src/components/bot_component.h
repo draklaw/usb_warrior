@@ -17,41 +17,30 @@
  *  along with usb_warrior.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _UW_PLAYER_CONTROLER_COMPONENT_H_
-#define _UW_PLAYER_CONTROLER_COMPONENT_H_
+#ifndef _BOT_COMPONENT_H_
+#define _BOT_COMPONENT_H_
 
 
 #include "../main_state.h"
-#include "../input.h"
 #include "../game_object.h"
 
 
-class PlayerControlerComponent : public LogicComponent {
+class BotComponent : public LogicComponent {
 public:
-	enum {
-		P_FRONT,
-		P_BACK,
-		P_LEFT,
-		P_RIGHT
-	};
-
-public:
-	PlayerControlerComponent(MainState* state, GameObject* obj);
+	BotComponent(MainState* state, GameObject* obj);
 
 	void update();
+	void updateDisabled();
 
 public:
-	Input left;
-	Input right;
-	Input jump;
-	Input up;
-	Input down;
-	int direction;
+	unsigned     direction;
+	unsigned     fov;
+	std::string  seePlayer;
+	std::string  hackDisable;
 
 protected:
 	MainState* _state;
 
-	int _animCounter;
 };
 
 #endif

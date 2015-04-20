@@ -1,16 +1,60 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="60" height="34" tilewidth="16" tileheight="16" nextobjectid="1">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="60" height="34" tilewidth="16" tileheight="16" nextobjectid="27">
  <tileset firstgid="1" name="Tilez" tilewidth="16" tileheight="16">
   <image source="tilez.png" width="1024" height="1024"/>
  </tileset>
- <layer name="Calque de Tile 1" width="60" height="34">
+ <layer name="bg" width="60" height="34">
   <data encoding="base64" compression="zlib">
-   eJzt10kOgjAUBuCWSTd6JwfcOVzJCVwZr+QEbsQr+RtD0iDUkhQopYsvJaR5fX9KoOwJIQG4DI8Z6+BKWo9XI4QD3CECnzFjxjr4ktbj1YjhASMYw8lS15ISkpB8RypWo4e5/ZbkfUroz+RVl8mrd95E8J2kS96ByWvyKpZ3ZRWfGXhen94qyGvRX+lc9p4tYW2ZKKdXVpueZxm6nneIPV8o9qxWvb8yzjGqys1r9lcb2bxl/p3bqOvv56LvNE9a69+8MmcUKljfs8v12vX9bbofk9fkFTWn3/MiS+e8ef/LJq8+RPMGDiGh03y/deWNkDXuUF5d8PKuYQN2g5zMdRW2sIMzXGDSoGnmugpXuMEbUrHXug==
+   eJzt10kOgjAUBuAWRN3onRxw53AlZ1fGKzm7Ea/kbwxJg1BLUmgpb/GlhDSv708JlDVjbAOBoCmMZQg0rSersYUdXOEGoWAkjGUINa0nq3GHB/SgDwfPXlPOWMTS7blajRbmtiuS96mhP8prL8rrdt5I8Z3kSt4O5aW8luWdedlnBpnXp7cC8nr8VzxXvOdrWFsnLulVVKXnWYe65+1izyeWPatF76+Oc4ytUvPS/jojmTfPv3MV1f39nPWdlolr/ZuX54zCFes3/Xy91n1/TfdDeSmvqjH/nhdFLudN+1+mvO6gvJTXdI9l5Z3DAnyDGonrIixhBUc4wcCgYeK6CGe4wBv2i9dY
   </data>
  </layer>
- <layer name="Calque 2" width="60" height="34">
+ <layer name="echelles" width="60" height="34">
   <data encoding="base64" compression="zlib">
-   eJztmDkOwjAUBV+wTbgWa7gWO9dip+ZEvA5ElQgb2/iNNFKa/PxxkcKAEEIIIYQfhhYY0TGd2NjbhGfBxiVd0XUBvQc2HumJngvorRzQo4Za1+4dawBnwu71DY/q9exj19R731FvnBm/Qr1xZoSi/tjr33sb9arXM6G/kdp5qzev+V1Rb17zu6LefOZPLTCjDZ23vA/IuXfDxi3d0X0BvRc2XumN3gvodQ7o05oOErnvSe1/JdLnCbUhESw=
+   eJzt0YEJwDAMA0FDmv1X7goVxHJU/gYQ/qQKAAAA6PGsqr2mr/jmxK303ovemQ0Xemc2XOid2XBx9Ha/h7Lv+Jubeh3ozdpX0Zu1r6I3a19Fb9a+it6sffzPC4WCApU=
   </data>
  </layer>
+ <objectgroup name="Calque d'objets 1">
+  <object id="16" name="exit" type="trigger" x="864" y="128" width="64" height="64">
+   <properties>
+    <property name="enabled" value="1"/>
+    <property name="hit_point" value="load_level assets/level3.json"/>
+    <property name="point_x" value="32"/>
+    <property name="point_y" value="48"/>
+    <property name="sprite" value="assets/exit.png"/>
+   </properties>
+  </object>
+  <object id="17" name="alarm" type="trigger" x="752" y="192" width="16" height="16">
+   <properties>
+    <property name="anim_count" value="2"/>
+    <property name="anim_speed" value="20"/>
+    <property name="enabled" value="0"/>
+    <property name="sprite" value="assets/alarm.png"/>
+    <property name="tile_disable" value="2"/>
+    <property name="tile_enable" value="2"/>
+    <property name="tiles_x" value="2"/>
+    <property name="tiles_y" value="8"/>
+   </properties>
+  </object>
+  <object id="18" name="wall" type="wall" x="736" y="272" width="16" height="64"/>
+  <object id="19" name="bot" type="bot_static" x="352" y="288" width="32" height="48">
+   <properties>
+    <property name="direction" value="1"/>
+    <property name="fov" value="20"/>
+    <property name="hack_disable" value="disable bot_static bot; disable trigger wall; disable trigger alarm"/>
+    <property name="see_player" value="enable trigger wall; enable trigger alarm"/>
+    <property name="sprite" value="assets/toutrobots.png"/>
+   </properties>
+  </object>
+  <object id="20" name="key1" type="trigger" x="48" y="160" width="32" height="32">
+   <properties>
+    <property name="hit_point" value="add_item deactivate; disable object key1"/>
+    <property name="point_x" value="16"/>
+    <property name="point_y" value="16"/>
+    <property name="sprite" value="assets/clef1.png"/>
+    <property name="tiles_x" value="1"/>
+    <property name="tiles_y" value="1"/>
+   </properties>
+  </object>
+  <object id="26" name="player" type="player" x="64" y="464" width="32" height="48"/>
+ </objectgroup>
 </map>
