@@ -38,7 +38,17 @@ public:
 	Input jump;
 
 protected:
+	enum {
+		P_FRONT,
+		P_BACK,
+		P_LEFT,
+		P_RIGHT
+	};
+protected:
 	MainState* _state;
+
+	int _direction;
+	int _animCounter;
 };
 
 #endif

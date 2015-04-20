@@ -180,7 +180,7 @@ void MainState::initialize() {
 	_input.mapScanCode(_debug, SDL_SCANCODE_F1);
 
 	_loader.addImage("assets/tilez.png");
-	_loader.addImage("assets/test/character.png");
+	_loader.addImage("assets/toutAMI.png");
 	_loader.addImage("assets/exit.png");
 
 	_loader.loadAll();
@@ -201,7 +201,7 @@ void MainState::initialize() {
 	}
 
 	// ##### TileMaps
-	_playerTileMap = TileMap(_loader.getImage("assets/test/character.png"), 32, 64);
+	_playerTileMap = TileMap(_loader.getImage("assets/toutAMI.png"), 32, 48);
 	_exitTileMap   = TileMap(_loader.getImage("assets/exit.png"), 64, 64);
 
 	loadLevel("assets/level1.json");
