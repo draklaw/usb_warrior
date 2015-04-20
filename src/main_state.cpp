@@ -120,6 +120,7 @@ void MainState::resetLevel() {
 
 		GameObject* obj = nullptr;
 		const std::string& type = entity->at("type");
+		_game->log("create ", entity->at("name"));
 		if     (type == "player")     obj = createPlayer   (*entity);
 		else if(type == "trigger")    obj = createTrigger  (*entity);
 		else if(type == "bot_static") obj = createBotStatic(*entity);
@@ -304,6 +305,7 @@ void MainState::initialize() {
 	_loader.addImage("assets/exit.png");
 	_loader.addImage("assets/terminal.png");
 	_loader.addImage("assets/alarm.png");
+	_loader.addImage("assets/clef1.png");
 
 	_loader.loadAll();
 
@@ -343,7 +345,7 @@ void MainState::initialize() {
 	addCommand("enable",     enableAction);
 	addCommand("disable",    disableAction);
 
-	loadLevel("assets/level1.json");
+	loadLevel("assets/level2.json");
 }
 
 
