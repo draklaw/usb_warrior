@@ -28,27 +28,12 @@
          "name":"Calque d'objets 1",
          "objects":[
                 {
-                 "height":48,
-                 "id":15,
-                 "name":"player",
-                 "properties":
-                    {
-
-                    },
-                 "rotation":0,
-                 "type":"player",
-                 "visible":true,
-                 "width":32,
-                 "x":48,
-                 "y":464
-                }, 
-                {
                  "height":64,
                  "id":16,
                  "name":"exit",
                  "properties":
                     {
-                     "enabled":"0",
+                     "enabled":"1",
                      "hit_point":"load_level assets\/level3.json",
                      "point_x":"32",
                      "point_y":"48",
@@ -69,6 +54,7 @@
                     {
                      "anim_count":"2",
                      "anim_speed":"20",
+                     "enabled":"0",
                      "sprite":"assets\/alarm.png",
                      "tile_disable":"2",
                      "tile_enable":"2",
@@ -103,6 +89,8 @@
                  "name":"bot",
                  "properties":
                     {
+                     "direction":"1",
+                     "fov":"20",
                      "hack_disable":"disable bot_static bot; disable trigger wall; disable trigger alarm",
                      "see_player":"enable trigger wall; enable trigger alarm",
                      "sprite":"assets\/toutrobots.png"
@@ -115,19 +103,39 @@
                  "y":288
                 }, 
                 {
-                 "height":16,
+                 "height":32,
                  "id":20,
                  "name":"key1",
                  "properties":
                     {
-                     "sprite":"assets\/clef1.png"
+                     "hit_point":"add_item desactivate; disable object key1",
+                     "point_x":"16",
+                     "point_y":"16",
+                     "sprite":"assets\/clef1.png",
+                     "tiles_x":"1",
+                     "tiles_y":"1"
                     },
                  "rotation":0,
                  "type":"trigger",
                  "visible":true,
-                 "width":16,
+                 "width":32,
                  "x":48,
-                 "y":176
+                 "y":160
+                }, 
+                {
+                 "height":48,
+                 "id":26,
+                 "name":"player",
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"player",
+                 "visible":true,
+                 "width":32,
+                 "x":64,
+                 "y":464
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -136,7 +144,7 @@
          "x":0,
          "y":0
         }],
- "nextobjectid":26,
+ "nextobjectid":27,
  "orientation":"orthogonal",
  "properties":
     {

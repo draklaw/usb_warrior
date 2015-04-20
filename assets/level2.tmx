@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="60" height="34" tilewidth="16" tileheight="16" nextobjectid="26">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="60" height="34" tilewidth="16" tileheight="16" nextobjectid="27">
  <tileset firstgid="1" name="Tilez" tilewidth="16" tileheight="16">
   <image source="tilez.png" width="1024" height="1024"/>
  </tileset>
@@ -14,10 +14,9 @@
   </data>
  </layer>
  <objectgroup name="Calque d'objets 1">
-  <object id="15" name="player" type="player" x="48" y="464" width="32" height="48"/>
   <object id="16" name="exit" type="trigger" x="864" y="128" width="64" height="64">
    <properties>
-    <property name="enabled" value="0"/>
+    <property name="enabled" value="1"/>
     <property name="hit_point" value="load_level assets/level3.json"/>
     <property name="point_x" value="32"/>
     <property name="point_y" value="48"/>
@@ -28,6 +27,7 @@
    <properties>
     <property name="anim_count" value="2"/>
     <property name="anim_speed" value="20"/>
+    <property name="enabled" value="0"/>
     <property name="sprite" value="assets/alarm.png"/>
     <property name="tile_disable" value="2"/>
     <property name="tile_enable" value="2"/>
@@ -38,15 +38,23 @@
   <object id="18" name="wall" type="wall" x="736" y="272" width="16" height="64"/>
   <object id="19" name="bot" type="bot_static" x="352" y="288" width="32" height="48">
    <properties>
+    <property name="direction" value="1"/>
+    <property name="fov" value="20"/>
     <property name="hack_disable" value="disable bot_static bot; disable trigger wall; disable trigger alarm"/>
     <property name="see_player" value="enable trigger wall; enable trigger alarm"/>
     <property name="sprite" value="assets/toutrobots.png"/>
    </properties>
   </object>
-  <object id="20" name="key1" type="trigger" x="48" y="176" width="16" height="16">
+  <object id="20" name="key1" type="trigger" x="48" y="160" width="32" height="32">
    <properties>
+    <property name="hit_point" value="add_item desactivate; disable object key1"/>
+    <property name="point_x" value="16"/>
+    <property name="point_y" value="16"/>
     <property name="sprite" value="assets/clef1.png"/>
+    <property name="tiles_x" value="1"/>
+    <property name="tiles_y" value="1"/>
    </properties>
   </object>
+  <object id="26" name="player" type="player" x="64" y="464" width="32" height="48"/>
  </objectgroup>
 </map>
