@@ -60,13 +60,14 @@ void TestState::update() {
 //	Tile tile = _scene.level().getTile(geom.pos.x() / tileSize.x(),
 //	                                   geom.pos.y() / tileSize.y(), 0);
 //	bool coll = _scene.level().tileCollision(tile);
+	/*
 	CollisionInfo info;
 	Boxf objBox = _obj->worldBox();
 	bool coll = _scene.level().collide(0, objBox, &info);
 	_obj->sprite->setTileIndex(coll? 0: 1);
 	if(coll) {
 		_game->log("Collision: ", info.flags, " - ", info.penetration.transpose());
-	}
+	}*/
 	
 	// moves
 	if(_obj->isEnabled()) {
