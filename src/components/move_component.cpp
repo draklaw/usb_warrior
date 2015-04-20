@@ -23,6 +23,9 @@
 
 #include "../main_state.h"
 
+// FIXME: Should be dynamic.
+#define TILESIZE 16.0
+
 // THE MOVEMENT ALGORITHM (so far) :
 
 /* walking :
@@ -82,7 +85,6 @@ compute intersection surface
 */
 #define MAX_PASSES 20u
 
-#define TILESIZE 32.0 // FIXME
 //FIXME: Backtracking should occur immediately if ANY intersection is too big.
 /* instersection is !reasonable (> 1/2 tile) :
 - mark backtracking
@@ -130,7 +132,7 @@ MoveComponent::MoveComponent(GameObject* obj)
 	_jumping = false;
 }
 
-void MoveComponent::update() {
+void MoveComponent::setSpeed() {
 	Vec2 cs;
 	
 	switch (_walking) {
@@ -177,6 +179,7 @@ void MoveComponent::update() {
 		_mSpeed += Vec2(0,GRAVITY_ACCEL);
 		
 		_mSpeed *= AIR_DRAG_FACTOR;
+		
 		// Please don't break my game (too much).
 		while (_mSpeed.norm() > TERMINAL_VELOCITY)
 			_mSpeed *= 0.8;
@@ -188,9 +191,12 @@ void MoveComponent::update() {
 	
 	_mSpeed += cs;
 	_puppet->pos += _mSpeed;
-	
+}
+
+void MoveComponent::collide() {
 	bool backtrack = false, stable = false, dropping = true;
 	unsigned nbPasses = 0;
+	
 	while (!stable && nbPasses < MAX_PASSES) {
 		//TODO: replace 0 with i in l->nLayers and merge lists
 		CollisionList intersections = _obj->scene()->level().collide(0, _puppet->worldBox());
@@ -247,6 +253,12 @@ void MoveComponent::update() {
 	
 	if (!_airTime && dropping)
 		_airTime = 1;
+}
+
+
+void MoveComponent::update() {
+	setSpeed();
+	collide();
 }
 
 void MoveComponent::jump() {
