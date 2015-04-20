@@ -95,6 +95,46 @@ void MainState::frame(double interp) {
 
 	_scene.render(interp, viewBox, screenBox);
 
+	SDL_Renderer* dali = _game->renderer();
+	SDL_Rect r1, r2;
+	
+	/* /!\ WARNING PHAT CODE WARNING PHAT CODE WARNING PHAT CODE WARNING /!\ */
+	r1.x = screenSize.x() - 300;
+	r1.y = screenSize.y() - 50;
+	r1.w = 300;
+	r1.h = 50;
+	
+	SDL_SetRenderDrawColor(dali,200,200,200,255);
+	SDL_RenderFillRect(dali,&r1);
+	
+	r1.x = screenSize.x() - 300;
+	r1.y = screenSize.y() - 50 + ((50-32)/2);
+	r1.w = 32;
+	r1.h = 32;
+	
+	SDL_Texture* key1 = _loader.getImage("assets/clef1.png")->texture;
+	if (!hasDeactivateKey)
+		SDL_SetTextureAlphaMod(key1,64);
+	SDL_RenderCopy(dali, key1, NULL, &r1);
+	SDL_SetTextureAlphaMod(key1,255);
+	
+	r1.x = r1.x + 32 + 20;
+	r1.y = screenSize.y() - 50 + ((50-32)/2);
+	r1.w = 32;
+	r1.h = 32;
+	
+// 	SDL_Texture* key2 = _loader.getImage("assets/clef2.png")->texture;
+// 	SDL_RenderCopy(dali, key2, NULL, &r1);
+	
+	r1.x = r1.x + 32 + 20;
+	r1.y = screenSize.y() - 50 + ((50-32)/2);
+	r1.w = 32;
+	r1.h = 32;
+	
+// 	SDL_Texture* key3 = _loader.getImage("assets/clef3.png")->texture;
+// 	SDL_RenderCopy(dali, key3, NULL, &r1);
+
+
 	_scene.endRender();
 }
 
