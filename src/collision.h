@@ -22,16 +22,10 @@
 
 
 #include "math.h"
+#include "utils.h"
 
 
 struct CollisionInfo {
-	enum {
-		LEFT   = 0x01,
-		RIGHT  = 0x02,
-		TOP    = 0x04,
-		BOTTOM = 0x08
-	};
-
 	unsigned flags;
 	Vec2     penetration;
 };

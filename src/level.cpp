@@ -258,18 +258,18 @@ bool Level::collide(unsigned layer, const Boxf& box, CollisionInfo* info) const 
 
 			if(inter.sizes().x() < inter.sizes().y()) {
 				if(box.center().x() < tBox.center().x()) {
-					info->flags |= CollisionInfo::RIGHT;
+					info->flags |= RIGHT;
 					info->penetration.x() = std::min(-inter.sizes().x(), info->penetration.x());
 				} else {
-					info->flags |= CollisionInfo::LEFT;
+					info->flags |= LEFT;
 					info->penetration.x() = std::max( inter.sizes().x(), info->penetration.x());
 				}
 			} else {
 				if(box.center().y() < tBox.center().y()) {
-					info->flags |= CollisionInfo::BOTTOM;
+					info->flags |= DOWN;
 					info->penetration.y() = std::min(-inter.sizes().y(), info->penetration.y());
 				} else {
-					info->flags |= CollisionInfo::TOP;
+					info->flags |= UP;
 					info->penetration.y() = std::max( inter.sizes().y(), info->penetration.y());
 				}
 			}
