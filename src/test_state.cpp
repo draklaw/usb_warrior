@@ -145,15 +145,17 @@ void TestState::initialize() {
 
 	_left  = _input.addInput("left");
 	_right = _input.addInput("right");
-	_up    = _input.addInput("up");
+	_up    = _input.addInput("jump");
 	_down  = _input.addInput("down");
 	_use   = _input.addInput("use");
 
-	_input.mapScanCode(_left,  SDL_SCANCODE_LEFT);
-	_input.mapScanCode(_right, SDL_SCANCODE_RIGHT);
-	_input.mapScanCode(_up,    SDL_SCANCODE_UP);
-	_input.mapScanCode(_down,  SDL_SCANCODE_DOWN);
-	_input.mapScanCode(_use,   SDL_SCANCODE_SPACE);
+	_input.loadKeyBindingFile("assets/test/keymap.json");
+
+	_input.bindJsonKeys(_left,  "left",  SDL_SCANCODE_LEFT);
+	_input.bindJsonKeys(_right, "right", SDL_SCANCODE_RIGHT);
+	_input.bindJsonKeys(_up,    "jump",  SDL_SCANCODE_UP);
+	_input.bindJsonKeys(_down,  "down",  SDL_SCANCODE_DOWN);
+	_input.bindJsonKeys(_use,   "use",   SDL_SCANCODE_SPACE);
 
 	_tilemap = TileMap(_loader.getImage("assets/test/tileset.png"), 32, 32);
 

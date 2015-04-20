@@ -27,6 +27,8 @@
 
 #include <SDL2/SDL_events.h>
 
+#include "json.h"
+
 
 #define INVALID_INPUT 0xffffffff
 
@@ -40,9 +42,12 @@ typedef unsigned ScanCode;
 class InputManager {
 public:
 	InputManager(Game* game);
+	~InputManager();
 
 	Input addInput(const char* name);
 	void  mapScanCode(Input input, ScanCode scanCode);
+	void  bindJsonKeys(Input input, const char* name, ScanCode scanCode);
+	void  loadKeyBindingFile(const char* filename);
 
 	void sync();
 
@@ -66,6 +71,7 @@ private:
 private:
 	Game*       _game;
 
+	json_t*     _bindings;
 	InputMap    _inputMap;
 	ScanCodeMap _scanCodeMap;
 };

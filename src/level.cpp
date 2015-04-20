@@ -30,13 +30,13 @@
 #include "level.h"
 
 
-#define PANIC(test) do {		            \
-	if (test) {	                            \
-		printf (#test ": %i\n", __LINE__);  \
-		json_free_value(&root);             \
-		return false;                       \
-	}	                                    \
-} while (false)
+#define PANIC(test) do {			            \
+		if (test) {	                            \
+			printf (#test ": %i\n", __LINE__);  \
+			json_free_value(&root);             \
+			return false;                       \
+		}	                                    \
+	} while (false)
 
 
 int getInt(const EntityData& map, const char* key, int def) {
