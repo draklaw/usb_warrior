@@ -17,29 +17,26 @@
  *  along with usb_warrior.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _UW_MATH_H_
-#define _UW_MATH_H_
 
-#include <algorithm>
-#include <ostream>
+#include "../game.h"
 
-#include <Eigen/Dense>
-#include <Eigen/Geometry>
+#include "noclip_move_component.h"
 
 
-typedef Eigen::Vector2f Vec2;
-typedef Eigen::Vector2i Vec2i;
-
-//typedef Eigen::Transform<float, 2> Transform;
-
-typedef Eigen::AlignedBox2f Boxf;
-typedef Eigen::AlignedBox2i Boxi;
+#define NOCLIP_SPEED 4
 
 
-inline std::ostream& operator<<(std::ostream& out, const Boxf& box) {
-	out << "[ tl: " << box.min().transpose() << ", size: " << box.sizes().transpose() << "]";
-	return out;
+class MainState;
+
+NoclipMoveComponent::NoclipMoveComponent(MainState* state, GameObject* obj)
+    : LogicComponent(obj),
+      _state(state) {
 }
 
-
-#endif
+void NoclipMoveComponent::update() {
+	Vec2& pos = _obj->geom().pos;
+	if(_state->input().isPressed(left))  pos.x() -= NOCLIP_SPEED;
+	if(_state->input().isPressed(right)) pos.x() += NOCLIP_SPEED;
+	if(_state->input().isPressed(up))    pos.y() -= NOCLIP_SPEED;
+	if(_state->input().isPressed(down))  pos.y() += NOCLIP_SPEED;
+}

@@ -17,29 +17,29 @@
  *  along with usb_warrior.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _UW_MATH_H_
-#define _UW_MATH_H_
-
-#include <algorithm>
-#include <ostream>
-
-#include <Eigen/Dense>
-#include <Eigen/Geometry>
+#ifndef _NOCLIP_MOVE_COMPONENT_H_
+#define _NOCLIP_MOVE_COMPONENT_H_
 
 
-typedef Eigen::Vector2f Vec2;
-typedef Eigen::Vector2i Vec2i;
-
-//typedef Eigen::Transform<float, 2> Transform;
-
-typedef Eigen::AlignedBox2f Boxf;
-typedef Eigen::AlignedBox2i Boxi;
+#include "../main_state.h"
+#include "../game_object.h"
 
 
-inline std::ostream& operator<<(std::ostream& out, const Boxf& box) {
-	out << "[ tl: " << box.min().transpose() << ", size: " << box.sizes().transpose() << "]";
-	return out;
-}
+class NoclipMoveComponent : public LogicComponent {
+public:
+	NoclipMoveComponent(MainState* state, GameObject* obj);
 
+	void update();
+
+public:
+	Input left;
+	Input right;
+	Input up;
+	Input down;
+
+protected:
+	MainState* _state;
+
+};
 
 #endif

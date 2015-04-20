@@ -92,6 +92,7 @@ void Scene::beginUpdate() {
 
 
 void Scene::updateLogic(unsigned id) {
+	if(_logicMap.size() <= id) return;
 	for (LogicPtr& lcomp: _logicMap[id]) {
 		if(lcomp->object()->isEnabled() && lcomp->isEnabled()) {
 			lcomp->update();
@@ -101,6 +102,7 @@ void Scene::updateLogic(unsigned id) {
 
 
 void Scene::beginRender() {
+	SDL_SetRenderDrawColor(_game->renderer(), 0, 0, 0, 255);
 	SDL_TRY(SDL_RenderClear(_game->renderer()));
 }
 

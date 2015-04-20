@@ -17,29 +17,13 @@
  *  along with usb_warrior.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _UW_MATH_H_
-#define _UW_MATH_H_
-
-#include <algorithm>
-#include <ostream>
-
-#include <Eigen/Dense>
-#include <Eigen/Geometry>
+#ifndef _UW_ACTIONS_H_
+#define _UW_ACTIONS_H_
 
 
-typedef Eigen::Vector2f Vec2;
-typedef Eigen::Vector2i Vec2i;
+class MainState;
 
-//typedef Eigen::Transform<float, 2> Transform;
-
-typedef Eigen::AlignedBox2f Boxf;
-typedef Eigen::AlignedBox2i Boxi;
-
-
-inline std::ostream& operator<<(std::ostream& out, const Boxf& box) {
-	out << "[ tl: " << box.min().transpose() << ", size: " << box.sizes().transpose() << "]";
-	return out;
-}
+void loadLevelAction(MainState* state, unsigned argc, const char** argv);
 
 
 #endif
