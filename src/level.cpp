@@ -30,12 +30,12 @@
 #include "level.h"
 
 
-#define PANIC(test) do {			            \
-		if (test) {	                            \
+#define PANIC(test) do {            			\
+		if (test) {                         	\
 			printf (#test ": %i\n", __LINE__);  \
 			json_free_value(&root);             \
 			return false;                       \
-		}	                                    \
+		}                                   	\
 	} while (false)
 
 
@@ -267,12 +267,6 @@ Boxf Level::tileBox(unsigned x, unsigned y) const {
 
 
 CollisionList Level::collide(unsigned layer, const Boxf& box) const {
-	/*
-	if(info) {
-		info->flags = 0;
-		info->penetration = Vec2(0, 0);
-		info->intersection = Boxf();
-	}*/
 	CollisionList inters;
 	
 	Boxi boundBox = tileBounds(box);
@@ -286,37 +280,6 @@ CollisionList Level::collide(unsigned layer, const Boxf& box) const {
 		}
 	}
 	return inters;
-
-//			_scene->game()->log("box: ", box.min().transpose(), ", ", box.sizes().transpose());
-//			_scene->game()->log("tBox: ", tBox.min().transpose(), ", ", tBox.sizes().transpose());
-//			_scene->game()->log("inter: ", inter.min().transpose(), ", ", inter.sizes().transpose());
-/*
-			assert(!inter.isEmpty());
-
-			if(inter.sizes().x() < inter.sizes().y()) {
-				if(box.center().x() < tBox.center().x()) {
-					info->flags |= RIGHT;
-					info->penetration.x() = std::min(-inter.sizes().x(), info->penetration.x());
-				} else {
-					info->flags |= LEFT;
-					info->penetration.x() = std::max( inter.sizes().x(), info->penetration.x());
-				}
-			} else {
-				if(box.center().y() < tBox.center().y()) {
-					info->flags |= DOWN;
-					info->penetration.y() = std::min(-inter.sizes().y(), info->penetration.y());
-				} else {
-					info->flags |= UP;
-					info->penetration.y() = std::max( inter.sizes().y(), info->penetration.y());
-				}
-			}
-		}
-	}
-	if(info) {
-		return info->flags;
-	}
-	return false;
-	*/
 }
 
 
