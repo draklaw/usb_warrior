@@ -43,8 +43,8 @@ void PlayerControlerComponent::update() {
 					_obj->getComponent(MOVE_COMPONENT_ID));
 	assert(ppm);
 
-	bool goLeft  = _state->input().isPressed(left);
-	bool goRight = _state->input().isPressed(right);
+	bool goLeft  = left ->isPressed();
+	bool goRight = right->isPressed();
 	if(goLeft) {
 		direction = P_LEFT;
 		ppm->walk(LEFT);
@@ -54,9 +54,9 @@ void PlayerControlerComponent::update() {
 		ppm->walk(RIGHT);
 	}
 	
-	if(_state->input().isPressed(jump)) ppm->jump();
-	if(_state->input().isPressed(up))   ppm->climb(UP);
-	if(_state->input().isPressed(down)) ppm->climb(DOWN);
+	if(jump->isPressed())  ppm->jump();
+	if(up  ->isPressed())  ppm->climb(UP);
+	if(down->isPressed())  ppm->climb(DOWN);
 
 	MoveComponent* pmc = static_cast<MoveComponent*>(_obj->getComponent(MOVE_COMPONENT_ID));
 	if (pmc->_ladder)

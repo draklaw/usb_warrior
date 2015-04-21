@@ -21,6 +21,7 @@
 #define _INPUT_H_
 
 
+#include <memory>
 #include <string>
 #include <vector>
 #include <unordered_map>
@@ -30,12 +31,24 @@
 #include "json.h"
 
 
-#define INVALID_INPUT 0xffffffff
-
 class Game;
 
 
-typedef unsigned Input;
+class Input {
+public:
+	inline Input(const std::string& name)
+	    : name(name), count(0), prevCount(0) {}
+
+	inline bool isPressed()    const { return count; }
+	inline bool justPressed()  const { return count && !prevCount; }
+	inline bool justReleased() const { return !prevCount && count; }
+
+	const std::string name;
+	unsigned          count;
+	unsigned          prevCount;
+};
+
+
 typedef unsigned ScanCode;
 
 
@@ -44,29 +57,19 @@ public:
 	InputManager(Game* game);
 	~InputManager();
 
-	Input addInput(const char* name);
-	void  mapScanCode(Input input, ScanCode scanCode);
-	void  bindJsonKeys(Input input, const char* name, ScanCode scanCode);
-	void  loadKeyBindingFile(const char* filename);
+	Input* addInput(const char* name);
+	void   mapScanCode(Input* input, ScanCode scanCode);
+	void   bindJsonKeys(Input* input, const char* name, ScanCode scanCode);
+	void   loadKeyBindingFile(const char* filename);
 
 	void sync();
 
-	bool isPressed   (Input input) const;
-	bool justPressed (Input input) const;
-	bool justReleased(Input input) const;
-
 private:
-	struct InputDesc {
-		std::string name;
-		unsigned    count;
-		unsigned    prevCount;
+	typedef std::unique_ptr<Input>                   InputPtr;
+	typedef std::vector<InputPtr>                    InputMap;
 
-		inline InputDesc(const std::string& name)
-		    : name(name), count(0) {}
-	};
-
-	typedef std::vector<InputDesc> InputMap;
-	typedef std::unordered_map<ScanCode, Input> ScanCodeMap;
+	typedef std::vector<Input*>                      InputList;
+	typedef std::unordered_map<ScanCode, InputList>  ScanCodeMap;
 
 private:
 	Game*       _game;

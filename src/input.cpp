@@ -36,7 +36,7 @@
 
 InputManager::InputManager(Game* game)
     : _game(game),
-	  _bindings(NULL),
+      _bindings(NULL),
       _inputMap(),
       _scanCodeMap() {
 }
@@ -47,18 +47,18 @@ InputManager::~InputManager() {
 }
 
 
-Input InputManager::addInput(const char* name) {
-	_inputMap.emplace_back(name);
-	return _inputMap.size() - 1;
+Input* InputManager::addInput(const char* name) {
+	_inputMap.emplace_back(new Input(name));
+	return _inputMap.back().get();
 }
 
 
-void  InputManager::mapScanCode(Input input, ScanCode scanCode) {
-	_scanCodeMap.emplace(scanCode, input);
+void  InputManager::mapScanCode(Input* input, ScanCode scanCode) {
+	_scanCodeMap[scanCode].push_back(input);
 }
 
 
-void InputManager::bindJsonKeys(Input input, const char* name, ScanCode scanCode) {
+void InputManager::bindJsonKeys(Input* input, const char* name, ScanCode scanCode) {
 	FAIL(_bindings == NULL);
 	// get the array of keys corresponding to 'name'
 	json_t* item = json_find_first_label(_bindings, name);
@@ -93,33 +93,17 @@ void InputManager::loadKeyBindingFile(const char* filename) {
 
 
 void InputManager::sync() {
-	for(InputDesc& in: _inputMap) {
-		in.prevCount = in.count;
-		in.count = 0;
+	// FIXME: If an input is pressed between two updates, it may be missed.
+	for(auto& input: _inputMap) {
+		input->prevCount = input->count;
+		input->count     = 0;
 	}
 
 	int keyCount = 0;
 	const Uint8* keyState = SDL_GetKeyboardState(&keyCount);
-	for(auto keyInput: _scanCodeMap) {
-		if(int(keyInput.first) < keyCount) {
-			_inputMap[keyInput.second].count += keyState[keyInput.first];
+	for(auto& keyInputList: _scanCodeMap) {
+		for(Input* input: keyInputList.second) {
+			input->count += keyState[keyInputList.first];
 		}
 	}
-}
-
-
-bool InputManager::isPressed(Input input) const {
-	assert(input < _inputMap.size());
-	return _inputMap[input].count;
-}
-
-bool InputManager::justPressed(Input input) const {
-	const InputDesc& desc = _inputMap[input];
-	return desc.count && !desc.prevCount;
-}
-
-
-bool InputManager::justReleased(Input input) const {
-	const InputDesc& desc = _inputMap[input];
-	return !desc.count && desc.prevCount;
 }

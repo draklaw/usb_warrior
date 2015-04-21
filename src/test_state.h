@@ -54,11 +54,11 @@ protected:
 	Loader        _loader;
 
 	InputManager  _input;
-	Input         _left;
-	Input         _right;
-	Input         _up;
-	Input         _down;
-	Input         _use;
+	Input*        _left;
+	Input*        _right;
+	Input*        _up;
+	Input*        _down;
+	Input*        _use;
 
 	TileMap       _tilemap;
 

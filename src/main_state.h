@@ -47,7 +47,7 @@ public:
 	void frame(double interp);
 
 	inline GameObject* player()    { return _player; }
-	inline Input       useInput()  { return _use; }
+	inline Input*      useInput()  { return _use; }
 	inline Loader&     getLoader() { return _loader; }
 
 	GameObject* getObject(const std::string& name);
@@ -95,15 +95,15 @@ protected:
 	// Inputs
 	InputManager  _input;
 
-	Input         _left;
-	Input         _right;
-	Input         _jump;
-	Input         _up;
-	Input         _down;
-	Input         _use;
+	Input*        _left;
+	Input*        _right;
+	Input*        _jump;
+	Input*        _up;
+	Input*        _down;
+	Input*        _use;
 
-	Input         _debug0;
-	Input         _debug1;
+	Input*        _debug0;
+	Input*        _debug1;
 
 	// Objects
 	ObjectMap     _objects;

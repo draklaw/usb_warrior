@@ -56,7 +56,7 @@ void BotComponent::update() {
 		}
 	}
 
-	if(_state->input().justPressed(_state->useInput())) {
+	if(_state->useInput()->justPressed()) {
 		auto pcc = static_cast<PlayerControlerComponent*>(
 					_state->player()->getComponent(PLAYER_CONTROLLER_COMPONENT_ID));
 		int pDir = pcc->direction;

@@ -35,8 +35,8 @@ NoclipMoveComponent::NoclipMoveComponent(MainState* state, GameObject* obj)
 
 void NoclipMoveComponent::update() {
 	Vec2& pos = _obj->geom().pos;
-	if(_state->input().isPressed(left))  pos.x() -= NOCLIP_SPEED;
-	if(_state->input().isPressed(right)) pos.x() += NOCLIP_SPEED;
-	if(_state->input().isPressed(up))    pos.y() -= NOCLIP_SPEED;
-	if(_state->input().isPressed(down))  pos.y() += NOCLIP_SPEED;
+	if(left ->isPressed())  pos.x() -= NOCLIP_SPEED;
+	if(right->isPressed())  pos.x() += NOCLIP_SPEED;
+	if(up   ->isPressed())  pos.y() -= NOCLIP_SPEED;
+	if(down ->isPressed())  pos.y() += NOCLIP_SPEED;
 }

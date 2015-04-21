@@ -43,14 +43,14 @@ MainState::MainState(Game* game)
 		_loader(game),
 		_nextLevel(),
 		_input(game),
-		_left  (INVALID_INPUT),
-		_right (INVALID_INPUT),
-		_jump  (INVALID_INPUT),
-		_up    (INVALID_INPUT),
-		_down  (INVALID_INPUT),
-		_use   (INVALID_INPUT),
-		_debug0(INVALID_INPUT),
-		_debug1(INVALID_INPUT),
+		_left  (nullptr),
+		_right (nullptr),
+		_jump  (nullptr),
+		_up    (nullptr),
+		_down  (nullptr),
+		_use   (nullptr),
+		_debug0(nullptr),
+		_debug1(nullptr),
 		_player(nullptr),
 		_font() {
 }
@@ -78,8 +78,8 @@ void MainState::update() {
 
 	_input.sync();
 
-	if(_input.justPressed(_debug0)) _scene.setDebug(!_scene.debug());
-	if(_input.justPressed(_debug1)) {
+	if(_debug0->justPressed()) _scene.setDebug(!_scene.debug());
+	if(_debug1->justPressed()) {
 		auto mc = _player->getComponent(MOVE_COMPONENT_ID);
 		auto nmc = _player->getComponent(NOCLIP_MOVE_COMPONENT_ID);
 		mc->setEnabled(!mc->isEnabled());

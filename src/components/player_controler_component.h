@@ -41,12 +41,12 @@ public:
 	void update();
 
 public:
-	Input left;
-	Input right;
-	Input jump;
-	Input up;
-	Input down;
-	int direction;
+	Input* left;
+	Input* right;
+	Input* jump;
+	Input* up;
+	Input* down;
+	int    direction;
 
 protected:
 	MainState* _state;

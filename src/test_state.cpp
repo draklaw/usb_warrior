@@ -35,11 +35,11 @@ TestState::TestState(Game* game)
 	  _scene(game),
 	  _loader(game),
 	  _input(game),
-	  _left(INVALID_INPUT),
-	  _right(INVALID_INPUT),
-	  _up(INVALID_INPUT),
-	  _down(INVALID_INPUT),
-	  _use(INVALID_INPUT),
+	  _left(nullptr),
+	  _right(nullptr),
+	  _up(nullptr),
+	  _down(nullptr),
+	  _use(nullptr),
 	  _obj(nullptr),
 	  _msound(nullptr),
 	  _jsound(nullptr),
@@ -71,14 +71,14 @@ void TestState::update() {
 	
 	// moves
 	if(_obj->isEnabled()) {
-		if(_input.isPressed(_left))  ppm->walk(LEFT);
-		if(_input.isPressed(_right)) ppm->walk(RIGHT);
-		if(_input.isPressed(_up))    ppm->jump();
-//		if(_input.isPressed(_down))  /* TODO: Duck ! */;
+		if(_left ->isPressed()) ppm->walk(LEFT);
+		if(_right->isPressed()) ppm->walk(RIGHT);
+		if(_up   ->isPressed()) ppm->jump();
+//		if(_down ->isPressed())  /* TODO: Duck ! */;
 	}
 	
-//	if(_input.justPressed(_use)) _obj->setEnabled(!_obj->isEnabled());
-	if(_input.justPressed(_use)) {
+//	if(_use->justPressed()) _obj->setEnabled(!_obj->isEnabled());
+	if(_use->justPressed()) {
 		LogicComponent* cmp =  _obj->getComponent(MOVE_COMPONENT_ID);
 		cmp->setEnabled(!cmp->isEnabled());
 	}
@@ -87,8 +87,8 @@ void TestState::update() {
 
 	// sounds
 	static bool was_moving = false;
-	bool is_moving = _input.isPressed(_left) || _input.isPressed(_right)
-		|| _input.isPressed(_up) || _input.isPressed(_down);
+	bool is_moving = _left->isPressed() || _right->isPressed()
+		|| _up->isPressed() || _down->isPressed();
 
 	if(is_moving && !was_moving) {
 		_mchannel = _game->sounds()->playSound(_msound, -1);
@@ -97,7 +97,7 @@ void TestState::update() {
 	}
 	was_moving = is_moving;
 
-	if(_input.justPressed(_use)) _game->sounds()->playSound(_jsound, 0);
+	if(_use->justPressed()) _game->sounds()->playSound(_jsound, 0);
 }
 
 

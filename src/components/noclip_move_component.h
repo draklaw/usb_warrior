@@ -32,10 +32,10 @@ public:
 	void update();
 
 public:
-	Input left;
-	Input right;
-	Input up;
-	Input down;
+	Input* left;
+	Input* right;
+	Input* up;
+	Input* down;
 
 protected:
 	MainState* _state;

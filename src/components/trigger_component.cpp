@@ -50,7 +50,7 @@ void TriggerComponent::update() {
 		}
 	}
 
-	bool doUse = _state->input().justPressed(_state->useInput());
+	bool doUse = _state->useInput()->justPressed();
 	if(!use.empty() && doUse) {
 		Vec2 usePoint = pBox.center();
 		if(wBox.contains(usePoint)) {
