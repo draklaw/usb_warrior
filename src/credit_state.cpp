@@ -31,9 +31,15 @@ CreditState::CreditState(Game* game)
 }
 
 void CreditState::update() {
+	// DO NOT USE
 }
 
 void CreditState::frame(double /*interp*/) {
+	if(titleScreen && SDL_GetKeyboardState(nullptr)[SDL_SCANCODE_SPACE]) {
+		_game->changeState(&_game->mainState);
+		quit();
+	}
+
 	Vec2i screenSize = _game->screenSize();
 
 	SDL_Rect sRect;
@@ -53,7 +59,7 @@ void CreditState::frame(double /*interp*/) {
 }
 
 void CreditState::initialize() {
-	_splash = _game->images()->loadImage("assets/credits.png");
+	_splash = _game->images()->loadImage(image);
 }
 
 void CreditState::shutdown() {
