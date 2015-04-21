@@ -53,6 +53,8 @@ public:
 	void quit();
 
 	Vec2i screenSize() const;
+	bool  fullscreen() const;
+	void setFullscreen(bool enable);
 
 	inline SDL_Renderer* renderer() const { return _renderer; }
 	inline ImageManager* images() { return &_imageManager; }

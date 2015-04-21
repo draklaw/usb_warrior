@@ -61,6 +61,12 @@ void MainState::update() {
 		quit();
 		_game->quit();
 	}
+	if(SDL_GetKeyboardState(nullptr)[SDL_SCANCODE_F3]) {
+		_game->setFullscreen(true);
+	}
+	if(SDL_GetKeyboardState(nullptr)[SDL_SCANCODE_F4]) {
+		_game->setFullscreen(false);
+	}
 
 	if(!_nextLevel.empty()) {
 		_scene.level().loadFromJsonFile(_nextLevel.c_str());
@@ -436,6 +442,7 @@ void MainState::initialize() {
 		_scene.level().setTileCollision(10 + i * 64, true);
 		_scene.level().setTileCollision(11 + i * 64, true);
 	}
+	_scene.level().setTileCollision(773, true);
 	_scene.level().setTileCollision(774, true);
 	_scene.level().setTileCollision(838, true);
 

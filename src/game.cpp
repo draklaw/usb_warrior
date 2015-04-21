@@ -78,9 +78,7 @@ void Game::initialize() {
 	Mix_VolumeMusic(SOUNDPLAYER_DEFAULT_VOLUME);
 
 	unsigned windowFlags = 0
-#ifdef NDEBUG
-	        | SDL_WINDOW_FULLSCREEN_DESKTOP
-#endif
+	        | SDL_WINDOW_RESIZABLE
 //			| SDL_WINDOW_OPENGL
 	        ;
 
@@ -177,6 +175,16 @@ Vec2i Game::screenSize() const {
 	Vec2i size;
 	SDL_GetWindowSize(_window, &size.x(), &size.y());
 	return size;
+}
+
+
+bool  Game::fullscreen() const {
+	return SDL_GetWindowFlags(_window) & SDL_WINDOW_FULLSCREEN_DESKTOP;
+}
+
+
+void Game::setFullscreen(bool enable) {
+	SDL_SetWindowFullscreen(_window, enable? SDL_WINDOW_FULLSCREEN_DESKTOP: 0);
 }
 
 
