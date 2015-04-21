@@ -243,7 +243,7 @@ void MoveComponent::collide() {
 	while (!stable && nbPasses < MAX_PASSES)
 	{
 		//TODO: replace 0 with i in l->nLayers and merge lists
-		CollisionList intersections = _obj->scene()->level().collide(0, _puppet->worldBox());
+		CollisionList intersections = _obj->scene()->level().collide(0, _puppet->ladderBox());
 		
 		stable = true;
 		nbPasses++;
