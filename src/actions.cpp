@@ -107,8 +107,9 @@ void setStateAction(MainState* state, unsigned argc, const char** argv) {
 	}
 	std::string next = argv[1];
 	if(next == "credits") {
-		// FIXME: introduce a memory leak
-		state->game()->changeState(new CreditState(state->game()));
+		state->game()->creditState.image = "assets/credits.png";
+		state->game()->creditState.titleScreen = false;
+		state->game()->changeState(&state->game()->creditState);
 		state->quit();
 	}
 }

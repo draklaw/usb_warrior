@@ -37,7 +37,9 @@
 
 
 Game::Game(int /*argc*/, char** /*argv*/)
-    : _window(nullptr),
+    : mainState(this),
+      creditState(this),
+      _window(nullptr),
       _renderer(nullptr),
       _imageManager(this),
 	  _soundPlayer(this),

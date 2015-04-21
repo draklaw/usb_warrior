@@ -30,8 +30,10 @@ int main(int argc, char** argv) {
 	Game game(argc, argv);
 	game.initialize();
 
-	MainState state(&game);
+//	MainState state(&game);
 //	TestState state(&game);
 
-	return game.run(&state);
+	game.creditState.image = "assets/titre.png";
+	game.creditState.titleScreen = true;
+	return game.run(&game.creditState);
 }

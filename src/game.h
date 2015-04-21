@@ -30,6 +30,8 @@
 #include "image_manager.h"
 #include "sound_player.h"
 #include "font_manager.h"
+#include "main_state.h"
+#include "credit_state.h"
 
 
 class GameState;
@@ -102,6 +104,10 @@ public:
 
 	inline void writenr() {
 	}
+
+public:
+	MainState mainState;
+	CreditState creditState;
 
 private:
 	SDL_Window*    _window;

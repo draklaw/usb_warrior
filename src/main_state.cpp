@@ -97,7 +97,7 @@ void MainState::frame(double interp) {
 	_scene.render(interp, viewBox, screenBox);
 
 	SDL_Renderer* dali = _game->renderer();
-	SDL_Rect r1, r2;
+	SDL_Rect r1;
 	
 	/* /!\ WARNING PHAT CODE WARNING PHAT CODE WARNING PHAT CODE WARNING /!\ */
 	r1.x = screenSize.x() - 300;
