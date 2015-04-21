@@ -46,8 +46,9 @@ public:
 	void update();
 	void frame(double interp);
 
-	inline GameObject* player()   { return _player; }
-	inline Input       useInput() { return _use; }
+	inline GameObject* player()    { return _player; }
+	inline Input       useInput()  { return _use; }
+	inline Loader&     getLoader() { return _loader; }
 
 	GameObject* getObject(const std::string& name);
 

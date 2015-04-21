@@ -57,6 +57,11 @@ MainState::MainState(Game* game)
 
 
 void MainState::update() {
+	if(SDL_GetKeyboardState(nullptr)[SDL_SCANCODE_ESCAPE]) {
+		quit();
+		_game->quit();
+	}
+
 	if(!_nextLevel.empty()) {
 		_scene.level().loadFromJsonFile(_nextLevel.c_str());
 		resetLevel();
@@ -312,7 +317,6 @@ void MainState::addCommand(const char* action, Command cmd) {
 
 void MainState::exec(const char* cmd) {
 //	_game->log("exec: ", cmd);
-
 	std::string line(cmd);
 
 	auto c   = line.begin();
@@ -385,6 +389,13 @@ void MainState::initialize() {
 	_loader.addImage("assets/clef2.png");
 	_loader.addImage("assets/clef3.png");
 	_loader.addImage("assets/clef4.png");
+	_loader.addImage("assets/tp.png");
+
+	_loader.addSound("assets/use.wav");
+	_loader.addSound("assets/loot.wav");
+	_loader.addSound("assets/alarm.wav");
+
+	_loader.addMusic("assets/niveau.wav");
 
 	_loader.loadAll();
 
@@ -440,9 +451,11 @@ void MainState::shutdown() {
 
 void MainState::start() {
 	_game->log("Start MainState...");
+	_game->sounds()->playMusic(_loader.getMusic("assets/niveau.wav"));
 }
 
 
 void MainState::stop() {
 	_game->log("Stop MainState...");
+	_game->sounds()->haltMusic();
 }

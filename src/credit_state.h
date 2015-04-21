@@ -37,12 +37,16 @@ protected:
 	void initialize();
 	void shutdown();
 
+	void start();
+	void stop();
+
 public:
 	std::string image;
 	bool titleScreen;
 
 protected:
 	const Image* _splash;
+	const Music* _music;
 };
 
 
