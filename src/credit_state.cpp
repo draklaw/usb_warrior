@@ -44,21 +44,7 @@ void CreditState::frame(double /*interp*/) {
 		quit();
 	}
 
-	Vec2i screenSize = _game->screenSize();
-
-	SDL_Rect sRect;
-	sRect.x = 0;
-	sRect.y = 0;
-	sRect.w = _splash->size.x();
-	sRect.h = _splash->size.y();
-
-	SDL_Rect dRect;
-	dRect.x = 0;
-	dRect.y = 0;
-	dRect.w = screenSize.x();
-	dRect.h = screenSize.y();
-
-	SDL_RenderCopy(_game->renderer(), _splash->texture, &sRect, &dRect);
+	SDL_RenderCopy(_game->renderer(), _splash->texture, nullptr, nullptr);
 	SDL_RenderPresent(_game->renderer());
 }
 

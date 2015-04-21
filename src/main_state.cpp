@@ -88,10 +88,22 @@ void MainState::update() {
 
 void MainState::frame(double interp) {
 	Vec2 screenSize = _game->screenSize().template cast<float>();
+	Boxf screenBox(Vec2::Zero(), screenSize);
+
+	Vec2 levelSize(_scene.level().width()  * _scene.level().tileMap().tileSize().x(),
+	               _scene.level().height() * _scene.level().tileMap().tileSize().y());
+	Boxf levelBox(Vec2::Zero(), levelSize);
+	Vec2 levelCenter = levelBox.center();
+
+	Boxf centerBox((levelBox.min() + screenSize / 2).cwiseMin(levelCenter),
+	               (levelBox.max() - screenSize / 2).cwiseMax(levelCenter));
+
 	Vec2 viewCenter = _player->posInterp(interp);
+	if(!centerBox.contains(viewCenter)) {
+		viewCenter = viewCenter.cwiseMax(centerBox.min()).cwiseMin(centerBox.max());
+	}
 	Boxf viewBox(viewCenter - screenSize / 2,
 	             viewCenter + screenSize / 2);
-	Boxf screenBox(Vec2::Zero(), screenSize);
 
 	_scene.beginRender();
 
