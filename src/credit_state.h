@@ -37,6 +37,10 @@ protected:
 	void initialize();
 	void shutdown();
 
+public:
+	std::string image;
+	bool titleScreen;
+
 protected:
 	const Image* _splash;
 };
