@@ -32,6 +32,11 @@ public:
 		return Boxf(pos + box.min(), pos + box.max());
 	}
 
+	inline Boxf ladderBox() const {
+		Vec2 v = Vec2(4,0);
+		return Boxf(pos + box.min() + v, pos + box.max() - v);
+	}
+
 	Vec2  pos;
 	Boxf  box;
 	float rot;
