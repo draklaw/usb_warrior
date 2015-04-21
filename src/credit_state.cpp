@@ -35,6 +35,10 @@ void CreditState::update() {
 }
 
 void CreditState::frame(double /*interp*/) {
+	if(SDL_GetKeyboardState(nullptr)[SDL_SCANCODE_ESCAPE]) {
+		quit();
+		_game->quit();
+	}
 	if(titleScreen && SDL_GetKeyboardState(nullptr)[SDL_SCANCODE_SPACE]) {
 		_game->changeState(&_game->mainState);
 		quit();
@@ -60,8 +64,18 @@ void CreditState::frame(double /*interp*/) {
 
 void CreditState::initialize() {
 	_splash = _game->images()->loadImage(image);
+	_music = _game->sounds()->loadMusic("assets/truc.wav");
 }
 
 void CreditState::shutdown() {
 	_game->images()->releaseImage(_splash);
+	_game->sounds()->releaseMusic(_music);
+}
+
+void CreditState::start() {
+	_game->sounds()->playMusic(_music);
+}
+
+void CreditState::stop() {
+	_game->sounds()->haltMusic();
 }
