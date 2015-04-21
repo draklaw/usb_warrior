@@ -20,6 +20,7 @@
 
 #include "game.h"
 #include "main_state.h"
+#include "credit_state.h"
 
 #include "actions.h"
 
@@ -34,7 +35,7 @@ void loadLevelAction(MainState* state, unsigned argc, const char** argv) {
 }
 
 
-void echoAction(MainState* state, unsigned argc, const char** argv) {
+void echoAction(MainState* /*state*/, unsigned argc, const char** argv) {
 	printf("Echo: <");
 	if(argc > 1) printf("%s", argv[1]);
 	for(unsigned i = 2; i < argc; i++)
@@ -49,6 +50,7 @@ void _enableHelper(MainState* state, const std::string& compName,
 	if(compName == "object")          comp = -1;
 	else if(compName == "trigger")    comp = TRIGGER_COMPONENT_ID;
 	else if(compName == "bot_static") comp = BOT_COMPONENT_ID;
+	else if(compName == "wall")       comp = WALL_COMPONENT_ID;
 	else {
 		state->game()->warning("En/Disable action: Invalid component ", compName);
 		return;
@@ -63,7 +65,12 @@ void _enableHelper(MainState* state, const std::string& compName,
 	if(comp == -1) {
 		obj->setEnabled(false);
 	} else {
-		obj->getComponent(comp)->setEnabled(enable);
+		auto ptr = obj->getComponent(comp);
+		if(!ptr) {
+			state->game()->warning("En/Disable action: Object ", objName, " do not have component ", compName);
+			return;
+		}
+		ptr->setEnabled(enable);
 	}
 }
 
@@ -93,5 +100,17 @@ void addItemAction(MainState* state, unsigned argc, const char** argv) {
 		state->game()->sounds()->playSound(snd, 0);
 	} else {
 		state->game()->warning("add_item action: invalid key type");
+	}
+}
+
+void setStateAction(MainState* state, unsigned argc, const char** argv) {
+	if(argc != 2) {
+		state->game()->warning("set_state action: Invalid call");
+	}
+	std::string next = argv[1];
+	if(next == "credits") {
+		// FIXME: introduce a memory leak
+		state->game()->changeState(new CreditState(state->game()));
+		state->quit();
 	}
 }

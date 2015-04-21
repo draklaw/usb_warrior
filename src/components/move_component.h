@@ -42,6 +42,9 @@ protected:
 	void setSpeed();
 	void collide();
 
+public:
+	bool _ladder;
+
 protected:
 	GeometryComponent* _puppet;
 	
@@ -50,7 +53,6 @@ protected:
 	unsigned _airTime;
 	Direction _walking;
 	Direction _climbing;
-	bool _ladder;
 	bool _running;
 	bool _jumping;
 };

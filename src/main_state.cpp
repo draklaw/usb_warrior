@@ -32,6 +32,7 @@
 #include "components/move_component.h"
 #include "components/trigger_component.h"
 #include "components/bot_component.h"
+#include "components/wall_component.h"
 
 #include "main_state.h"
 
@@ -107,7 +108,7 @@ void MainState::frame(double interp) {
 	SDL_SetRenderDrawColor(dali,200,200,200,255);
 	SDL_RenderFillRect(dali,&r1);
 	
-	r1.x = screenSize.x() - 300;
+	r1.x = screenSize.x() - 300 + ((50-32)/2);
 	r1.y = screenSize.y() - 50 + ((50-32)/2);
 	r1.w = 32;
 	r1.h = 32;
@@ -119,21 +120,28 @@ void MainState::frame(double interp) {
 	SDL_SetTextureAlphaMod(key1,255);
 	
 	r1.x = r1.x + 32 + 20;
-	r1.y = screenSize.y() - 50 + ((50-32)/2);
-	r1.w = 32;
-	r1.h = 32;
 	
-// 	SDL_Texture* key2 = _loader.getImage("assets/clef2.png")->texture;
-// 	SDL_RenderCopy(dali, key2, NULL, &r1);
+	SDL_Texture* key2 = _loader.getImage("assets/clef2.png")->texture;
+	if (!hasComputerKey)
+		SDL_SetTextureAlphaMod(key2,64);
+	SDL_RenderCopy(dali, key2, NULL, &r1);
+	SDL_SetTextureAlphaMod(key2,255);
 	
 	r1.x = r1.x + 32 + 20;
-	r1.y = screenSize.y() - 50 + ((50-32)/2);
-	r1.w = 32;
-	r1.h = 32;
 	
-// 	SDL_Texture* key3 = _loader.getImage("assets/clef3.png")->texture;
-// 	SDL_RenderCopy(dali, key3, NULL, &r1);
-
+	SDL_Texture* key3 = _loader.getImage("assets/clef3.png")->texture;
+	if (!hasFightClubKey)
+		SDL_SetTextureAlphaMod(key3,64);
+	SDL_RenderCopy(dali, key3, NULL, &r1);
+	SDL_SetTextureAlphaMod(key3,255);
+	
+	r1.x = r1.x + 32 + 20;
+	
+	SDL_Texture* key4 = _loader.getImage("assets/clef4.png")->texture;
+	if (!hasMysteryKey)
+		SDL_SetTextureAlphaMod(key4,64);
+	SDL_RenderCopy(dali, key4, NULL, &r1);
+	SDL_SetTextureAlphaMod(key4,255);
 
 	_scene.endRender();
 }
@@ -155,6 +163,9 @@ void MainState::resetLevel() {
 	_scene.clear();
 	_player = nullptr;
 	hasDeactivateKey = false;
+	hasComputerKey = false;
+	hasFightClubKey = false;
+	hasMysteryKey = false;
 
 	for(Level::EntityIterator entity = _scene.level().entityBegin();
 	    entity != _scene.level().entityEnd(); ++entity) {
@@ -165,6 +176,7 @@ void MainState::resetLevel() {
 		if     (type == "player")     obj = createPlayer   (*entity);
 		else if(type == "trigger")    obj = createTrigger  (*entity);
 		else if(type == "bot_static") obj = createBotStatic(*entity);
+		else if(type == "wall")       obj = createWall     (*entity);
 
 		if(obj) {
 			auto ri = _objects.emplace(obj->name(), obj);
@@ -274,6 +286,25 @@ GameObject* MainState::createBotStatic(const EntityData& data) {
 }
 
 
+GameObject* MainState::createWall(const EntityData& data) {
+	const std::string& name = getString(data, "name", "");
+	GameObject* obj = _scene.addObject(name.empty()? nullptr: name.c_str());
+
+	float x = getInt(data, "x",      0);
+	float y = getInt(data, "y",      0);
+	float w = getInt(data, "width",  0);
+	float h = getInt(data, "height", 0);
+	obj->geom().pos = Vec2(x, y);
+	obj->geom().box = Boxf(Vec2(0, 0), Vec2(w, h));
+
+	auto wc = new WallComponent(this, obj);
+	wc->setEnabled(getInt(data, "enabled", true));
+	_scene.addLogicComponent(obj, WALL_COMPONENT_ID, wc);
+
+	return obj;
+}
+
+
 void MainState::addCommand(const char* action, Command cmd) {
 	_commandMap.emplace(action, cmd);
 }
@@ -352,6 +383,9 @@ void MainState::initialize() {
 	_loader.addImage("assets/alarm.png");
 	_loader.addImage("assets/clef1.png");
 	_loader.addImage("assets/clef2.png");
+	_loader.addImage("assets/clef3.png");
+	_loader.addImage("assets/clef4.png");
+	_loader.addImage("assets/tp.png");
 
 	_loader.addSound("assets/use.wav");
 	_loader.addSound("assets/loot.wav");
@@ -384,6 +418,8 @@ void MainState::initialize() {
 		_scene.level().setTileCollision(10 + i * 64, true);
 		_scene.level().setTileCollision(11 + i * 64, true);
 	}
+	_scene.level().setTileCollision(774, true);
+	_scene.level().setTileCollision(838, true);
 
 	// ##### TileMaps
 	_playerTileMap = TileMap(_loader.getImage("assets/toutAMI.png"), 32, 48);
@@ -395,8 +431,9 @@ void MainState::initialize() {
 	addCommand("enable",     enableAction);
 	addCommand("disable",    disableAction);
 	addCommand("add_item",   addItemAction);
+	addCommand("set_state",  setStateAction);
 
-	loadLevel("assets/level2.json");
+	loadLevel("assets/level3.json");
 }
 
 

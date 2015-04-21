@@ -17,18 +17,28 @@
  *  along with usb_warrior.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _UW_ACTIONS_H_
-#define _UW_ACTIONS_H_
+#ifndef _WALL_COMPONENT_H_
+#define _WALL_COMPONENT_H_
 
 
-class MainState;
+#include "../main_state.h"
+#include "../game_object.h"
 
-void loadLevelAction(MainState* state, unsigned argc, const char** argv);
-void echoAction(MainState* state, unsigned argc, const char** argv);
-void enableAction(MainState* state, unsigned argc, const char** argv);
-void disableAction(MainState* state, unsigned argc, const char** argv);
-void addItemAction(MainState* state, unsigned argc, const char** argv);
-void setStateAction(MainState* state, unsigned argc, const char** argv);
 
+class WallComponent : public LogicComponent {
+public:
+	WallComponent(MainState* state, GameObject* obj);
+
+	void update();
+	void updateDisabled();
+
+protected:
+	void setTiles(bool enable);
+
+protected:
+	MainState* _state;
+
+	bool _prevEnabled;
+};
 
 #endif
