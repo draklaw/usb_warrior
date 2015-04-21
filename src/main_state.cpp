@@ -61,6 +61,12 @@ void MainState::update() {
 		quit();
 		_game->quit();
 	}
+	if(SDL_GetKeyboardState(nullptr)[SDL_SCANCODE_F3]) {
+		_game->setFullscreen(true);
+	}
+	if(SDL_GetKeyboardState(nullptr)[SDL_SCANCODE_F4]) {
+		_game->setFullscreen(false);
+	}
 
 	if(!_nextLevel.empty()) {
 		_scene.level().loadFromJsonFile(_nextLevel.c_str());
@@ -88,10 +94,22 @@ void MainState::update() {
 
 void MainState::frame(double interp) {
 	Vec2 screenSize = _game->screenSize().template cast<float>();
+	Boxf screenBox(Vec2::Zero(), screenSize);
+
+	Vec2 levelSize(_scene.level().width()  * _scene.level().tileMap().tileSize().x(),
+	               _scene.level().height() * _scene.level().tileMap().tileSize().y());
+	Boxf levelBox(Vec2::Zero(), levelSize);
+	Vec2 levelCenter = levelBox.center();
+
+	Boxf centerBox((levelBox.min() + screenSize / 2).cwiseMin(levelCenter),
+	               (levelBox.max() - screenSize / 2).cwiseMax(levelCenter));
+
 	Vec2 viewCenter = _player->posInterp(interp);
+	if(!centerBox.contains(viewCenter)) {
+		viewCenter = viewCenter.cwiseMax(centerBox.min()).cwiseMin(centerBox.max());
+	}
 	Boxf viewBox(viewCenter - screenSize / 2,
 	             viewCenter + screenSize / 2);
-	Boxf screenBox(Vec2::Zero(), screenSize);
 
 	_scene.beginRender();
 
@@ -424,6 +442,7 @@ void MainState::initialize() {
 		_scene.level().setTileCollision(10 + i * 64, true);
 		_scene.level().setTileCollision(11 + i * 64, true);
 	}
+	_scene.level().setTileCollision(773, true);
 	_scene.level().setTileCollision(774, true);
 	_scene.level().setTileCollision(838, true);
 
