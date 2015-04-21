@@ -433,7 +433,7 @@ void MainState::initialize() {
 	addCommand("add_item",   addItemAction);
 	addCommand("set_state",  setStateAction);
 
-	loadLevel("assets/level3.json");
+	loadLevel("assets/level2.json");
 }
 
 
