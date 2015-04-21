@@ -38,6 +38,7 @@ add_executable(usb_warrior
 	game_state.cpp
 	main_state.cpp
 	test_state.cpp
+	credit_state.cpp
 
 	input.cpp
 	image_manager.cpp
@@ -56,6 +57,7 @@ add_executable(usb_warrior
 	components/move_component.cpp
 	components/trigger_component.cpp
 	components/bot_component.cpp
+	components/wall_component.cpp
 )
 
 target_link_libraries(usb_warrior

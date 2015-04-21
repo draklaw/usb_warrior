@@ -17,41 +17,29 @@
  *  along with usb_warrior.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _UW_PLAYER_CONTROLER_COMPONENT_H_
-#define _UW_PLAYER_CONTROLER_COMPONENT_H_
+#ifndef _UW_CREDIT_STATE_H_
+#define _UW_CREDIT_STATE_H_
 
 
-#include "../main_state.h"
-#include "../input.h"
-#include "../game_object.h"
+#include "game_state.h"
+#include "image_manager.h"
 
 
-class PlayerControlerComponent : public LogicComponent {
+
+class CreditState : public GameState {
 public:
-	enum {
-		P_FRONT,
-		P_BACK,
-		P_LEFT,
-		P_RIGHT
-	};
-
-public:
-	PlayerControlerComponent(MainState* state, GameObject* obj);
+	CreditState(Game* game);
 
 	void update();
-
-public:
-	Input left;
-	Input right;
-	Input jump;
-	Input up;
-	Input down;
-	int direction;
+	void frame(double interp);
 
 protected:
-	MainState* _state;
+	void initialize();
+	void shutdown();
 
-	int _animCounter;
+protected:
+	const Image* _splash;
 };
+
 
 #endif

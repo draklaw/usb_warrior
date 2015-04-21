@@ -17,41 +17,28 @@
  *  along with usb_warrior.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _UW_PLAYER_CONTROLER_COMPONENT_H_
-#define _UW_PLAYER_CONTROLER_COMPONENT_H_
+#ifndef _WALL_COMPONENT_H_
+#define _WALL_COMPONENT_H_
 
 
 #include "../main_state.h"
-#include "../input.h"
 #include "../game_object.h"
 
 
-class PlayerControlerComponent : public LogicComponent {
+class WallComponent : public LogicComponent {
 public:
-	enum {
-		P_FRONT,
-		P_BACK,
-		P_LEFT,
-		P_RIGHT
-	};
-
-public:
-	PlayerControlerComponent(MainState* state, GameObject* obj);
+	WallComponent(MainState* state, GameObject* obj);
 
 	void update();
+	void updateDisabled();
 
-public:
-	Input left;
-	Input right;
-	Input jump;
-	Input up;
-	Input down;
-	int direction;
+protected:
+	void setTiles(bool enable);
 
 protected:
 	MainState* _state;
 
-	int _animCounter;
+	bool _prevEnabled;
 };
 
 #endif

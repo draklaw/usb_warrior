@@ -17,7 +17,7 @@
   <object id="16" name="exit" type="trigger" x="864" y="128" width="64" height="64">
    <properties>
     <property name="enabled" value="1"/>
-    <property name="hit_point" value="load_level assets/level3.json"/>
+    <property name="hit_point" value="set_state credits"/>
     <property name="point_x" value="32"/>
     <property name="point_y" value="48"/>
     <property name="sprite" value="assets/exit.png"/>
@@ -35,13 +35,13 @@
     <property name="tiles_y" value="8"/>
    </properties>
   </object>
-  <object id="18" name="wall" type="wall" x="736" y="272" width="16" height="64"/>
+  <object id="18" name="wall" type="wall" x="736" y="224" width="16" height="112"/>
   <object id="19" name="bot" type="bot_static" x="352" y="288" width="32" height="48">
    <properties>
     <property name="direction" value="1"/>
     <property name="fov" value="20"/>
-    <property name="hack_disable" value="disable bot_static bot; disable trigger wall; disable trigger alarm"/>
-    <property name="see_player" value="enable trigger wall; enable trigger alarm"/>
+    <property name="hack_disable" value="disable bot_static bot; disable wall wall; disable trigger alarm"/>
+    <property name="see_player" value="enable wall wall; enable trigger alarm"/>
     <property name="sprite" value="assets/toutrobots.png"/>
    </properties>
   </object>

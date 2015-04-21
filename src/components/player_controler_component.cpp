@@ -33,8 +33,8 @@ class MainState;
 PlayerControlerComponent::PlayerControlerComponent(
         MainState* state, GameObject* obj)
     : LogicComponent(obj),
-      _state(state),
       direction(P_FRONT),
+      _state(state),
       _animCounter(0) {
 }
 
@@ -53,7 +53,14 @@ void PlayerControlerComponent::update() {
 		direction = P_RIGHT;
 		ppm->walk(RIGHT);
 	}
-	if(_state->input().isPressed(jump))  ppm->jump();
+	
+	if(_state->input().isPressed(jump)) ppm->jump();
+	if(_state->input().isPressed(up))   ppm->climb(UP);
+	if(_state->input().isPressed(down)) ppm->climb(DOWN);
+
+	MoveComponent* pmc = static_cast<MoveComponent*>(_obj->getComponent(MOVE_COMPONENT_ID));
+	if (pmc->_ladder)
+		direction = P_BACK;
 
 	if(goLeft || goRight) {
 		++_animCounter;
@@ -61,7 +68,6 @@ void PlayerControlerComponent::update() {
 	else {
 		_animCounter = 0;
 	}
-
 	switch(direction) {
 	case P_FRONT:
 		_obj->sprite->setTileIndex(0);
