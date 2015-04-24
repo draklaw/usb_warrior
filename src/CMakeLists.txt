@@ -26,6 +26,11 @@ find_package(SDL2 REQUIRED)
 find_package(SDL2_mixer REQUIRED)
 find_package(SDL2_image REQUIRED)
 
+if(WIN32)
+	# Windows sucks
+	SET(CMAKE_EXE_LINKER_FLAGS "-mwindows -static-libgcc -static-libstdc++")
+endif()
+
 include_directories(
 	"${EIGEN3_INCLUDE_DIR}"
 	"${SDL2_INCLUDE_DIR}"
