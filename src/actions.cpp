@@ -19,23 +19,31 @@
 
 
 #include "game.h"
+#include "sound_player.h"
+#include "loader.h"
+#include "scene.h"
+
 #include "main_state.h"
 #include "credit_state.h"
+
+#include "components/trigger_component.h"
+#include "components/bot_component.h"
+#include "components/wall_component.h"
 
 #include "actions.h"
 
 
-void loadLevelAction(MainState* state, unsigned argc, const char** argv) {
+void loadLevelAction(Scene* scene, unsigned argc, const char** argv) {
 	if(argc != 2) {
-		state->game()->warning("Invalid loadLevel call");
+		scene->game()->warning("Invalid loadLevel call");
 	}
 
-	state->game()->warning("loadLevelAction: ", argc, ", ", argv[1]);
-	state->loadLevel(argv[1]);
+	scene->game()->warning("loadLevelAction: ", argc, ", ", argv[1]);
+	scene->loadLevel(argv[1]);
 }
 
 
-void echoAction(MainState* /*state*/, unsigned argc, const char** argv) {
+void echoAction(Scene* /*scene*/, unsigned argc, const char** argv) {
 	printf("Echo: <");
 	if(argc > 1) printf("%s", argv[1]);
 	for(unsigned i = 2; i < argc; i++)
@@ -44,74 +52,75 @@ void echoAction(MainState* /*state*/, unsigned argc, const char** argv) {
 }
 
 
-void _enableHelper(MainState* state, const std::string& compName,
+void _enableHelper(Scene* scene, const std::string& compName,
                    const std::string& objName, bool enable) {
-	int comp = -1;
-	if(compName == "object")          comp = -1;
-	else if(compName == "trigger")    comp = TRIGGER_COMPONENT_ID;
-	else if(compName == "bot_static") comp = BOT_COMPONENT_ID;
-	else if(compName == "wall")       comp = WALL_COMPONENT_ID;
-	else {
-		state->game()->warning("En/Disable action: Invalid component ", compName);
-		return;
-	}
-
-	GameObject* obj = state->getObject(objName);
+	GameObject* obj = scene->getByName(objName);
 	if(!obj) {
-		state->game()->warning("En/Disable action: Invalid object ", objName);
+		scene->game()->warning("En/Disable action: Invalid object ", objName);
 		return;
 	}
 
-	if(comp == -1) {
-		obj->setEnabled(false);
-	} else {
-		auto ptr = obj->getComponent(comp);
-		if(!ptr) {
-			state->game()->warning("En/Disable action: Object ", objName, " do not have component ", compName);
-			return;
-		}
-		ptr->setEnabled(enable);
+	Component* comp = nullptr;
+	if(compName == "object") {
+		obj->setEnabled(enable);
+		return;
 	}
+	else if(compName == "trigger")    comp = obj->trigger;
+	else if(compName == "bot_static") comp = obj->bot;
+	else if(compName == "wall")       comp = obj->wall;
+	else {
+		scene->game()->warning("En/Disable action: Invalid component ", compName);
+		return;
+	}
+
+	if(!comp) {
+		scene->game()->warning("En/Disable action: Object ", objName, " do not have component ", compName);
+		return;
+	}
+	comp->setEnabled(enable);
 }
 
-void enableAction(MainState* state, unsigned argc, const char** argv) {
+
+void enableAction(Scene* scene, unsigned argc, const char** argv) {
 	if(argc != 3) {
-		state->game()->warning("Enable action: Invalid call");
+		scene->game()->warning("Enable action: Invalid call");
 	}
-	_enableHelper(state, argv[1], argv[2], true);
+	_enableHelper(scene, argv[1], argv[2], true);
 }
 
 
-void disableAction(MainState* state, unsigned argc, const char** argv) {
+void disableAction(Scene* scene, unsigned argc, const char** argv) {
 	if(argc != 3) {
-		state->game()->warning("Disable action: Invalid call");
+		scene->game()->warning("Disable action: Invalid call");
 	}
-	_enableHelper(state, argv[1], argv[2], false);
+	_enableHelper(scene, argv[1], argv[2], false);
 }
 
-void addItemAction(MainState* state, unsigned argc, const char** argv) {
+
+void addItemAction(Scene* scene, unsigned argc, const char** argv) {
 	if(argc != 2) {
-		state->game()->warning("add_item action: Invalid call");
+		scene->game()->warning("add_item action: Invalid call");
 	}
 	std::string type = argv[1];
 	if(type == "deactivate") {
-		state->hasDeactivateKey = true;
-		const Sound* snd = state->getLoader().getSound("assets/loot.wav");
-		state->game()->sounds()->playSound(snd, 0);
+		scene->state()->hasDeactivateKey = true;
+		const Sound* snd = scene->state()->loader()->getSound("assets/loot.wav");
+		scene->game()->sounds()->playSound(snd, 0);
 	} else {
-		state->game()->warning("add_item action: invalid key type");
+		scene->game()->warning("add_item action: invalid key type");
 	}
 }
 
-void setStateAction(MainState* state, unsigned argc, const char** argv) {
+
+void setStateAction(Scene* scene, unsigned argc, const char** argv) {
 	if(argc != 2) {
-		state->game()->warning("set_state action: Invalid call");
+		scene->game()->warning("set_state action: Invalid call");
 	}
 	std::string next = argv[1];
 	if(next == "credits") {
-		state->game()->creditState.image = "assets/credits.png";
-		state->game()->creditState.titleScreen = false;
-		state->game()->changeState(&state->game()->creditState);
-		state->quit();
+		scene->game()->creditState()->image = "assets/credits.png";
+		scene->game()->creditState()->titleScreen = false;
+		scene->game()->changeState(scene->game()->creditState());
+		scene->state()->quit();
 	}
 }

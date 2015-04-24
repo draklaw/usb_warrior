@@ -19,7 +19,14 @@
 
 
 #include "../game.h"
+#include "../sound_player.h"
+#include "../input.h"
+#include "../loader.h"
+#include "../scene.h"
+#include "../game_object.h"
+#include "../main_state.h"
 
+#include "sprite_component.h"
 #include "player_controler_component.h"
 
 #include "bot_component.h"
@@ -28,9 +35,8 @@
 
 class MainState;
 
-BotComponent::BotComponent(MainState* state, GameObject* obj)
-    : LogicComponent(obj),
-      _state(state),
+BotComponent::BotComponent(Scene* scene, GameObject* obj)
+    : Component(scene, obj),
 	  _channel(-1)  {
 }
 
@@ -40,25 +46,26 @@ void BotComponent::update() {
 	Vec2 lookDir = Vec2::UnitX();
 	if(!direction) lookDir *= -1;
 
+	GameObject* player = _scene->getByName("player");
+
 	Vec2 pos = _obj->geom().pos;
-	Vec2 pPos = _state->player()->geom().pos;
+	Vec2 pPos = player->geom().pos;
 
 	if(!seePlayer.empty()) {
 		float cosAlpha = (pPos - pos).normalized().dot(lookDir);
 		float alpha = std::acos(cosAlpha) / M_PI * 180;
 
 		if(alpha < fov) {
-			_state->exec(seePlayer.c_str());
+			_scene->exec(seePlayer.c_str());
 			if(_channel == -1) {
-				const Sound* alarmSnd = _state->getLoader().getSound("assets/alarm.wav");
-				_channel = _state->game()->sounds()->playSound(alarmSnd, -1);
+				const Sound* alarmSnd = _scene->state()->loader()->getSound("assets/alarm.wav");
+				_channel = _scene->state()->game()->sounds()->playSound(alarmSnd, -1);
 			}
 		}
 	}
 
-	if(_state->useInput()->justPressed()) {
-		auto pcc = static_cast<PlayerControlerComponent*>(
-					_state->player()->getComponent(PLAYER_CONTROLLER_COMPONENT_ID));
+	if(_scene->state()->useInput()->justPressed()) {
+		auto pcc = player->playerControler;
 		int pDir = pcc->direction;
 
 		Vec2 pLookDir(0, 0);
@@ -69,12 +76,12 @@ void BotComponent::update() {
 		Boxf box = _obj->worldBox();
 		if(box.contains(pPos + pLookDir)) {
 			if(!hackDisable.empty()) {
-				if(_state->hasDeactivateKey) {
-					_state->exec(hackDisable.c_str());
-					_state->hasDeactivateKey = false;
-					const Sound* useSnd = _state->getLoader().getSound("assets/use.wav");
-					_state->game()->sounds()->playSound(useSnd, 0);
-					 _state->game()->sounds()->haltSound(_channel);
+				if(_scene->state()->hasDeactivateKey) {
+					_scene->exec(hackDisable.c_str());
+					_scene->state()->hasDeactivateKey = false;
+					const Sound* useSnd = _scene->state()->loader()->getSound("assets/use.wav");
+					_scene->state()->game()->sounds()->playSound(useSnd, 0);
+					_scene->state()->game()->sounds()->haltSound(_channel);
 				}
 			}
 		}

@@ -17,38 +17,34 @@
  *  along with usb_warrior.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _UW_CREDIT_STATE_H_
-#define _UW_CREDIT_STATE_H_
+#ifndef _UW_COMPONENT_H_
+#define _UW_COMPONENT_H_
 
 
-#include "game_state.h"
+class Scene;
+class GameObject;
 
-
-class Image;
-class Music;
-
-
-class CreditState : public GameState {
+class Component {
 public:
-	CreditState(Game* game);
-
-	void update();
-	void frame(double interp);
-
-protected:
-	void initialize();
-	void shutdown();
-
-	void start();
-	void stop();
+	enum {
+		ENABLED = 0x01
+	};
 
 public:
-	std::string image;
-	bool titleScreen;
+	Component(Scene* scene, GameObject* obj);
+	virtual ~Component();
+
+	inline Scene*      scene ()    const { return _scene; }
+	inline GameObject* object()    const { return _obj; }
+
+	inline bool        isEnabled() const { return _flags & ENABLED; }
+
+	void setEnabled(bool enabled);
 
 protected:
-	const Image* _splash;
-	const Music* _music;
+	Scene*      _scene;
+	GameObject* _obj;
+	unsigned    _flags;
 };
 
 

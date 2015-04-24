@@ -19,9 +19,12 @@
 
 #include <iostream>
 
-#include "move_component.h"
+#include "../game_object.h"
+#include "../scene.h"
+#include "../collision.h"
+#include "../level.h"
 
-#include "../main_state.h"
+#include "move_component.h"
 
 // FIXME: Should be dynamic.
 #define TILESIZE 16.0
@@ -126,9 +129,8 @@ for each intersection with a solid tile
 
 // finally, if character is on the ground, reset _airTime
 
-MoveComponent::MoveComponent(GameObject* obj)
-    : LogicComponent(obj) {
-	_puppet =  &_obj->geom(CURR_UP);
+MoveComponent::MoveComponent(Scene* scene, GameObject* obj)
+    : Component(scene, obj) {
 	_mSpeed = Vec2(0,0);
 	_momentum = 0;
 	_airTime = 0;
@@ -140,13 +142,14 @@ MoveComponent::MoveComponent(GameObject* obj)
 }
 
 bool MoveComponent::onLadder() {
+	GeometryComponent* puppet =  &_obj->geom();
 	Boxf characterFeet = Boxf(
-	  Vec2(_puppet->worldBox().min().x() + TILESIZE / 3.0,
-	       _puppet->worldBox().max().y() - 1.9 * COLLISION_DELTA),
-	  Vec2(_puppet->worldBox().max().x() - TILESIZE / 3.0,
-	       _puppet->worldBox().max().y() - 1.1 * COLLISION_DELTA));
+	  Vec2(puppet->worldBox().min().x() + TILESIZE / 3.0,
+	       puppet->worldBox().max().y() - 1.9 * COLLISION_DELTA),
+	  Vec2(puppet->worldBox().max().x() - TILESIZE / 3.0,
+	       puppet->worldBox().max().y() - 1.1 * COLLISION_DELTA));
 	
-	CollisionList intersections = _obj->scene()->level().collide(1, characterFeet, true);
+	CollisionList intersections = _scene->level()->collide(1, characterFeet, true);
 	float amount = 0.0;
 	
 	for (Boxf collision: intersections)
@@ -233,17 +236,18 @@ void MoveComponent::setSpeed() {
 	_jumping = false;
 	
 	_mSpeed += cs;
-	_puppet->pos += _mSpeed;
+	_obj->geom().pos += _mSpeed;
 }
 
 void MoveComponent::collide() {
+	GeometryComponent* puppet =  &_obj->geom();
 	bool bounce = false, stable = false;
 	unsigned nbPasses = 0;
 	
 	while (!stable && nbPasses < MAX_PASSES)
 	{
 		//TODO: replace 0 with i in l->nLayers and merge lists
-		CollisionList intersections = _obj->scene()->level().collide(0, _puppet->ladderBox());
+		CollisionList intersections = _scene->level()->collide(0, puppet->ladderBox());
 		
 		stable = true;
 		nbPasses++;
@@ -251,7 +255,7 @@ void MoveComponent::collide() {
 		for (Boxf crash:intersections)
 			if (crash.volume() >= UNREASONABLE_COLLISION)
 			{
-				_puppet->pos -= _mSpeed * BACKTRACK_FACTOR;
+				puppet->pos -= _mSpeed * BACKTRACK_FACTOR;
 				stable = false;
 				bounce = true;
 				break;
@@ -269,19 +273,19 @@ void MoveComponent::collide() {
 			{
 				if (crash.sizes().y() > crash.sizes().x() * Y_X_VERTICALITY_FACTOR)
 				{ // vertical crashbox, horizontal collision
-					if (crash.center().x() > _puppet->worldBox().center().x())
-						_puppet->pos.x() -= crash.sizes().x() - COLLISION_DELTA/2.0;
+					if (crash.center().x() > puppet->worldBox().center().x())
+						puppet->pos.x() -= crash.sizes().x() - COLLISION_DELTA/2.0;
 					else
-						_puppet->pos.x() += crash.sizes().x() - COLLISION_DELTA/2.0;
+						puppet->pos.x() += crash.sizes().x() - COLLISION_DELTA/2.0;
 					
 					_mSpeed.x() = 0;
 				}
 				else // horizontal crashbox, vertical collision
 				{
-					if (crash.center().y() > _puppet->worldBox().center().y())
-						_puppet->pos.y() -= crash.sizes().y() - COLLISION_DELTA/2.0;
+					if (crash.center().y() > puppet->worldBox().center().y())
+						puppet->pos.y() -= crash.sizes().y() - COLLISION_DELTA/2.0;
 					else
-						_puppet->pos.y() += crash.sizes().y() - COLLISION_DELTA/2.0;
+						puppet->pos.y() += crash.sizes().y() - COLLISION_DELTA/2.0;
 					
 					_mSpeed.y() = 0;
 				}
@@ -293,17 +297,18 @@ void MoveComponent::collide() {
 }
 
 void MoveComponent::update() {
+	GeometryComponent* puppet =  &_obj->geom();
 	setSpeed();
 	collide();
 	
 	// Stamp on the ground.
 	Boxf characterFeet = Boxf(
-	  Vec2(_puppet->worldBox().min().x() + TILESIZE / 3.0,
-	       _puppet->worldBox().max().y() + 0.1 * COLLISION_DELTA),
-	  Vec2(_puppet->worldBox().max().x() - TILESIZE / 3.0,
-	       _puppet->worldBox().max().y() + 0.9 * COLLISION_DELTA));
+	  Vec2(puppet->worldBox().min().x() + TILESIZE / 3.0,
+	       puppet->worldBox().max().y() + 0.1 * COLLISION_DELTA),
+	  Vec2(puppet->worldBox().max().x() - TILESIZE / 3.0,
+	       puppet->worldBox().max().y() + 0.9 * COLLISION_DELTA));
 	
-	CollisionList intersections = _obj->scene()->level().collide(0, characterFeet);
+	CollisionList intersections = _scene->level()->collide(0, characterFeet);
 	float amount = 0.0;
 	
 	for (Boxf collision: intersections)

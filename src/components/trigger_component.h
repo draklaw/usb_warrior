@@ -20,19 +20,25 @@
 #ifndef _TRIGGER_COMPONENT_H_
 #define _TRIGGER_COMPONENT_H_
 
+#include <string>
 
-#include "../main_state.h"
-#include "../game_object.h"
+#include "../math.h"
+#include "../component.h"
 
 
-class TriggerComponent : public LogicComponent {
+class Scene;
+class GameObject;
+
+
+class TriggerComponent : public Component {
 public:
-	TriggerComponent(MainState* state, GameObject* obj);
+	TriggerComponent(Scene* scene, GameObject* obj);
 
 	void update();
 	void updateDisabled();
 
 public:
+	std::string target;
 	std::string hitPoint;
 	int         tileEnable;
 	int         tileDisable;
@@ -43,8 +49,6 @@ public:
 	std::string use;
 
 protected:
-	MainState* _state;
-
 	unsigned  _animCounter;
 };
 

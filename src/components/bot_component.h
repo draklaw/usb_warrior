@@ -21,13 +21,12 @@
 #define _BOT_COMPONENT_H_
 
 
-#include "../main_state.h"
-#include "../game_object.h"
+#include "../component.h"
 
 
-class BotComponent : public LogicComponent {
+class BotComponent : public Component {
 public:
-	BotComponent(MainState* state, GameObject* obj);
+	BotComponent(Scene* scene, GameObject* obj);
 
 	void update();
 	void updateDisabled();
@@ -39,7 +38,6 @@ public:
 	std::string  hackDisable;
 
 protected:
-	MainState* _state;
 	int        _channel;
 };
 

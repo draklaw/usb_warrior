@@ -283,8 +283,8 @@ CollisionList Level::collide(unsigned layer, const Boxf& box, bool ladder) const
 	Boxi boundBox = tileBounds(box);
 	for(int y = boundBox.min().y(); y < boundBox.max().y(); ++y) {
 		for(int x = boundBox.min().x(); x < boundBox.max().x(); ++x) {
-			if(!ladder && !tileCollision(getTile(x, y, layer))
-			 || ladder && !isClimbable(getTile(x, y, layer)))
+			if(   (!ladder && !tileCollision(getTile(x, y, layer)))
+			   || (ladder && !isClimbable(getTile(x, y, layer))))
 				continue;
 			
 			Boxf tBox = tileBox(x, y);

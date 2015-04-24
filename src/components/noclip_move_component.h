@@ -21,13 +21,17 @@
 #define _NOCLIP_MOVE_COMPONENT_H_
 
 
-#include "../main_state.h"
-#include "../game_object.h"
+#include "../component.h"
 
 
-class NoclipMoveComponent : public LogicComponent {
+class Scene;
+class GameObject;
+class Input;
+
+
+class NoclipMoveComponent : public Component {
 public:
-	NoclipMoveComponent(MainState* state, GameObject* obj);
+	NoclipMoveComponent(Scene* scene, GameObject* obj);
 
 	void update();
 
@@ -36,9 +40,6 @@ public:
 	Input* right;
 	Input* up;
 	Input* down;
-
-protected:
-	MainState* _state;
 
 };
 

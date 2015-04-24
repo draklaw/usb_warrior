@@ -21,13 +21,12 @@
 #define _WALL_COMPONENT_H_
 
 
-#include "../main_state.h"
-#include "../game_object.h"
+#include "../component.h"
 
 
-class WallComponent : public LogicComponent {
+class WallComponent : public Component {
 public:
-	WallComponent(MainState* state, GameObject* obj);
+	WallComponent(Scene* scene, GameObject* obj);
 
 	void update();
 	void updateDisabled();
@@ -36,8 +35,6 @@ protected:
 	void setTiles(bool enable);
 
 protected:
-	MainState* _state;
-
 	bool _prevEnabled;
 };
 

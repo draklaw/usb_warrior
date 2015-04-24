@@ -18,31 +18,21 @@
  */
 
 
-#include "sprite_component.h"
+#include "components/sprite_component.h"
 
 #include "game_object.h"
 
-LogicComponent::LogicComponent(GameObject* obj)
-    : _obj(obj),
-      _flags(COMP_ENABLED) {
-}
-
-
-void LogicComponent::updateDisabled() {
-}
-
-
-void LogicComponent::setEnabled(bool enabled) {
-	if(enabled) _flags |=  COMP_ENABLED;
-	else        _flags &= !COMP_ENABLED;
-}
-
 
 GameObject::GameObject(Scene* scene, const char* name)
-    : sprite(0),
-      sound(0),
+    : sprite         (nullptr),
+      playerControler(nullptr),
+	  noclipMove     (nullptr),
+	  move           (nullptr),
+	  bot            (nullptr),
+	  trigger        (nullptr),
+	  wall           (nullptr),
       _scene(scene),
-      _flags(OBJECT_ACTIVE),
+      _flags(ENABLED),
       _name(name) {
 }
 
@@ -55,16 +45,6 @@ void GameObject::computeBoxFromSprite(const Vec2& anchor, float scale) {
 }
 
 
-bool GameObject::hasComponent(unsigned id) const {
-	return id < _logicMap.size() && _logicMap[id];
-}
-
-
-LogicComponent* GameObject::getComponent(unsigned id) const {
-	return (id < _logicMap.size())? _logicMap[id]: nullptr;
-}
-
-
 Boxf GameObject::worldBox(unsigned updateIndex) const {
 	const GeometryComponent& g = geom(updateIndex);
 	return Boxf(g.pos + g.box.min(), g.pos + g.box.max());
@@ -72,20 +52,11 @@ Boxf GameObject::worldBox(unsigned updateIndex) const {
 
 
 void GameObject::setEnabled(bool active) {
-	if(active) _flags |=  OBJECT_ACTIVE;
-	else       _flags &= ~OBJECT_ACTIVE;
+	if(active) _flags |=  ENABLED;
+	else       _flags &= ~ENABLED;
 }
 
 
 void GameObject::_nextUpdate() {
 	_geom[1] = _geom[0];
-}
-
-
-void GameObject::_registerLogic(unsigned id, LogicComponent* lcomp) {
-	if (_logicMap.size() <= id) {
-		_logicMap.resize(id+1, nullptr);
-	}
-	
-	_logicMap[id] = lcomp;
 }

@@ -20,6 +20,10 @@
 
 #include "../game.h"
 
+#include "../input.h"
+#include "../game_object.h"
+
+#include "sprite_component.h"
 #include "move_component.h"
 
 #include "player_controler_component.h"
@@ -31,20 +35,23 @@
 class MainState;
 
 PlayerControlerComponent::PlayerControlerComponent(
-        MainState* state, GameObject* obj)
-    : LogicComponent(obj),
+        Scene* scene, GameObject* obj)
+    : Component(scene, obj),
+      left (nullptr),
+      right(nullptr),
+      jump (nullptr),
+      up   (nullptr),
+      down (nullptr),
       direction(P_FRONT),
-      _state(state),
       _animCounter(0) {
 }
 
 void PlayerControlerComponent::update() {
-	MoveComponent* ppm = static_cast<MoveComponent*>(
-					_obj->getComponent(MOVE_COMPONENT_ID));
+	MoveComponent* ppm = _obj->move;
 	assert(ppm);
 
-	bool goLeft  = left ->isPressed();
-	bool goRight = right->isPressed();
+	bool goLeft  = left  && left ->isPressed();
+	bool goRight = right && right->isPressed();
 	if(goLeft) {
 		direction = P_LEFT;
 		ppm->walk(LEFT);
@@ -54,12 +61,11 @@ void PlayerControlerComponent::update() {
 		ppm->walk(RIGHT);
 	}
 	
-	if(jump->isPressed())  ppm->jump();
-	if(up  ->isPressed())  ppm->climb(UP);
-	if(down->isPressed())  ppm->climb(DOWN);
+	if(jump && jump->isPressed())  ppm->jump();
+	if(up   && up  ->isPressed())  ppm->climb(UP);
+	if(down && down->isPressed())  ppm->climb(DOWN);
 
-	MoveComponent* pmc = static_cast<MoveComponent*>(_obj->getComponent(MOVE_COMPONENT_ID));
-	if (pmc->_ladder)
+	if (ppm->_ladder)
 		direction = P_BACK;
 
 	if(goLeft || goRight) {

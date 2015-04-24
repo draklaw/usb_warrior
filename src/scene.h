@@ -23,35 +23,85 @@
 
 #include <memory>
 #include <vector>
+#include <unordered_map>
+#include <map>
+#include <typeinfo>
+#include <typeindex>
 
+#include "utils.h"
+#include "game.h"
 #include "game_object.h"
-#include "sprite_component.h"
-#include "level.h"
+#include "component.h"
+//#include "level.h"
+
+//#include "components/sprite_component.h"
+//#include "components/player_controler_component.h"
+//#include "components/noclip_move_component.h"
+//#include "components/move_component.h"
+//#include "components/trigger_component.h"
+//#include "components/bot_component.h"
+//#include "components/wall_component.h"
 
 
-class Game;
+// A temporary constant used to pre-allocate memory
+#define SCENE_ARRAYS_MAX_SIZE 1024
 
-class LogicComponent;
+
+typedef std::unordered_map<std::string,std::string> EntityData;
+class MainState;
+class Level;
+class TileMap;
+
 
 class Scene {
 public:
-	Scene(Game* game);
+	typedef void (*Command)(Scene*, unsigned, const char**);
+
+public:
+	Scene(Game* game, MainState* state);
+
+	inline Game* game() { return _game; }
+	// Temporary / should not be usefull.
+	inline MainState* state() { return _state; }
+
+	// Temporary logic / to be replaced when object adress may change.
+	inline GameObject* get(GameObject* obj) { return obj; }
+	GameObject* getByName(const std::string& name);
 
 	GameObject* addObject(const char* name = nullptr);
 
-	void addSpriteComponent(GameObject* obj, const TileMap& tilemap,
-	                        unsigned index = 0);
-	void addLogicComponent(GameObject* obj, unsigned id, LogicComponent* lcomp);
+	/// \brief Construct a component of type T in-place, forwarding args to its
+	/// constructor.
+	template < typename T, typename... Args >
+	T* addComponent(GameObject* obj, Args... args);
+
+	/// \brief Returns an iterator range over the components of type T.
+	///
+	/// \todo Use iterators that skip destroyed elements.
+//	template < typename T >
+//	IterRange<T> iter();
+	template < typename T, typename F >
+	void forEachComponent(const F& func);
+
+	void loadLevel(const char* filename);
+
+	GameObject* createSpriteObject(const EntityData& data, const TileMap& tileMap);
+	GameObject* createPlayer      (const EntityData& data);
+	GameObject* createTrigger     (const EntityData& data);
+	GameObject* createBotStatic   (const EntityData& data);
+	GameObject* createWall        (const EntityData& data);
 
 	void clear();
 
 	inline bool debug() const { return _debugView; }
 	void setDebug(bool debug);
 
-	inline Level& level() { return _level; }
+	inline Level* level() { return _level.get(); }
+
+	void addCommand(const char* action, Command cmd);
+	void exec(const char* cmd);
 
 	void beginUpdate();
-	void updateLogic(unsigned id);
 
 	void beginRender();
 	void endRender();
@@ -61,30 +111,79 @@ public:
 	inline Game* game() const { return _game; }
 
 private:
-	typedef std::unique_ptr<GameObject>      ObjectPtr;
-	typedef std::vector<ObjectPtr>           ObjectVector;
+	// Note: even if these types are std::vector, they are intended to be
+	// of fixed size to avoid reallocation that would invalidate pointers.
+	//
+	// This is a temporary solution until we implement a container type that
+	// allocates objects by (big) blocks to ensure locality without
+	// invalidating pointers.
+	typedef std::vector<GameObject> ObjectArray;
 
-	typedef std::unique_ptr<SpriteComponent> SpritePtr;
-	typedef std::vector<SpritePtr>           SpriteVector;
+	// Map a type to an array (see above) of element of the specified type.
 
-	typedef std::unique_ptr<LogicComponent>  LogicPtr;
-	typedef std::vector<LogicPtr>            LogicVector;
-	typedef std::vector<LogicVector>         LogicMap;
+	// TODO: Implement this with dense storage (see commented code)
+	typedef std::unique_ptr<Component>      CompPtr;
+	typedef std::vector<CompPtr>            CompVector;
+	typedef std::unordered_map<std::type_index, CompVector>  CompMap;
+
+//	typedef std::vector<std::uint8_t> ByteVector;
+//	typedef std::unordered_map<std::type_index, ByteVector> CompArrayMap;
+
+	typedef std::unordered_map<std::string, GameObject*> NameObjectMap;
+	typedef std::unordered_map<std::string, Command>     CommandMap;
 
 private:
 	Game*         _game;
+	MainState*    _state;
 
 	bool          _debugView;
 
-	Level         _level;
+	std::unique_ptr<Level>  _level;
+
+	CommandMap    _commandMap;
 
 	std::size_t   _objectCounter;
-	ObjectVector  _objects;
-
-	SpriteVector  _sprites;
-	
-	LogicMap      _logicMap;
+	ObjectArray   _objects;
+	NameObjectMap _objectsByName;
+	CompMap       _compsMap;
 };
+
+
+//---------------------------------------------------------------------------//
+//---------------------------------------------------------------------------//
+
+
+template < typename T, typename... Args >
+T* Scene::addComponent(GameObject* obj, Args... args) {
+	if(obj->getComponent<T>()) {
+		_game->warning("Object \"", obj->name(), "\" has already a component of type \"",
+		               typeid(T).name(), "\". Do nothing.");
+		return obj->getComponent<T>();
+	}
+
+	// More magic
+	std::type_index compIndex(typeid(T));
+	auto& compsVector = _compsMap[compIndex];
+	compsVector.emplace_back(new T(this, obj, std::forward<Args>(args)...));
+	T* comp = static_cast<T*>(compsVector.back().get());
+	obj->_getComponent<T>() = comp;
+	return comp;
+}
+
+//template < typename T >
+//IterRange<T> Scene::iter() {
+//	auto& comps = _compsMap[std::type_info(typeid(T))];
+//	return IterRange<T>(comps.begin(), comps.end());
+//}
+
+
+template < typename T, typename F >
+inline void Scene::forEachComponent(const F& func) {
+	auto& comps = _compsMap[std::type_index(typeid(T))];
+	for(CompPtr& comp: comps) {
+		func(static_cast<T*>(comp.get()));
+	}
+}
 
 
 #endif

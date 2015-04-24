@@ -22,10 +22,9 @@
 
 #include <unordered_map>
 
-#include "image_manager.h"
-
 
 class Game;
+class Image;
 
 
 class Character {

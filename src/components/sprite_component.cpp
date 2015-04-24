@@ -21,19 +21,13 @@
 #include "sprite_component.h"
 
 
-SpriteComponent::SpriteComponent(GameObject* object, const TileMap& tilemap,
-                unsigned tileIndex)
-    : _object(object),
-      _flags(VISIBLE),
+SpriteComponent::SpriteComponent(Scene* scene, GameObject* object,
+                                 const TileMap& tilemap, unsigned tileIndex)
+    : Component(scene, object),
       _tilemap(tilemap),
       _tileIndex(tileIndex) {
 }
 
-
-void SpriteComponent::setVisible(bool visible) {
-	if(visible) _flags |=  VISIBLE;
-	else        _flags &= ~VISIBLE;
-}
 
 void SpriteComponent::setTilemap(const TileMap& tilemap) {
 	_tilemap = tilemap;

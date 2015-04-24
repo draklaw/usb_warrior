@@ -30,22 +30,29 @@
 
 #include <SDL2/SDL_image.h>
 
+#include "image_manager.h"
+#include "sound_player.h"
+#include "font_manager.h"
 #include "game_state.h"
 #include "sound_player.h"
+#include "main_state.h"
+#include "credit_state.h"
 
 #include "game.h"
 
 
 Game::Game(int /*argc*/, char** /*argv*/)
-    : mainState(this),
-      creditState(this),
-      _window(nullptr),
-      _renderer(nullptr),
-      _imageManager(this),
-	  _soundPlayer(this),
-	  _fontManager(this),
-      _state(nullptr),
-      _nextState(nullptr) {
+    : _window       (nullptr),
+      _renderer     (nullptr),
+      _imageManager (new ImageManager(this)),
+      _soundPlayer  (new SoundPlayer(this)),
+      _fontManager  (new FontManager(this)),
+      _mainState    (new MainState(this)),
+      _creditState  (new CreditState(this)),
+      _state        (nullptr),
+      _nextState    (creditState()) {
+	creditState()->image = "assets/titre.png";
+	creditState()->titleScreen = true;
 }
 
 
@@ -147,10 +154,7 @@ void Game::changeState(GameState* nextState) {
 }
 
 
-int Game::run(GameState* state) {
-	assert(state);
-
-	_nextState = state;
+int Game::run() {
 	while(_nextState) {
 		_state     = _nextState;
 		_nextState = nullptr;

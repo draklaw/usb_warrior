@@ -21,54 +21,45 @@
 #define _MAIN_STATE_H_
 
 
+#include <memory>
 #include <unordered_map>
 
 #include <Eigen/Geometry>
 
 #include <SDL2/SDL_render.h>
 
-#include "input.h"
-#include "image_manager.h"
-#include "sound_player.h"
-#include "font_manager.h"
-#include "loader.h"
+//#include "input.h"
+//#include "image_manager.h"
+//#include "sound_player.h"
+//#include "font_manager.h"
+//#include "loader.h"
 #include "game_state.h"
-#include "scene.h"
+//#include "level.h"
+//#include "scene.h"
+
+
+class GameObject;
+class Loader;
+class Scene;
+class InputManager;
+class Input;
 
 
 class MainState : public GameState {
 public:
-	typedef void (*Command)(MainState*, unsigned, const char**);
-
-public:
 	MainState(Game* game);
+	~MainState();
 
 	void update();
 	void frame(double interp);
 
 	inline GameObject* player()    { return _player; }
 	inline Input*      useInput()  { return _use; }
-	inline Loader&     getLoader() { return _loader; }
+	inline Loader*     loader()    { return _loader.get(); }
 
-	GameObject* getObject(const std::string& name);
+	inline InputManager& input() { return *_input; }
 
-	void loadLevel(const char* filename);
-	void resetLevel();
-
-	GameObject* createSpriteObject(const EntityData& data, const TileMap& tileMap);
-	GameObject* createPlayer      (const EntityData& data);
-	GameObject* createTrigger     (const EntityData& data);
-	GameObject* createBotStatic   (const EntityData& data);
-	GameObject* createWall        (const EntityData& data);
-
-	void addCommand(const char* action, Command cmd);
-	void exec(const char* cmd);
-
-	inline InputManager& input() { return _input; }
-
-protected:
-	typedef std::unordered_map<std::string, GameObject*> ObjectMap;
-	typedef std::unordered_map<std::string, Command>     CommandMap;
+	void loadLevelNow(const char*);
 
 protected:
 	void initialize();
@@ -78,12 +69,12 @@ protected:
 	void stop();
 
 protected:
-	Scene         _scene;
+	std::unique_ptr<Scene>   _scene;
 
-	Loader        _loader;
+	std::unique_ptr<Loader>  _loader;
 
-	CommandMap    _commandMap;
-	std::string   _nextLevel;
+	std::string   _level;
+	bool          _reload;
 
 public:
 	bool          hasDeactivateKey;
@@ -93,8 +84,9 @@ public:
 
 protected:
 	// Inputs
-	InputManager  _input;
+	std::unique_ptr<InputManager>  _input;
 
+public:
 	Input*        _left;
 	Input*        _right;
 	Input*        _jump;
@@ -102,19 +94,12 @@ protected:
 	Input*        _down;
 	Input*        _use;
 
+private:
 	Input*        _debug0;
 	Input*        _debug1;
 
 	// Objects
-	ObjectMap     _objects;
 	GameObject*   _player;
-	
-	// TileMaps
-	TileMap       _playerTileMap;
-	TileMap       _exitTileMap;
-
-	// Other
-	Font          _font;
 };
 
 

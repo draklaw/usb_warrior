@@ -21,14 +21,15 @@
 #define _UW_ACTIONS_H_
 
 
-class MainState;
+class Scene;
 
-void loadLevelAction(MainState* state, unsigned argc, const char** argv);
-void echoAction(MainState* state, unsigned argc, const char** argv);
-void enableAction(MainState* state, unsigned argc, const char** argv);
-void disableAction(MainState* state, unsigned argc, const char** argv);
-void addItemAction(MainState* state, unsigned argc, const char** argv);
-void setStateAction(MainState* state, unsigned argc, const char** argv);
+
+void loadLevelAction(Scene* scene, unsigned argc, const char** argv);
+void echoAction     (Scene* scene, unsigned argc, const char** argv);
+void enableAction   (Scene* scene, unsigned argc, const char** argv);
+void disableAction  (Scene* scene, unsigned argc, const char** argv);
+void addItemAction  (Scene* scene, unsigned argc, const char** argv);
+void setStateAction (Scene* scene, unsigned argc, const char** argv);
 
 
 #endif

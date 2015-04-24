@@ -21,14 +21,18 @@
 #define _MOVE_COMPONENT_H_
 
 
-#include "../game_object.h"
 #include "../math.h"
 #include "../utils.h"
+#include "../component.h"
 
 
-class MoveComponent : public LogicComponent {
+class GameObject;
+class Scene;
+
+
+class MoveComponent : public Component {
 public:
-	MoveComponent(GameObject* obj);
+	MoveComponent(Scene* scene, GameObject* obj);
 	
 	void update();
 	
@@ -46,15 +50,13 @@ public:
 	bool _ladder;
 
 protected:
-	GeometryComponent* _puppet;
-	
-	Vec2 _mSpeed;
-	unsigned _momentum;
-	unsigned _airTime;
-	Direction _walking;
-	Direction _climbing;
-	bool _running;
-	bool _jumping;
+	Vec2       _mSpeed;
+	unsigned   _momentum;
+	unsigned   _airTime;
+	Direction  _walking;
+	Direction  _climbing;
+	bool       _running;
+	bool       _jumping;
 };
 
 

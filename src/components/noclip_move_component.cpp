@@ -18,7 +18,8 @@
  */
 
 
-#include "../game.h"
+#include "../input.h"
+#include "../game_object.h"
 
 #include "noclip_move_component.h"
 
@@ -28,15 +29,20 @@
 
 class MainState;
 
-NoclipMoveComponent::NoclipMoveComponent(MainState* state, GameObject* obj)
-    : LogicComponent(obj),
-      _state(state) {
+
+NoclipMoveComponent::NoclipMoveComponent(Scene* scene, GameObject* obj)
+    : Component(scene, obj),
+      left (nullptr),
+      right(nullptr),
+      up   (nullptr),
+      down (nullptr) {
 }
+
 
 void NoclipMoveComponent::update() {
 	Vec2& pos = _obj->geom().pos;
-	if(left ->isPressed())  pos.x() -= NOCLIP_SPEED;
-	if(right->isPressed())  pos.x() += NOCLIP_SPEED;
-	if(up   ->isPressed())  pos.y() -= NOCLIP_SPEED;
-	if(down ->isPressed())  pos.y() += NOCLIP_SPEED;
+	if(left  && left ->isPressed())  pos.x() -= NOCLIP_SPEED;
+	if(right && right->isPressed())  pos.x() += NOCLIP_SPEED;
+	if(up    && up   ->isPressed())  pos.y() -= NOCLIP_SPEED;
+	if(down  && down ->isPressed())  pos.y() += NOCLIP_SPEED;
 }

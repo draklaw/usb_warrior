@@ -34,49 +34,13 @@ class GameObject;
 class Scene;
 
 class SpriteComponent;
-class SoundComponent;
+class PlayerControlerComponent;
+class NoclipMoveComponent;
+class MoveComponent;
+class BotComponent;
+class TriggerComponent;
+class WallComponent;
 
-class GameObject;
-
-enum {
-	PLAYER_CONTROLLER_COMPONENT_ID,
-	NOCLIP_MOVE_COMPONENT_ID,
-	MOVE_COMPONENT_ID,
-	BOT_COMPONENT_ID,
-	TRIGGER_COMPONENT_ID,
-	WALL_COMPONENT_ID,
-
-	// Must be the last.
-	COMPONENT_COUNT
-};
-
-
-enum {
-	COMP_ENABLED = 0x01
-};
-
-
-class LogicComponent {
-public:
-	LogicComponent(GameObject* obj);
-	
-	virtual void update() = 0;
-	virtual void updateDisabled();
-
-	GameObject* object() const { return _obj; }
-	bool isEnabled() const { return _flags & COMP_ENABLED; }
-	void setEnabled(bool enabled);
-
-protected:
-	GameObject* _obj;
-	unsigned    _flags;
-};
-
-
-enum {
-	OBJECT_DESTROYED = 0x01,
-	OBJECT_ACTIVE    = 0x02
-};
 
 enum {
 	CURR_UP = 0,
@@ -86,22 +50,38 @@ enum {
 
 class GameObject {
 public:
+	enum {
+		DESTROYED = 0x01,
+		ENABLED   = 0x02
+	};
+
+public:
 	GameObject(Scene* scene, const char* name);
 
 	inline       Scene*       scene() const { return _scene; }
 	inline const std::string& name () const { return _name;  }
+
+	template < typename T >
+	T* getComponent() const {
+		// One of the only correct use of const_cast. Good only because we
+		// know that the non-const verison of getComponent does not modify
+		// this.
+		return const_cast<GameObject*>(this)->_getComponent<T>();
+	}
+
+	template < typename T >
+	T*& _getComponent();
 
 	inline       GeometryComponent& geom(unsigned updateIndex = CURR_UP)
 	{ assert(updateIndex < 2u); return _geom[updateIndex]; }
 	inline const GeometryComponent& geom(unsigned updateIndex = CURR_UP) const
 	{ assert(updateIndex < 2u); return _geom[updateIndex]; }
 
+	// TODO: move to sprite component
 	void computeBoxFromSprite(const Vec2& anchor = Vec2::Zero(), float scale=1.f);
 
-	inline bool isDestroyed() const { return _flags & OBJECT_DESTROYED; }
-	inline bool isEnabled()    const { return _flags & OBJECT_ACTIVE; }
-	bool hasComponent(unsigned id) const;
-	LogicComponent* getComponent(unsigned id) const;
+	inline bool isDestroyed() const { return _flags & DESTROYED; }
+	inline bool isEnabled()   const { return _flags & ENABLED; }
 
 	inline Vec2 posInterp(double interp) const
 	{ return lerp<Vec2>(interp, _geom[PREV_UP].pos, _geom[CURR_UP].pos); }
@@ -125,15 +105,16 @@ public:
 	void setEnabled(bool active);
 	
 	void _nextUpdate();
-	void _registerLogic(unsigned id, LogicComponent* lcomp);
 	inline void _setFlags(unsigned flags) { _flags = flags; }
 
 public:
-	SpriteComponent*   sprite;
-	SoundComponent*    sound;
-
-private:
-	typedef std::vector<LogicComponent*> LogicMap;
+	SpriteComponent*          sprite;
+	PlayerControlerComponent* playerControler;
+	NoclipMoveComponent*      noclipMove;
+	MoveComponent*            move;
+	BotComponent*             bot;
+	TriggerComponent*         trigger;
+	WallComponent*            wall;
 
 private:
 	Scene*             _scene;
@@ -142,8 +123,43 @@ private:
 	std::string        _name;
 
 	GeometryComponent  _geom[2];
-	LogicMap           _logicMap;
 };
+
+
+template <>
+inline SpriteComponent*& GameObject::_getComponent<SpriteComponent>() {
+	return sprite;
+}
+
+template <>
+inline PlayerControlerComponent*& GameObject::_getComponent<PlayerControlerComponent>() {
+	return playerControler;
+}
+
+template <>
+inline NoclipMoveComponent*& GameObject::_getComponent<NoclipMoveComponent>() {
+	return noclipMove;
+}
+
+template <>
+inline MoveComponent*& GameObject::_getComponent<MoveComponent>() {
+	return move;
+}
+
+template <>
+inline BotComponent*& GameObject::_getComponent<BotComponent>() {
+	return bot;
+}
+
+template <>
+inline TriggerComponent*& GameObject::_getComponent<TriggerComponent>() {
+	return trigger;
+}
+
+template <>
+inline WallComponent*& GameObject::_getComponent<WallComponent>() {
+	return wall;
+}
 
 
 #endif

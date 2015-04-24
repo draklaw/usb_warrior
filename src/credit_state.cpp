@@ -20,11 +20,14 @@
 
 #include <SDL2/SDL_render.h>
 #include <SDL2/SDL_rect.h>
+#include <SDL2/SDL_keyboard.h>
 
 #include "game.h"
+#include "image_manager.h"
+#include "sound_player.h"
+#include "main_state.h"
 
 #include "credit_state.h"
-
 
 CreditState::CreditState(Game* game)
     : GameState(game, "Credits", durationFromSeconds(1)) {
@@ -40,7 +43,7 @@ void CreditState::frame(double /*interp*/) {
 		_game->quit();
 	}
 	if(titleScreen && SDL_GetKeyboardState(nullptr)[SDL_SCANCODE_SPACE]) {
-		_game->changeState(&_game->mainState);
+		_game->changeState(_game->mainState());
 		quit();
 	}
 
@@ -50,7 +53,7 @@ void CreditState::frame(double /*interp*/) {
 
 void CreditState::initialize() {
 	_splash = _game->images()->loadImage(image);
-	_music = _game->sounds()->loadMusic("assets/truc.wav");
+	_music  = _game->sounds()->loadMusic("assets/truc.wav");
 }
 
 void CreditState::shutdown() {

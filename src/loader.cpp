@@ -19,6 +19,8 @@
 
 #include "game.h"
 #include "image_manager.h"
+#include "sound_player.h"
+#include "font_manager.h"
 
 #include "loader.h"
 

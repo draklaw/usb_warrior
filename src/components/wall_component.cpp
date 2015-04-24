@@ -19,6 +19,9 @@
 
 
 #include "../game.h"
+#include "../scene.h"
+#include "../level.h"
+#include "../main_state.h"
 
 #include "wall_component.h"
 
@@ -26,9 +29,8 @@
 
 class MainState;
 
-WallComponent::WallComponent(MainState* state, GameObject* obj)
-    : LogicComponent(obj),
-      _state(state),
+WallComponent::WallComponent(Scene* scene, GameObject* obj)
+    : Component(scene, obj),
       _prevEnabled(false) {
 }
 
@@ -49,17 +51,17 @@ void WallComponent::updateDisabled() {
 }
 
 void WallComponent::setTiles(bool enable) {
-	Level& level = _obj->scene()->level();
-	Vec2 tileSize = level.tileMap().tileSize().template cast<float>();
+	Level* level = _scene->level();
+	Vec2 tileSize = level->tileMap().tileSize().template cast<float>();
 	Vec2i first = ((_obj->geom().pos.array() / tileSize.array()).matrix() + Vec2(.5, .5))
 					.template cast<int>();
 	int height = _obj->geom().box.sizes().y() / tileSize.y() + .5;
 
-	_state->game()->log("setTiles(", enable, "): ", first.transpose(), ", ", height);
+	_scene->state()->game()->log("setTiles(", enable, "): ", first.transpose(), ", ", height);
 
 	Tile tile = enable? 774: 655;
-	for(unsigned i = 0; i < height; ++i) {
-		level.setTile(first.x(), first.y() + i, 0, tile);
+	for(int i = 0; i < height; ++i) {
+		level->setTile(first.x(), first.y() + i, 0, tile);
 		if(tile == 774) tile = 838;
 	}
 }

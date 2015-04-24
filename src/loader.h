@@ -23,12 +23,15 @@
 #include <string>
 #include <unordered_map>
 
-#include "image_manager.h"
-#include "sound_player.h"
 #include "font_manager.h"
 
 
 class Game;
+
+class Image;
+class Sound;
+class Music;
+class FontImpl;
 
 
 class Loader {

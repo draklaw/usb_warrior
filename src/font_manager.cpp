@@ -20,6 +20,7 @@
 #include <cstdio>
 
 #include "game.h"
+#include "image_manager.h"
 
 #include "font_manager.h"
 

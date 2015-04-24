@@ -22,18 +22,11 @@
 #include <iostream>
 
 #include "game.h"
-#include "main_state.h"
-#include "test_state.h"
 
 
 int main(int argc, char** argv) {
 	Game game(argc, argv);
 	game.initialize();
 
-//	MainState state(&game);
-//	TestState state(&game);
-
-	game.creditState.image = "assets/titre.png";
-	game.creditState.titleScreen = true;
-	return game.run(&game.creditState);
+	return game.run();
 }

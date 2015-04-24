@@ -23,12 +23,43 @@
 
 #define SDL_TRY(_code) do { if(_code) { _game->sdlCrash(__FILE__); } } while(false)
 
+
 enum Direction {
 	UP    = 0x01,
 	RIGHT = 0x02,
 	DOWN  = 0x04,
 	LEFT  = 0x08
 };
+
+
+/// \brief A generic iterator range that can be used with C++11 for each loop.
+template < typename T >
+struct IterRange {
+	inline IterRange(T begin, T end) : _begin(begin), _end(end) {}
+	inline T begin() { return _begin; }
+	inline T end()   { return _end;   }
+private:
+	T _begin, _end;
+};
+
+
+// TODO: Implement this.
+///// \brief A vector-like structure that allocates memory by blocks and
+///// guaranty that pointers to elements remain valid.
+/////
+///// Can
+//template < typename _Value >
+//class BlocVector {
+//public:
+//	typedef _Value Value;
+
+//public:
+//	BlocVector(std::size_t blockSize);
+
+
+
+//};
+
 
 template < typename T >
 T lerp(double f, const T& a, const T& b) {

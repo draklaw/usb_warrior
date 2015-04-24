@@ -21,21 +21,21 @@
 #define _GAME_H_
 
 #include <iostream>
+#include <memory>
 
 #include <SDL2/SDL_video.h>
 #include <SDL2/SDL_render.h>
 
-
 #include "math.h"
-#include "image_manager.h"
-#include "sound_player.h"
-#include "font_manager.h"
-#include "main_state.h"
-#include "credit_state.h"
 
+
+class ImageManager;
+class SoundPlayer;
+class FontManager;
 
 class GameState;
-class SoundPlayer;
+class MainState;
+class CreditState;
 
 
 class Game {
@@ -49,17 +49,20 @@ public:
 	void dispatchPendingEvents();
 
 	void changeState(GameState* nextState);
-	int run(GameState* state);
+	int run();
 	void quit();
 
 	Vec2i screenSize() const;
 	bool  fullscreen() const;
-	void setFullscreen(bool enable);
+	void  setFullscreen(bool enable);
 
-	inline SDL_Renderer* renderer() const { return _renderer; }
-	inline ImageManager* images() { return &_imageManager; }
-	inline SoundPlayer* sounds() { return &_soundPlayer; }
-	inline FontManager* fonts() { return &_fontManager; }
+	inline SDL_Renderer* renderer()  const { return _renderer; }
+	inline ImageManager* images()          { return _imageManager.get(); }
+	inline SoundPlayer*  sounds()          { return _soundPlayer.get(); }
+	inline FontManager*  fonts()           { return _fontManager.get(); }
+
+	inline MainState*    mainState()       { return _mainState.get(); }
+	inline CreditState*  creditState()     { return _creditState.get(); }
 
 	int getRefreshRate() const;
 
@@ -107,17 +110,16 @@ public:
 	inline void writenr() {
 	}
 
-public:
-	MainState mainState;
-	CreditState creditState;
-
 private:
 	SDL_Window*    _window;
 	SDL_Renderer*  _renderer;
 
-	ImageManager   _imageManager;
-	SoundPlayer    _soundPlayer;
-	FontManager    _fontManager;
+	std::unique_ptr<ImageManager>   _imageManager;
+	std::unique_ptr<SoundPlayer>    _soundPlayer;
+	std::unique_ptr<FontManager>    _fontManager;
+
+	std::unique_ptr<MainState>      _mainState;
+	std::unique_ptr<CreditState>    _creditState;
 
 	GameState*     _state;
 	GameState*     _nextState;

@@ -21,12 +21,13 @@
 #define _UW_PLAYER_CONTROLER_COMPONENT_H_
 
 
-#include "../main_state.h"
-#include "../input.h"
-#include "../game_object.h"
+#include "../component.h"
 
 
-class PlayerControlerComponent : public LogicComponent {
+class Input;
+
+
+class PlayerControlerComponent : public Component {
 public:
 	enum {
 		P_FRONT,
@@ -36,7 +37,7 @@ public:
 	};
 
 public:
-	PlayerControlerComponent(MainState* state, GameObject* obj);
+	PlayerControlerComponent(Scene* scene, GameObject* obj);
 
 	void update();
 
@@ -49,8 +50,6 @@ public:
 	int    direction;
 
 protected:
-	MainState* _state;
-
 	int _animCounter;
 };
 

@@ -17,49 +17,56 @@
  *  along with usb_warrior.  If not, see <http://www.gnu.org/licenses/>.
  */
 
- #include <cstdio>
+#include <cstdio>
 
 #include "../game.h"
+#include "../main_state.h"
+#include "../game_object.h"
+#include "../scene.h"
+#include "../input.h"
+
+#include "sprite_component.h"
 
 #include "trigger_component.h"
 
 
-class MainState;
-
-TriggerComponent::TriggerComponent(MainState* state, GameObject* obj)
-    : LogicComponent(obj),
-      _state(state) {
+TriggerComponent::TriggerComponent(Scene* scene, GameObject* obj)
+    : Component(scene, obj) {
 }
+
 
 void TriggerComponent::update() {
 	_obj->sprite->setTileIndex(
 	            tileEnable + (_animCounter / animSpeed) % animCount);
 
-	Boxf pBox = _state->player()->worldBox();
+	GameObject* tgtObj = _scene->getByName(target);
+	if(!tgtObj) return;
+	Boxf pBox = tgtObj->worldBox();
 	Boxf wBox = _obj->worldBox();
 	if(!hitPoint.empty()) {
 		Vec2 point = wBox.min() + pointCoords;
 		if(pBox.contains(point)) {
-			_state->exec(hitPoint.c_str());
+			_scene->exec(hitPoint.c_str());
 		}
 	}
 
 	if(!hit.empty()) {
 		if(!pBox.intersection(wBox).isEmpty()) {
-			_state->exec(hit.c_str());
+			_scene->exec(hit.c_str());
 		}
 	}
 
-	bool doUse = _state->useInput()->justPressed();
+	bool doUse = _scene->state()->useInput()->justPressed();
 	if(!use.empty() && doUse) {
 		Vec2 usePoint = pBox.center();
 		if(wBox.contains(usePoint)) {
-			_state->exec(use.c_str());
+			_scene->exec(use.c_str());
 		}
 	}
 
 	++_animCounter;
 }
+
 
 void TriggerComponent::updateDisabled() {
 	_obj->sprite->setTileIndex(tileDisable);

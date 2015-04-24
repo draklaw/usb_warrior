@@ -21,60 +21,195 @@
 #include <sstream>
 
 #include "utils.h"
+#include "level.h"
 #include "game.h"
 #include "game_object.h"
+#include "loader.h"
+#include "main_state.h"
+
+#include "components/sprite_component.h"
+#include "components/player_controler_component.h"
+#include "components/noclip_move_component.h"
+#include "components/move_component.h"
+#include "components/trigger_component.h"
+#include "components/bot_component.h"
+#include "components/wall_component.h"
 
 #include "scene.h"
 
 
-Scene::Scene(Game* game)
+Scene::Scene(Game* game, MainState* state)
     : _game(game),
+      _state(state),
       _debugView(false),
-      _level(this),
+      _level(new Level(this)),
       _objectCounter(0),
       _objects() {
+	_objects.reserve(SCENE_ARRAYS_MAX_SIZE);
 }
 
+
+GameObject* Scene::getByName(const std::string& name) {
+	auto it = _objectsByName.find(name);
+	return (it == _objectsByName.end())? nullptr: it->second;
+}
+
+
 GameObject* Scene::addObject(const char* name) {
+	// TODO: Remove this when we lift the limitation.
+	if(_objects.size() == _objects.capacity()) {
+		_game->error("Failed to add object: size limitation reached");
+		return nullptr;
+	}
+
 	if(!name) {
 		std::ostringstream out;
 		out << "object_" << _objectCounter;
 		return addObject(out.str().c_str());
 	} else {
-		_game->log("Create object \"", name, "\"");
-		_objects.emplace_back(new GameObject(this, name));
+//		_game->log("Create object \"", name, "\"");
+		_objects.emplace_back(this, name);
 		++_objectCounter;
-		return _objects.back().get();
+		return &_objects.back();
 	}
 }
 
-void Scene::addSpriteComponent(GameObject* obj, const TileMap& tilemap,
-                               unsigned index) {
-	if(obj->sprite) {
-		_game->warning("Object \"", obj->name(), "\" has already a SpriteComponent. Do nothing.");
-		return;
+
+void Scene::loadLevel(const char* filename) {
+	clear();
+	_level->loadFromJsonFile(filename);
+
+	for(Level::EntityIterator entity = _level->entityBegin();
+	    entity != _level->entityEnd(); ++entity) {
+
+		GameObject* obj = nullptr;
+		const std::string& type = entity->at("type");
+		_game->log("create ", entity->at("name"));
+		if     (type == "player")     obj = createPlayer   (*entity);
+		else if(type == "trigger")    obj = createTrigger  (*entity);
+		else if(type == "bot_static") obj = createBotStatic(*entity);
+		else if(type == "wall")       obj = createWall     (*entity);
+
+		if(obj) {
+			auto ri = _objectsByName.emplace(obj->name(), obj);
+			if(!ri.second) {
+				_game->warning("Multiple objects with name \"", obj->name(), "\"");
+			}
+		} else {
+			_game->warning("Failed to create object \"", entity->at("name"), "\" of type \"", type, "\"");
+		}
 	}
-	_sprites.emplace_back(new SpriteComponent(obj, tilemap, index));
-	obj->sprite = _sprites.back().get();
 }
 
 
-void Scene::addLogicComponent(GameObject* obj, unsigned id, LogicComponent* lcomp) {
-	if (_logicMap.size() <= id) {
-		_logicMap.resize(id+1);
-	}
-	
-	_logicMap[id].emplace_back(lcomp);
-	obj->_registerLogic(id, lcomp);
+GameObject* Scene::createSpriteObject(const EntityData& data,
+                                      const TileMap& tileMap) {
+	const std::string& name = getString(data, "name", "");
+	GameObject* obj = addObject(name.empty()? nullptr: name.c_str());
+	addComponent<SpriteComponent>(obj, tileMap, 0);
+
+	obj->computeBoxFromSprite(Vec2(.5, .5));
+	float x = getInt(data, "x",      0);
+	float y = getInt(data, "y",      0);
+	float w = getInt(data, "width",  0);
+	float h = getInt(data, "height", 0);
+	obj->geom().pos = Vec2(x + w/2, y + h/2);
+
+//	for(auto& kv: data) {
+//		_game->log("  ", kv.first, ": ", kv.second);
+//	}
+
+	return obj;
+}
+
+
+GameObject* Scene::createPlayer(const EntityData& data) {
+	TileMap tileMap(_state->loader()->getImage("assets/toutAMI.png"), 32, 48);
+	GameObject* obj = createSpriteObject(data, tileMap);
+
+	auto pcc = addComponent<PlayerControlerComponent>(obj);
+	pcc->left  = _state->_left;
+	pcc->right = _state->_right;
+	pcc->up    = _state->_up;
+	pcc->down  = _state->_down;
+	pcc->jump  = _state->_jump;
+
+	addComponent<MoveComponent>(obj);
+
+	auto nmc = addComponent<NoclipMoveComponent>(obj);
+	nmc->left  = _state->_left;
+	nmc->right = _state->_right;
+	nmc->up    = _state->_up;
+	nmc->down  = _state->_down;
+	nmc->setEnabled(false);
+
+	return obj;
+}
+
+
+GameObject* Scene::createTrigger(const EntityData& data) {
+	const Image* img = _state->loader()->getImage(getString(data, "sprite", ""));
+	int tileX = getInt(data, "tiles_x", 2);
+	int tileY = getInt(data, "tiles_y", 1);
+
+	TileMap tileMap(img, img->size.x() / tileX, img->size.y() / tileY);
+	GameObject* obj = createSpriteObject(data, tileMap);
+
+	auto ec = addComponent<TriggerComponent>(obj);
+	ec->setEnabled(getInt(data, "enabled", true));
+	ec->target          = "player";
+	ec->tileEnable      = getInt   (data, "tile_enable", 0);
+	ec->tileDisable     = getInt   (data, "tile_disable", 1);
+	ec->animCount       = getInt   (data, "anim_count", 1);
+	ec->animSpeed       = getInt   (data, "anim_speed", 60);
+	ec->hitPoint        = getString(data, "hit_point", "");
+	ec->pointCoords.x() = getInt   (data, "point_x", 0);
+	ec->pointCoords.y() = getInt   (data, "point_y", 0);
+	ec->hit             = getString(data, "hit", "");
+	ec->use             = getString(data, "use", "");
+
+	return obj;
+}
+
+
+GameObject* Scene::createBotStatic(const EntityData& data) {
+	const Image* img = _state->loader()->getImage("assets/toutrobot.png");
+	GameObject* obj = createSpriteObject(data, TileMap(img, 32, 48));
+
+	auto bc = addComponent<BotComponent>(obj);
+	bc->direction   = getInt   (data, "direction", 0);
+	bc->fov         = getInt   (data, "fov", 30);
+	bc->seePlayer   = getString(data, "see_player", "");
+	bc->hackDisable = getString(data, "hack_disable", "");
+
+	return obj;
+}
+
+
+GameObject* Scene::createWall(const EntityData& data) {
+	const std::string& name = getString(data, "name", "");
+	GameObject* obj = addObject(name.empty()? nullptr: name.c_str());
+
+	float x = getInt(data, "x",      0);
+	float y = getInt(data, "y",      0);
+	float w = getInt(data, "width",  0);
+	float h = getInt(data, "height", 0);
+	obj->geom().pos = Vec2(x, y);
+	obj->geom().box = Boxf(Vec2(0, 0), Vec2(w, h));
+
+	auto wc = addComponent<WallComponent>(obj);
+	wc->setEnabled(getInt(data, "enabled", true));
+
+	return obj;
 }
 
 
 void Scene::clear() {
 	_objectCounter = 0;
 	_objects.clear();
-	_sprites.clear();
-	for(auto& logics: _logicMap) {
-		logics.clear();
+	_objectsByName.clear();
+	for(auto& typeComps: _compsMap) {
+		typeComps.second.clear();
 	}
 }
 
@@ -84,21 +219,54 @@ void Scene::setDebug(bool debug) {
 }
 
 
-void Scene::beginUpdate() {
-	for(ObjectPtr& obj: _objects) {
-		obj->_nextUpdate();
+void Scene::addCommand(const char* action, Command cmd) {
+	_commandMap.emplace(action, cmd);
+}
+
+
+void Scene::exec(const char* cmd) {
+//	_game->log("exec: ", cmd);
+	std::string line(cmd);
+
+	auto c   = line.begin();
+	auto end = line.end();
+
+	std::vector<const char*> argv;
+	while (c != end) {
+		argv.clear();
+		while(c != end && *c != ';') {
+			while(c != end && *c != ';' && std::isspace(*c)) ++c;
+			if(c == end || *c == ';') break;
+			argv.push_back(&*c);
+			while(c != end && *c != ';' && !std::isspace(*c)) ++c;
+			if(c == end || *c == ';') break;
+			if(c != end) *(c++) = '\0';
+		}
+		if(c != end) *(c++) = '\0';
+		while(c != end && *c == ';' && std::isspace(*c)) ++c;
+
+		if(argv.size() == 0) continue;
+
+		_game->lognr("exec:");
+		for(unsigned i = 0; i < argv.size(); ++i) {
+			_game->lognr(" ", argv[i]);
+		}
+		_game->log();
+
+		auto pair = _commandMap.find(argv[0]);
+		if(pair == _commandMap.end()) {
+			_game->warning("Action not found: ", argv[0]);
+			continue;
+		}
+
+		pair->second(this, argv.size(), argv.data());
 	}
 }
 
 
-void Scene::updateLogic(unsigned id) {
-	if(_logicMap.size() <= id) return;
-	for (LogicPtr& lcomp: _logicMap[id]) {
-		if(lcomp->object()->isEnabled() && lcomp->isEnabled()) {
-			lcomp->update();
-		} else {
-			lcomp->updateDisabled();
-		}
+void Scene::beginUpdate() {
+	for(GameObject& obj: _objects) {
+		obj._nextUpdate();
 	}
 }
 
@@ -124,13 +292,16 @@ void Scene::render(double interp, Boxf viewBox, Boxf screenBox) {
 //	_game->log("screen: ", screenBox.min().transpose(), ", ", screenBox.sizes().transpose());
 //	_game->log("scale: ", scale.transpose());
 
-	for(SpritePtr& sprite: _sprites) {
+	auto& spritesComps = _compsMap[std::type_index(typeid(SpriteComponent))];
+//	for(SpritePtr& sprite: iter<SpriteComponent>()) {
+	for(CompPtr& comp: spritesComps) {
+		SpriteComponent* sprite = static_cast<SpriteComponent*>(comp.get());
 		unsigned index = std::min(sprite->tileIndex(), sprite->tilemap().nTiles() - 1);
 		GameObject* obj = sprite->object();
-		if(!sprite->isVisible() || !obj || !obj->isEnabled() || obj->isDestroyed()) {
+		if(!sprite->isEnabled() || !obj || !obj->isEnabled() || obj->isDestroyed()) {
 			if(!obj || obj->isDestroyed()) {
 				_game->log("Try to display a sprite linked to an invalid/destroyed game object");
-				sprite->setVisible(false);
+				sprite->setEnabled(false);
 			}
 			continue;
 		}
@@ -168,14 +339,14 @@ void Scene::renderLevelLayer(unsigned layer, Boxf viewBox, Boxf screenBox) {
 
 	Vec2 scale = screenBox.sizes().array() / viewBox.sizes().array();
 
-	Vec2 lvlTileSize = _level.tileMap().tileSize().template cast<float>().array()
+	Vec2 lvlTileSize = _level->tileMap().tileSize().template cast<float>().array()
 	                 * scale.array();
-	Boxi boundBox = _level.tileBounds(viewBox);
+	Boxi boundBox = _level->tileBounds(viewBox);
 
 	SDL_Rect destRect;
 	for(int y = boundBox.min().y(); y <= boundBox.max().y(); ++y) {
 		for(int x = boundBox.min().x(); x <= boundBox.max().x(); ++x) {
-			Tile tile = _level.getTile(x, y, layer);
+			Tile tile = _level->getTile(x, y, layer);
 			if(tile < 0) continue;
 
 			// It is important to compute both corners the same way to avoid
@@ -192,12 +363,12 @@ void Scene::renderLevelLayer(unsigned layer, Boxf viewBox, Boxf screenBox) {
 			destRect.w = br.x() - tl.x() + epsilon;
 			destRect.h = br.y() - tl.y() + epsilon;
 
-			SDL_Rect tileRect = _level.tileMap().tileRect(tile);
+			SDL_Rect tileRect = _level->tileMap().tileRect(tile);
 			SDL_TRY(SDL_RenderCopy(_game->renderer(),
-								   _level.tileMap().image()->texture,
+								   _level->tileMap().image()->texture,
 								   &tileRect, &destRect));
 
-			if(_debugView && _level.tileCollision(tile)) {
+			if(_debugView && _level->tileCollision(tile)) {
 				SDL_RenderFillRect(_game->renderer(), &destRect);
 			}
 		}

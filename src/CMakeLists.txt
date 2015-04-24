@@ -37,7 +37,7 @@ add_executable(usb_warrior
 	game.cpp
 	game_state.cpp
 	main_state.cpp
-	test_state.cpp
+#	test_state.cpp
 	credit_state.cpp
 
 	input.cpp
@@ -47,11 +47,12 @@ add_executable(usb_warrior
 	loader.cpp
 
 	game_object.cpp
-	sprite_component.cpp
+	component.cpp
 	level.cpp
 	scene.cpp
 	actions.cpp
 
+	components/sprite_component.cpp
 	components/player_controler_component.cpp
 	components/noclip_move_component.cpp
 	components/move_component.cpp
