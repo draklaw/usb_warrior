@@ -17,8 +17,8 @@
  *  along with usb_warrior.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _IMAGE_MANAGER_H_
-#define _IMAGE_MANAGER_H_
+#ifndef _UW_IMAGE_MANAGER_H_
+#define _UW_IMAGE_MANAGER_H_
 
 
 #include <unordered_map>

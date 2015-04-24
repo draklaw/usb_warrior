@@ -17,8 +17,8 @@
  *  along with usb_warrior.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _MOVE_COMPONENT_H_
-#define _MOVE_COMPONENT_H_
+#ifndef _UW_MOVE_COMPONENT_H_
+#define _UW_MOVE_COMPONENT_H_
 
 
 #include "../math.h"

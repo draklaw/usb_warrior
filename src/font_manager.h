@@ -16,8 +16,8 @@
  *  along with usb_warrior.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _FONT_H_
-#define _FONT_H_
+#ifndef _UW_FONT_H_
+#define _UW_FONT_H_
 
 
 #include <unordered_map>

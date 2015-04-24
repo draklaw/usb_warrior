@@ -17,8 +17,8 @@
  *  along with usb_warrior.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _BOT_COMPONENT_H_
-#define _BOT_COMPONENT_H_
+#ifndef _UW_BOT_COMPONENT_H_
+#define _UW_BOT_COMPONENT_H_
 
 
 #include "../component.h"

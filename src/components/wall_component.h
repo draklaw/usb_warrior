@@ -17,8 +17,8 @@
  *  along with usb_warrior.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _WALL_COMPONENT_H_
-#define _WALL_COMPONENT_H_
+#ifndef _UW_WALL_COMPONENT_H_
+#define _UW_WALL_COMPONENT_H_
 
 
 #include "../component.h"

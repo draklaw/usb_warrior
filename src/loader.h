@@ -17,8 +17,8 @@
  *  along with usb_warrior.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _LOADER_H_
-#define _LOADER_H_
+#ifndef _UW_LOADER_H_
+#define _UW_LOADER_H_
 
 #include <string>
 #include <unordered_map>

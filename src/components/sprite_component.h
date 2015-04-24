@@ -17,8 +17,8 @@
  *  along with usb_warrior.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _SPRITE_COMPONENT_H_
-#define _SPRITE_COMPONENT_H_
+#ifndef _UW_SPRITE_COMPONENT_H_
+#define _UW_SPRITE_COMPONENT_H_
 
 
 #include "../image_manager.h"

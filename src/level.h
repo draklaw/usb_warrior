@@ -17,8 +17,8 @@
  *  along with usb_warrior.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _LEVEL_H_
-#define _LEVEL_H_
+#ifndef _UW_LEVEL_H_
+#define _UW_LEVEL_H_
 
 #include <vector>
 #include <unordered_map>

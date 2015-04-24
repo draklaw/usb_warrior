@@ -17,8 +17,8 @@
  *  along with usb_warrior.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _NOCLIP_MOVE_COMPONENT_H_
-#define _NOCLIP_MOVE_COMPONENT_H_
+#ifndef _UW_NOCLIP_MOVE_COMPONENT_H_
+#define _UW_NOCLIP_MOVE_COMPONENT_H_
 
 
 #include "../component.h"

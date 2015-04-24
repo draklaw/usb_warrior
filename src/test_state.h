@@ -17,8 +17,8 @@
  *  along with usb_warrior.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _TEST_STATE_H_
-#define _TEST_STATE_H_
+#ifndef _UW_TEST_STATE_H_
+#define _UW_TEST_STATE_H_
 
 
 #include <Eigen/Geometry>

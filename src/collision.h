@@ -17,8 +17,8 @@
  *  along with usb_warrior.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _COLLISION_H_
-#define _COLLISION_H_
+#ifndef _UW_COLLISION_H_
+#define _UW_COLLISION_H_
 
 #include <vector>
 

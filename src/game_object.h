@@ -17,8 +17,8 @@
  *  along with usb_warrior.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _GAME_OBJECT_H_
-#define _GAME_OBJECT_H_
+#ifndef _UW_GAME_OBJECT_H_
+#define _UW_GAME_OBJECT_H_
 
 
 #include <cassert>

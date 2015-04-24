@@ -17,8 +17,8 @@
  *  along with usb_warrior.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _MAIN_STATE_H_
-#define _MAIN_STATE_H_
+#ifndef _UW_MAIN_STATE_H_
+#define _UW_MAIN_STATE_H_
 
 
 #include <memory>

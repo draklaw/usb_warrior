@@ -17,8 +17,8 @@
  *  along with usb_warrior.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _GAME_H_
-#define _GAME_H_
+#ifndef _UW_GAME_H_
+#define _UW_GAME_H_
 
 #include <iostream>
 #include <memory>

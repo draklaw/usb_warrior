@@ -17,8 +17,8 @@
  *  along with usb_warrior.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _INPUT_H_
-#define _INPUT_H_
+#ifndef _UW_INPUT_H_
+#define _UW_INPUT_H_
 
 
 #include <memory>

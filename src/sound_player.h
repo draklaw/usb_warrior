@@ -17,8 +17,8 @@
  *  along with usb_warrior.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _SOUND_PLAYER_H_
-#define _SOUND_PLAYER_H_
+#ifndef _UW_SOUND_PLAYER_H_
+#define _UW_SOUND_PLAYER_H_
 
 #include <SDL2/SDL_mixer.h>
 

@@ -17,8 +17,8 @@
  *  along with usb_warrior.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _UTILS_H_
-#define _UTILS_H_
+#ifndef _UW_UTILS_H_
+#define _UW_UTILS_H_
 
 
 #define SDL_TRY(_code) do { if(_code) { _game->sdlCrash(__FILE__); } } while(false)
