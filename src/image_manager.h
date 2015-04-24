@@ -25,7 +25,7 @@
 
 #include <SDL2/SDL_render.h>
 
-#include "math.h"
+#include "uw_math.h"
 
 
 class Game;

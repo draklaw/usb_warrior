@@ -26,7 +26,7 @@
 #include <SDL2/SDL_video.h>
 #include <SDL2/SDL_render.h>
 
-#include "math.h"
+#include "uw_math.h"
 
 
 class ImageManager;

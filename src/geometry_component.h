@@ -21,7 +21,7 @@
 #define _GEOMETRY_COMPONENT_H_
 
 
-#include "math.h"
+#include "uw_math.h"
 
 
 class GeometryComponent {

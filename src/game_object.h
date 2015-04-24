@@ -24,7 +24,7 @@
 #include <cassert>
 #include <string>
 
-#include "math.h"
+#include "uw_math.h"
 #include "utils.h"
 #include "geometry_component.h"
 

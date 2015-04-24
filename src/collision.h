@@ -22,7 +22,7 @@
 
 #include <vector>
 
-#include "math.h"
+#include "uw_math.h"
 #include "utils.h"
 
 typedef std::vector<Boxf> CollisionList;
