@@ -42,6 +42,7 @@ Duration durationFromSeconds(double sec);
 class GameState {
 public:
 	GameState(Game* game, const std::string& name, Duration updateTime);
+	virtual ~GameState();
 
 	virtual void update() = 0;
 	virtual void frame(double interp) = 0;

@@ -51,6 +51,10 @@ GameState::GameState(Game* game, const std::string& name, Duration updateTime)
 }
 
 
+GameState::~GameState() {
+}
+
+
 void GameState::run() {
 	if(!_enabled) {
 		// Initialization

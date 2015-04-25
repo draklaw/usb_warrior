@@ -3,7 +3,6 @@
 ## Code
 
 ### Game core
-- Fix all include guards; rename math.h -> uw_math.h
 - Tile z ordering
 - SoundComponent for localized sounds ?
 - Better object management (keep them in a dense array)
@@ -16,7 +15,6 @@
   * Add an Object/Component manager that deals with Objects and component
   * Have component-related functionalities separated (rendering...)
   * Game states should drive it all
-- Check virtual destructors
 - Make font loading load the image too.
 
 ### Gameplay
