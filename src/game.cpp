@@ -45,7 +45,8 @@ Game::Game(int /*argc*/, char** /*argv*/)
 	  _soundPlayer(this),
 	  _fontManager(this),
       _state(nullptr),
-      _nextState(nullptr) {
+      _nextState(nullptr),
+      _logFile("log.txt") {
 }
 
 
