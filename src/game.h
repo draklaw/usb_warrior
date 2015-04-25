@@ -21,6 +21,7 @@
 #define _GAME_H_
 
 #include <iostream>
+#include <fstream>
 
 #include <SDL2/SDL_video.h>
 #include <SDL2/SDL_render.h>
@@ -57,9 +58,9 @@ public:
 	void setFullscreen(bool enable);
 
 	inline SDL_Renderer* renderer() const { return _renderer; }
-	inline ImageManager* images() { return &_imageManager; }
-	inline SoundPlayer* sounds() { return &_soundPlayer; }
-	inline FontManager* fonts() { return &_fontManager; }
+	inline ImageManager* images()         { return &_imageManager; }
+	inline SoundPlayer*  sounds()         { return &_soundPlayer; }
+	inline FontManager*  fonts()          { return &_fontManager; }
 
 	int getRefreshRate() const;
 
@@ -91,16 +92,19 @@ public:
 	template < typename T, typename... Args >
 	inline void write(T first, Args... args) {
 		std::cout << first;
+		_logFile << first;
 		write(args...);
 	}
 
 	inline void write() {
 		std::cout << "\n";
+		_logFile << std::endl; // flush !
 	}
 
 	template < typename T, typename... Args >
 	inline void writenr(T first, Args... args) {
 		std::cout << first;
+		_logFile << first;
 		writenr(args...);
 	}
 
@@ -121,6 +125,8 @@ private:
 
 	GameState*     _state;
 	GameState*     _nextState;
+
+	std::ofstream  _logFile;
 };
 
 

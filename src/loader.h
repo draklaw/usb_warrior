@@ -54,6 +54,11 @@ private:
 	typedef std::unordered_map<std::string, const Music*> MusicMap;
 	typedef std::unordered_map<std::string, const FontImpl*>  FontMap;
 
+	ImageMap::iterator _loadImage(const std::string& filename);
+	SoundMap::iterator _loadSound(const std::string& filename);
+	MusicMap::iterator _loadMusic(const std::string& filename);
+	FontMap ::iterator _loadFont (const std::string& filename);
+
 private:
 	Game*    _game;
 
