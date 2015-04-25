@@ -50,22 +50,42 @@ void Loader::addFont(const std::string& filename) {
 
 
 const Image* Loader::getImage(const std::string& filename) {
-	return _imageMap.at(filename);
+	auto it = _imageMap.find(filename);
+	if(it == _imageMap.end()) {
+		_game->warning("Asset \"", filename, "\" has not been preloaded.");
+		it = _loadImage(filename);
+	}
+	return it->second;
 }
 
 
 const Sound* Loader::getSound(const std::string& filename) {
-	return _soundMap.at(filename);
+	auto it = _soundMap.find(filename);
+	if(it == _soundMap.end()) {
+		_game->warning("Asset \"", filename, "\" has not been preloaded.");
+		it = _loadSound(filename);
+	}
+	return it->second;
 }
 
 
 const Music* Loader::getMusic(const std::string& filename) {
-	return _musicMap.at(filename);
+	auto it = _musicMap.find(filename);
+	if(it == _musicMap.end()) {
+		_game->warning("Asset \"", filename, "\" has not been preloaded.");
+		it = _loadMusic(filename);
+	}
+	return it->second;
 }
 
 
 Font Loader::getFont(const std::string& filename) {
-	return Font(_fontMap.at(filename));
+	auto it = _fontMap.find(filename);
+	if(it == _fontMap.end()) {
+		_game->warning("Asset \"", filename, "\" has not been preloaded.");
+		it = _loadFont(filename);
+	}
+	return Font(it->second);
 }
 
 
@@ -116,4 +136,36 @@ void Loader::releaseAll() {
 			file.second = nullptr;
 		}
 	}
+}
+
+
+Loader::ImageMap::iterator Loader::_loadImage(const std::string& filename) {
+	assert(_imageMap.count(filename) == 0);
+	auto ipair = _imageMap.emplace(filename,
+	                               _game->images()->loadImage(filename));
+	return ipair.first;
+}
+
+
+Loader::SoundMap::iterator Loader::_loadSound(const std::string& filename) {
+	assert(_soundMap.count(filename) == 0);
+	auto ipair = _soundMap.emplace(filename,
+	                               _game->sounds()->loadSound(filename));
+	return ipair.first;
+}
+
+
+Loader::MusicMap::iterator Loader::_loadMusic(const std::string& filename) {
+	assert(_musicMap.count(filename) == 0);
+	auto ipair = _musicMap.emplace(filename,
+	                               _game->sounds()->loadMusic(filename));
+	return ipair.first;
+}
+
+
+Loader::FontMap::iterator Loader::_loadFont(const std::string& filename) {
+	assert(_fontMap.count(filename) == 0);
+	auto ipair = _fontMap.emplace(filename,
+	                              _game->fonts()->loadFont(filename));
+	return ipair.first;
 }

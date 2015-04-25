@@ -50,7 +50,8 @@ Game::Game(int /*argc*/, char** /*argv*/)
       _mainState    (new MainState(this)),
       _creditState  (new CreditState(this)),
       _state        (nullptr),
-      _nextState    (creditState()) {
+      _nextState    (creditState()),
+      _logFile("log.txt") {
 	creditState()->image = "assets/titre.png";
 	creditState()->titleScreen = true;
 }

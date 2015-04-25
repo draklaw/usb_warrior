@@ -22,6 +22,7 @@
 
 #include <iostream>
 #include <memory>
+#include <fstream>
 
 #include <SDL2/SDL_video.h>
 #include <SDL2/SDL_render.h>
@@ -94,16 +95,19 @@ public:
 	template < typename T, typename... Args >
 	inline void write(T first, Args... args) {
 		std::cout << first;
+		_logFile << first;
 		write(args...);
 	}
 
 	inline void write() {
 		std::cout << "\n";
+		_logFile << std::endl; // flush !
 	}
 
 	template < typename T, typename... Args >
 	inline void writenr(T first, Args... args) {
 		std::cout << first;
+		_logFile << first;
 		writenr(args...);
 	}
 
@@ -123,6 +127,8 @@ private:
 
 	GameState*     _state;
 	GameState*     _nextState;
+
+	std::ofstream  _logFile;
 };
 
 
