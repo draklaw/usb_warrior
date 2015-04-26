@@ -25,6 +25,7 @@
 #include "game.h"
 #include "game_object.h"
 #include "loader.h"
+#include "input.h"
 #include "main_state.h"
 
 #include "components/sprite_component.h"
@@ -43,6 +44,8 @@ Scene::Scene(Game* game, MainState* state)
       _state(state),
       _debugView(false),
       _level(new Level(this)),
+      _commandMap(),
+      _inputs(new InputManager(_game)),
       _objectCounter(0),
       _objects() {
 	_objects.reserve(SCENE_ARRAYS_MAX_SIZE);
@@ -128,19 +131,19 @@ GameObject* Scene::createPlayer(const EntityData& data) {
 	GameObject* obj = createSpriteObject(data, tileMap);
 
 	auto pcc = addComponent<PlayerControlerComponent>(obj);
-	pcc->left  = _state->_left;
-	pcc->right = _state->_right;
-	pcc->up    = _state->_up;
-	pcc->down  = _state->_down;
-	pcc->jump  = _state->_jump;
+	pcc->left  = inputs()->getByName("left");
+	pcc->right = inputs()->getByName("right");
+	pcc->up    = inputs()->getByName("up");
+	pcc->down  = inputs()->getByName("down");
+	pcc->jump  = inputs()->getByName("jump");
 
 	addComponent<MoveComponent>(obj);
 
 	auto nmc = addComponent<NoclipMoveComponent>(obj);
-	nmc->left  = _state->_left;
-	nmc->right = _state->_right;
-	nmc->up    = _state->_up;
-	nmc->down  = _state->_down;
+	nmc->left  = inputs()->getByName("left");
+	nmc->right = inputs()->getByName("right");
+	nmc->up    = inputs()->getByName("up");
+	nmc->down  = inputs()->getByName("down");
 	nmc->setEnabled(false);
 
 	return obj;

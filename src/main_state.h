@@ -53,11 +53,7 @@ public:
 	void update();
 	void frame(double interp);
 
-	inline GameObject* player()    { return _player; }
-	inline Input*      useInput()  { return _use; }
 	inline Loader*     loader()    { return _loader.get(); }
-
-	inline InputManager& input() { return *_input; }
 
 	void loadLevelNow(const char*);
 
@@ -84,19 +80,10 @@ public:
 
 protected:
 	// Inputs
-	std::unique_ptr<InputManager>  _input;
 
 public:
-	Input*        _left;
-	Input*        _right;
-	Input*        _jump;
-	Input*        _up;
-	Input*        _down;
-	Input*        _use;
 
 private:
-	Input*        _debug0;
-	Input*        _debug1;
 
 	// Objects
 	GameObject*   _player;

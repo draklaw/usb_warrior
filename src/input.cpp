@@ -57,9 +57,11 @@ Input* InputManager::addInput(const std::string& name) {
 
 Input* InputManager::getByName(const std::string& name) {
 	auto it = _inputNameMap.find(name);
-	return (it == _inputNameMap.end())?
-		nullptr:
-		it->second;
+	if(it == _inputNameMap.end()) {
+		_game->warning("Request for non-existing input \"", name, "\"");
+		return nullptr;
+	}
+	return it->second;
 }
 
 

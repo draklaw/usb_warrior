@@ -64,7 +64,8 @@ void BotComponent::update() {
 		}
 	}
 
-	if(_scene->state()->useInput()->justPressed()) {
+	Input* use = _scene->inputs()->getByName("use");
+	if(use && use->justPressed()) {
 		auto pcc = player->playerControler;
 		int pDir = pcc->direction;
 

@@ -32,15 +32,6 @@
 #include "game.h"
 #include "game_object.h"
 #include "component.h"
-//#include "level.h"
-
-//#include "components/sprite_component.h"
-//#include "components/player_controler_component.h"
-//#include "components/noclip_move_component.h"
-//#include "components/move_component.h"
-//#include "components/trigger_component.h"
-//#include "components/bot_component.h"
-//#include "components/wall_component.h"
 
 
 // A temporary constant used to pre-allocate memory
@@ -51,6 +42,8 @@ typedef std::unordered_map<std::string,std::string> EntityData;
 class MainState;
 class Level;
 class TileMap;
+class InputManager;
+class Input;
 
 
 class Scene {
@@ -60,9 +53,10 @@ public:
 public:
 	Scene(Game* game, MainState* state);
 
-	inline Game* game() { return _game; }
+	inline Game*         game()   { return _game; }
 	// Temporary / should not be usefull.
-	inline MainState* state() { return _state; }
+	inline MainState*    state()  { return _state; }
+	inline InputManager* inputs() { return _inputs.get(); }
 
 	// Temporary logic / to be replaced when object adress may change.
 	inline GameObject* get(GameObject* obj) { return obj; }
@@ -141,6 +135,8 @@ private:
 	std::unique_ptr<Level>  _level;
 
 	CommandMap    _commandMap;
+
+	std::unique_ptr<InputManager>  _inputs;
 
 	std::size_t   _objectCounter;
 	ObjectArray   _objects;

@@ -49,16 +49,7 @@ MainState::MainState(Game* game)
 		_scene    (new Scene(game, this)),
 		_loader   (new Loader(game)),
 		_level    (),
-        _reload   (false),
-		_input    (new InputManager(game)),
-		_left     (nullptr),
-		_right    (nullptr),
-		_jump     (nullptr),
-		_up       (nullptr),
-		_down     (nullptr),
-		_use      (nullptr),
-		_debug0   (nullptr),
-		_debug1   (nullptr),
+		_reload   (false),
 		_player   (nullptr) {
 }
 
@@ -84,11 +75,12 @@ void MainState::update() {
 	}
 
 	_scene->beginUpdate();
+	_scene->inputs()->sync();
 
-	_input->sync();
-
-	if(_debug0->justPressed()) _scene->setDebug(!_scene->debug());
-	if(_debug1->justPressed()) {
+	if(_scene->inputs()->getByName("debug0")->justPressed()) {
+		_scene->setDebug(!_scene->debug());
+	}
+	if(_scene->inputs()->getByName("debug1")->justPressed()) {
 		auto mc = _player->move;
 		auto nmc = _player->noclipMove;
 		mc->setEnabled(!mc->isEnabled());
@@ -229,25 +221,25 @@ void MainState::loadLevelNow(const char* level) {
 void MainState::initialize() {
 	_game->log("Initialize MainState...");
 
-	_left   = _input->addInput("left");
-	_right  = _input->addInput("right");
-	_jump   = _input->addInput("jump");
-	_up     = _input->addInput("up");
-	_down   = _input->addInput("down");
-	_use    = _input->addInput("use");
-	_debug0 = _input->addInput("debug0");
-	_debug1 = _input->addInput("debug1");
+	Input* left   = _scene->inputs()->addInput("left");
+	Input* right  = _scene->inputs()->addInput("right");
+	Input* jump   = _scene->inputs()->addInput("jump");
+	Input* up     = _scene->inputs()->addInput("up");
+	Input* down   = _scene->inputs()->addInput("down");
+	Input* use    = _scene->inputs()->addInput("use");
+	Input* debug0 = _scene->inputs()->addInput("debug0");
+	Input* debug1 = _scene->inputs()->addInput("debug1");
 
-	_input->loadKeyBindingFile("assets/keymap.json");
+	_scene->inputs()->loadKeyBindingFile("assets/keymap.json");
 
-	_input->bindJsonKeys(_left,  "left",  SDL_SCANCODE_LEFT);
-	_input->bindJsonKeys(_right, "right", SDL_SCANCODE_RIGHT);
-	_input->bindJsonKeys(_jump,  "jump",  SDL_SCANCODE_E);
-	_input->bindJsonKeys(_up,    "up",    SDL_SCANCODE_UP);
-	_input->bindJsonKeys(_down,  "down",  SDL_SCANCODE_DOWN);
-	_input->bindJsonKeys(_use,   "use",   SDL_SCANCODE_SPACE);
-	_input->mapScanCode(_debug0, SDL_SCANCODE_F1);
-	_input->mapScanCode(_debug1, SDL_SCANCODE_F2);
+	_scene->inputs()->bindJsonKeys(left,  "left",  SDL_SCANCODE_LEFT);
+	_scene->inputs()->bindJsonKeys(right, "right", SDL_SCANCODE_RIGHT);
+	_scene->inputs()->bindJsonKeys(jump,  "jump",  SDL_SCANCODE_E);
+	_scene->inputs()->bindJsonKeys(up,    "up",    SDL_SCANCODE_UP);
+	_scene->inputs()->bindJsonKeys(down,  "down",  SDL_SCANCODE_DOWN);
+	_scene->inputs()->bindJsonKeys(use,   "use",   SDL_SCANCODE_SPACE);
+	_scene->inputs()->mapScanCode(debug0, SDL_SCANCODE_F1);
+	_scene->inputs()->mapScanCode(debug1, SDL_SCANCODE_F2);
 
 	// Loading
 	_loader->addImage("assets/tilez.png");
