@@ -42,10 +42,11 @@
 Scene::Scene(Game* game, MainState* state)
     : _game(game),
       _state(state),
-      _debugView(false),
-      _level(new Level(this)),
-      _commandMap(),
       _inputs(new InputManager(_game)),
+      _loader(new Loader(_game)),
+      _level(new Level(this)),
+      _debugView(false),
+      _commandMap(),
       _objectCounter(0),
       _objects() {
 	_objects.reserve(SCENE_ARRAYS_MAX_SIZE);
@@ -127,7 +128,7 @@ GameObject* Scene::createSpriteObject(const EntityData& data,
 
 
 GameObject* Scene::createPlayer(const EntityData& data) {
-	TileMap tileMap(_state->loader()->getImage("assets/toutAMI.png"), 32, 48);
+	TileMap tileMap(loader()->getImage("assets/toutAMI.png"), 32, 48);
 	GameObject* obj = createSpriteObject(data, tileMap);
 
 	auto pcc = addComponent<PlayerControlerComponent>(obj);
@@ -151,7 +152,7 @@ GameObject* Scene::createPlayer(const EntityData& data) {
 
 
 GameObject* Scene::createTrigger(const EntityData& data) {
-	const Image* img = _state->loader()->getImage(getString(data, "sprite", ""));
+	const Image* img = loader()->getImage(getString(data, "sprite", ""));
 	int tileX = getInt(data, "tiles_x", 2);
 	int tileY = getInt(data, "tiles_y", 1);
 
@@ -176,7 +177,7 @@ GameObject* Scene::createTrigger(const EntityData& data) {
 
 
 GameObject* Scene::createBotStatic(const EntityData& data) {
-	const Image* img = _state->loader()->getImage("assets/toutrobot.png");
+	const Image* img = loader()->getImage("assets/toutrobot.png");
 	GameObject* obj = createSpriteObject(data, TileMap(img, 32, 48));
 
 	auto bc = addComponent<BotComponent>(obj);

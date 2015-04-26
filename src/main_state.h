@@ -28,21 +28,11 @@
 
 #include <SDL2/SDL_render.h>
 
-//#include "input.h"
-//#include "image_manager.h"
-//#include "sound_player.h"
-//#include "font_manager.h"
-//#include "loader.h"
 #include "game_state.h"
-//#include "level.h"
-//#include "scene.h"
 
 
 class GameObject;
-class Loader;
 class Scene;
-class InputManager;
-class Input;
 
 
 class MainState : public GameState {
@@ -52,8 +42,6 @@ public:
 
 	void update();
 	void frame(double interp);
-
-	inline Loader*     loader()    { return _loader.get(); }
 
 	void loadLevelNow(const char*);
 
@@ -67,8 +55,6 @@ protected:
 protected:
 	std::unique_ptr<Scene>   _scene;
 
-	std::unique_ptr<Loader>  _loader;
-
 	std::string   _level;
 	bool          _reload;
 
@@ -77,13 +63,6 @@ public:
 	bool          hasComputerKey;
 	bool          hasFightClubKey;
 	bool          hasMysteryKey;
-
-protected:
-	// Inputs
-
-public:
-
-private:
 
 	// Objects
 	GameObject*   _player;

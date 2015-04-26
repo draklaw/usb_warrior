@@ -44,6 +44,7 @@ class Level;
 class TileMap;
 class InputManager;
 class Input;
+class Loader;
 
 
 class Scene {
@@ -57,6 +58,7 @@ public:
 	// Temporary / should not be usefull.
 	inline MainState*    state()  { return _state; }
 	inline InputManager* inputs() { return _inputs.get(); }
+	inline Loader*       loader() { return _loader.get(); }
 
 	// Temporary logic / to be replaced when object adress may change.
 	inline GameObject* get(GameObject* obj) { return obj; }
@@ -130,13 +132,14 @@ private:
 	Game*         _game;
 	MainState*    _state;
 
-	bool          _debugView;
+	std::unique_ptr<InputManager>  _inputs;
+	std::unique_ptr<Loader>  _loader;
 
 	std::unique_ptr<Level>  _level;
 
-	CommandMap    _commandMap;
+	bool          _debugView;
 
-	std::unique_ptr<InputManager>  _inputs;
+	CommandMap    _commandMap;
 
 	std::size_t   _objectCounter;
 	ObjectArray   _objects;

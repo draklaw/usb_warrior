@@ -47,7 +47,6 @@
 MainState::MainState(Game* game)
 	: GameState(game, "Main", durationFromSeconds(UPDATE_TIME)),
 		_scene    (new Scene(game, this)),
-		_loader   (new Loader(game)),
 		_level    (),
 		_reload   (false),
 		_player   (nullptr) {
@@ -176,7 +175,7 @@ void MainState::frame(double interp) {
 	r1.w = 32;
 	r1.h = 32;
 	
-	SDL_Texture* key1 = _loader->getImage("assets/clef1.png")->texture;
+	SDL_Texture* key1 = _scene->loader()->getImage("assets/clef1.png")->texture;
 	if (!hasDeactivateKey)
 		SDL_SetTextureAlphaMod(key1,64);
 	SDL_RenderCopy(dali, key1, NULL, &r1);
@@ -184,7 +183,7 @@ void MainState::frame(double interp) {
 	
 	r1.x = r1.x + 32 + 20;
 	
-	SDL_Texture* key2 = _loader->getImage("assets/clef2.png")->texture;
+	SDL_Texture* key2 = _scene->loader()->getImage("assets/clef2.png")->texture;
 	if (!hasComputerKey)
 		SDL_SetTextureAlphaMod(key2,64);
 	SDL_RenderCopy(dali, key2, NULL, &r1);
@@ -192,7 +191,7 @@ void MainState::frame(double interp) {
 	
 	r1.x = r1.x + 32 + 20;
 	
-	SDL_Texture* key3 = _loader->getImage("assets/clef3.png")->texture;
+	SDL_Texture* key3 = _scene->loader()->getImage("assets/clef3.png")->texture;
 	if (!hasFightClubKey)
 		SDL_SetTextureAlphaMod(key3,64);
 	SDL_RenderCopy(dali, key3, NULL, &r1);
@@ -200,7 +199,7 @@ void MainState::frame(double interp) {
 	
 	r1.x = r1.x + 32 + 20;
 	
-	SDL_Texture* key4 = _loader->getImage("assets/clef4.png")->texture;
+	SDL_Texture* key4 = _scene->loader()->getImage("assets/clef4.png")->texture;
 	if (!hasMysteryKey)
 		SDL_SetTextureAlphaMod(key4,64);
 	SDL_RenderCopy(dali, key4, NULL, &r1);
@@ -242,28 +241,28 @@ void MainState::initialize() {
 	_scene->inputs()->mapScanCode(debug1, SDL_SCANCODE_F2);
 
 	// Loading
-	_loader->addImage("assets/tilez.png");
-	_loader->addImage("assets/toutAMI.png");
-	_loader->addImage("assets/toutrobot.png");
-	_loader->addImage("assets/exit.png");
-	_loader->addImage("assets/terminal.png");
-	_loader->addImage("assets/alarm.png");
-	_loader->addImage("assets/clef1.png");
-	_loader->addImage("assets/clef2.png");
-	_loader->addImage("assets/clef3.png");
-	_loader->addImage("assets/clef4.png");
-	_loader->addImage("assets/tp.png");
+//	_loader->addImage("assets/tilez.png");
+//	_loader->addImage("assets/toutAMI.png");
+//	_loader->addImage("assets/toutrobot.png");
+//	_loader->addImage("assets/exit.png");
+//	_loader->addImage("assets/terminal.png");
+//	_loader->addImage("assets/alarm.png");
+//	_loader->addImage("assets/clef1.png");
+//	_loader->addImage("assets/clef2.png");
+//	_loader->addImage("assets/clef3.png");
+//	_loader->addImage("assets/clef4.png");
+//	_loader->addImage("assets/tp.png");
 
-	_loader->addSound("assets/use.wav");
-	_loader->addSound("assets/loot.wav");
-	_loader->addSound("assets/alarm.wav");
+//	_loader->addSound("assets/use.wav");
+//	_loader->addSound("assets/loot.wav");
+//	_loader->addSound("assets/alarm.wav");
 
-	_loader->addMusic("assets/niveau.wav");
+//	_loader->addMusic("assets/niveau.wav");
 
-	_loader->loadAll();
+//	_loader->loadAll();
 
 	// ##### Level
-	_scene->level()->setTileMap(TileMap(_loader->getImage("assets/tilez.png"), 16, 16));
+	_scene->level()->setTileMap(TileMap(_scene->loader()->getImage("assets/tilez.png"), 16, 16));
 
 	// Walls
 	for(unsigned i = 0; i < 8; ++i) {
@@ -305,13 +304,13 @@ void MainState::initialize() {
 
 void MainState::shutdown() {
 	_game->log("Shutdown MainState...");
-	_loader->releaseAll();
+	_scene->loader()->releaseAll();
 }
 
 
 void MainState::start() {
 	_game->log("Start MainState...");
-	_game->sounds()->playMusic(_loader->getMusic("assets/niveau.wav"));
+	_game->sounds()->playMusic(_scene->loader()->getMusic("assets/niveau.wav"));
 }
 
 

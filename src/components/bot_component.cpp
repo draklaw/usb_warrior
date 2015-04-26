@@ -58,8 +58,8 @@ void BotComponent::update() {
 		if(alpha < fov) {
 			_scene->exec(seePlayer.c_str());
 			if(_channel == -1) {
-				const Sound* alarmSnd = _scene->state()->loader()->getSound("assets/alarm.wav");
-				_channel = _scene->state()->game()->sounds()->playSound(alarmSnd, -1);
+				const Sound* alarmSnd = _scene->loader()->getSound("assets/alarm.wav");
+				_channel = _scene->game()->sounds()->playSound(alarmSnd, -1);
 			}
 		}
 	}
@@ -80,9 +80,9 @@ void BotComponent::update() {
 				if(_scene->state()->hasDeactivateKey) {
 					_scene->exec(hackDisable.c_str());
 					_scene->state()->hasDeactivateKey = false;
-					const Sound* useSnd = _scene->state()->loader()->getSound("assets/use.wav");
-					_scene->state()->game()->sounds()->playSound(useSnd, 0);
-					_scene->state()->game()->sounds()->haltSound(_channel);
+					const Sound* useSnd = _scene->loader()->getSound("assets/use.wav");
+					_scene->game()->sounds()->playSound(useSnd, 0);
+					_scene->game()->sounds()->haltSound(_channel);
 				}
 			}
 		}

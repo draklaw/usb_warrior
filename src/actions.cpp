@@ -39,6 +39,7 @@ void loadLevelAction(Scene* scene, unsigned argc, const char** argv) {
 	}
 
 	scene->game()->warning("loadLevelAction: ", argc, ", ", argv[1]);
+	// FIXME: create a good mechanic for level loading.
 	scene->loadLevel(argv[1]);
 }
 
@@ -104,7 +105,7 @@ void addItemAction(Scene* scene, unsigned argc, const char** argv) {
 	std::string type = argv[1];
 	if(type == "deactivate") {
 		scene->state()->hasDeactivateKey = true;
-		const Sound* snd = scene->state()->loader()->getSound("assets/loot.wav");
+		const Sound* snd = scene->loader()->getSound("assets/loot.wav");
 		scene->game()->sounds()->playSound(snd, 0);
 	} else {
 		scene->game()->warning("add_item action: invalid key type");
