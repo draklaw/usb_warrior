@@ -43,7 +43,7 @@ GameState::GameState(Game* game, const std::string& name, Duration updateTime)
     : _game(game),
       _name(name),
       _updateTime(updateTime),
-      _frameTime(durationFromSeconds(1.01d / game->getRefreshRate())),
+      _frameTime(durationFromSeconds(1.01 / game->getRefreshRate())),
       _maxUpdateLatency(2),
       _enabled(false),
       _running(false),
@@ -90,7 +90,7 @@ void GameState::run() {
 			_uptime     += secondsFromDuration(_updateTime);
 		} else {
 			// Frame ! (Everything is more funny with bangs !)
-			double interp = 1.d
+			double interp = 1.
 			        + (secondsFromDuration(time - _nextUpdate)
 			          / secondsFromDuration(_updateTime));
 			frame(interp);

@@ -32,7 +32,7 @@ enum Direction {
 
 template < typename T >
 T lerp(double f, const T& a, const T& b) {
-	return (1.d - f) * a + f * b;
+	return (1. - f) * a + f * b;
 }
 
 #endif
