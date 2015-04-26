@@ -47,13 +47,23 @@ InputManager::~InputManager() {
 }
 
 
-Input* InputManager::addInput(const char* name) {
+Input* InputManager::addInput(const std::string& name) {
 	_inputMap.emplace_back(new Input(name));
-	return _inputMap.back().get();
+	Input* ptr = _inputMap.back().get();
+	_inputNameMap.emplace(name, ptr);
+	return ptr;
 }
 
 
-void  InputManager::mapScanCode(Input* input, ScanCode scanCode) {
+Input* InputManager::getByName(const std::string& name) {
+	auto it = _inputNameMap.find(name);
+	return (it == _inputNameMap.end())?
+		nullptr:
+		it->second;
+}
+
+
+void InputManager::mapScanCode(Input* input, ScanCode scanCode) {
 	_scanCodeMap[scanCode].push_back(input);
 }
 

@@ -57,7 +57,9 @@ public:
 	InputManager(Game* game);
 	~InputManager();
 
-	Input* addInput(const char* name);
+	Input* addInput (const std::string& name);
+	Input* getByName(const std::string& name);
+
 	void   mapScanCode(Input* input, ScanCode scanCode);
 	void   bindJsonKeys(Input* input, const char* name, ScanCode scanCode);
 	void   loadKeyBindingFile(const char* filename);
@@ -67,16 +69,18 @@ public:
 private:
 	typedef std::unique_ptr<Input>                   InputPtr;
 	typedef std::vector<InputPtr>                    InputMap;
+	typedef std::unordered_map<std::string, Input*>  InputNameMap;
 
 	typedef std::vector<Input*>                      InputList;
 	typedef std::unordered_map<ScanCode, InputList>  ScanCodeMap;
 
 private:
-	Game*       _game;
+	Game*         _game;
 
-	json_t*     _bindings;
-	InputMap    _inputMap;
-	ScanCodeMap _scanCodeMap;
+	json_t*       _bindings;
+	InputMap      _inputMap;
+	InputNameMap  _inputNameMap;
+	ScanCodeMap   _scanCodeMap;
 };
 
 
